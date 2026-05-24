@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sillifur — Find Your Mentor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0b0d11;
+      --bg2:     #12151c;
+      --bg3:     #1a1e2a;
+      --card:    #181c27;
+      --card2:   #1f2335;
+      --blue:    #4f8ef7;
+      --blue2:   #3a76e8;
+      --green:   #22d3a0;
+      --white:   #ffffff;
+      --text:    #e8eaf0;
+      --muted:   #6b7280;
+      --muted2:  #9ca3af;
+      --border:  rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.12);
+      --radius:  14px;
+    }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      text-decoration: none;
+    }
+    .logo-mark {
+      width: 34px; height: 34px;
+      background: var(--blue);
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      color: white;
+      letter-spacing: -1px;
+    }
+    .logo-text {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--white);
+      letter-spacing: -0.3px;
+    }
+    .logo-text span { color: var(--blue); }
+    .nav-links {
+      display: flex; align-items: center;
+      gap: 28px; list-style: none;
+    }
+    .nav-links a {
+      color: var(--muted2);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .btn-signin {
+      background: var(--blue);
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-signin:hover { background: var(--blue2); }
+    .nav-hamburger { display: none; cursor: pointer; flex-direction: column; gap: 5px; }
+    .nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--muted2); border-radius: 2px; }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 80px 5% 70px;
+      text-align: center;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      width: 700px; height: 400px;
+      background: radial-gradient(ellipse, rgba(79,142,247,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(79,142,247,0.1);
+      border: 1px solid rgba(79,142,247,0.25);
+      color: var(--blue);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 22px;
+    }
+    .hero h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1.15;
+      max-width: 760px;
+      margin: 0 auto 18px;
+      letter-spacing: -1.5px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--blue);
+    }
+    .hero p {
+      color: var(--muted2);
+      font-size: 1rem;
+      max-width: 480px;
+      margin: 0 auto 36px;
+    }
+    .search-bar {
+      display: flex;
+      max-width: 540px;
+      margin: 0 auto 14px;
+      background: var(--card2);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .search-bar input {
+      flex: 1; border: none; outline: none;
+      padding: 15px 18px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text);
+      background: transparent;
+    }
+    .search-bar input::placeholder { color: var(--muted); }
+    .search-bar button {
+      background: var(--blue);
+      color: white; border: none;
+      padding: 0 24px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; transition: background .2s;
+    }
+    .search-bar button:hover { background: var(--blue2); }
+    .hero-chips {
+      display: flex; justify-content: center;
+      gap: 8px; flex-wrap: wrap;
+    }
+    .chip {
+      background: var(--card2);
+      border: 1px solid var(--border2);
+      color: var(--muted2);
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .chip:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* ── STATS ── */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+      flex-wrap: wrap;
+    }
+    .stat-item {
+      flex: 1; min-width: 140px;
+      text-align: center;
+      padding: 22px 20px;
+      border-right: 1px solid var(--border);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: var(--white);
+    }
+    .stat-num span { color: var(--blue); }
+    .stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+
+    /* ── SECTION COMMON ── */
+    section { padding: 60px 5%; }
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .section-header-left {}
+    .section-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--blue);
+      margin-bottom: 6px;
+    }
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.5px;
+    }
+    .view-all {
+      color: var(--blue);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+    .view-all:hover { text-decoration: underline; }
+
+    /* ── CATEGORY CARDS (screenshot style) ── */
+    .cat-scroll-wrap {
+      overflow-x: auto;
+      padding-bottom: 12px;
+      margin: 0 -5%;
+      padding-left: 5%;
+      padding-right: 5%;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border2) transparent;
+    }
+    .cat-grid {
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      grid-auto-flow: column;
+      grid-auto-columns: 200px;
+      gap: 12px;
+      width: max-content;
+    }
+    .cat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 16px 16px;
+      cursor: pointer;
+      transition: all .2s;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 130px;
+      position: relative;
+      overflow: hidden;
+    }
+    .cat-card:hover {
+      border-color: var(--border2);
+      background: var(--card2);
+      transform: translateY(-2px);
+    }
+    .cat-card.active-cat {
+      background: var(--card2);
+      border-color: rgba(79,142,247,0.35);
+    }
+    .cat-name {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--white);
+      line-height: 1.2;
+      max-width: 110px;
+    }
+    .cat-bottom {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+    .cat-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #4ade80;
+      line-height: 1;
+    }
+    .cat-icon-wrap {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: var(--bg3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      border: 1px solid var(--border2);
+      flex-shrink: 0;
+    }
+
+    /* ── MENTOR CARDS ── */
+    .mentors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 16px;
+    }
+    .mentor-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: all .2s;
+      cursor: pointer;
+      position: relative;
+    }
+    .mentor-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-3px);
+    }
+    .mentor-card-top {
+      background: var(--card2);
+      padding: 20px 18px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .mentor-avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--blue);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem; font-weight: 800;
+      color: white; flex-shrink: 0;
+      border: 2px solid var(--border2);
+    }
+    .mentor-name {
+      font-weight: 700; font-size: 0.92rem;
+      color: var(--white); margin-bottom: 3px;
+    }
+    .mentor-title {
+      font-size: 0.75rem; color: var(--muted2); margin-bottom: 7px;
+    }
+    .mentor-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+    .tag {
+      background: rgba(79,142,247,0.12);
+      color: #93b4fa;
+      font-size: 0.67rem; font-weight: 600;
+      padding: 2px 8px; border-radius: 20px;
+      border: 1px solid rgba(79,142,247,0.2);
+    }
+    .wishlist-btn {
+      position: absolute; top: 12px; right: 12px;
+      width: 28px; height: 28px;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: 50%;
+      color: var(--muted);
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .2s;
+    }
+    .wishlist-btn:hover { color: #f87171; border-color: rgba(248,113,113,0.4); }
+    .wishlist-btn.saved { color: #f87171; background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.4); }
+    .mentor-card-body { padding: 14px 18px; }
+    .mentor-rating {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 0.78rem; color: var(--muted2); margin-bottom: 12px;
+    }
+    .stars { color: #fbbf24; font-size: 0.78rem; }
+    .rating-num { font-weight: 600; color: var(--white); }
+    .mentor-price-row {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .mentor-price {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700; font-size: 1rem; color: var(--white);
+    }
+    .mentor-price span {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.72rem; font-weight: 400; color: var(--muted);
+    }
+    .btn-book {
+      background: var(--blue);
+      color: white; border: none;
+      padding: 7px 14px; border-radius: 7px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.78rem; font-weight: 600;
+      cursor: pointer; transition: background .2s;
+    }
+    .btn-book:hover { background: var(--blue2); }
+
+    /* ── HOW IT WORKS ── */
+    .how { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .step-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 22px;
+    }
+    .step-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.5rem; font-weight: 800;
+      color: rgba(79,142,247,0.15);
+      line-height: 1; margin-bottom: 14px;
+    }
+    .step-icon { font-size: 1.5rem; margin-bottom: 10px; display: block; }
+    .step-title { font-weight: 700; font-size: 0.95rem; color: var(--white); margin-bottom: 7px; }
+    .step-desc { font-size: 0.83rem; color: var(--muted2); line-height: 1.6; }
+
+    /* ── CTA ── */
+    .cta-banner {
+      text-align: center;
+      padding: 70px 5%;
+      border-top: 1px solid var(--border);
+    }
+    .cta-banner h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 800; color: var(--white);
+      letter-spacing: -0.5px; margin-bottom: 10px;
+    }
+    .cta-banner h2 em { font-style: normal; color: var(--blue); }
+    .cta-banner p { color: var(--muted2); font-size: 0.92rem; margin-bottom: 26px; }
+    .cta-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--blue); color: white; border: none;
+      padding: 12px 26px; border-radius: 9px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; transition: background .2s;
+    }
+    .btn-primary:hover { background: var(--blue2); }
+    .btn-ghost {
+      background: transparent; color: var(--muted2);
+      border: 1px solid var(--border2);
+      padding: 12px 26px; border-radius: 9px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; transition: all .2s;
+    }
+    .btn-ghost:hover { border-color: var(--white); color: var(--white); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 48px 5% 28px;
+    }
+    .footer-top {
+      display: flex; justify-content: space-between;
+      flex-wrap: wrap; gap: 32px; margin-bottom: 40px;
+    }
+    .footer-brand p {
+      font-size: 0.82rem; color: var(--muted);
+      margin-top: 12px; max-width: 200px; line-height: 1.6;
+    }
+    .footer-col h4 {
+      font-weight: 600; font-size: 0.82rem;
+      color: var(--white); margin-bottom: 14px;
+    }
+    .footer-col a {
+      display: block; color: var(--muted);
+      text-decoration: none; font-size: 0.82rem;
+      margin-bottom: 9px; transition: color .2s;
+    }
+    .footer-col a:hover { color: var(--blue); }
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+      display: flex; justify-content: space-between;
+      flex-wrap: wrap; gap: 8px;
+      font-size: 0.76rem; color: var(--muted);
+    }
+    .footer-bottom a { color: var(--muted); text-decoration: none; }
+    .footer-bottom a:hover { color: var(--blue); }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 999; align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--card2);
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      padding: 36px 32px;
+      max-width: 380px; width: 90%;
+      text-align: center; position: relative;
+    }
+    .modal-close {
+      position: absolute; top: 14px; right: 16px;
+      background: none; border: none;
+      font-size: 1.1rem; cursor: pointer; color: var(--muted);
+    }
+    .modal-logo-wrap { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; }
+    .modal h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem; font-weight: 700;
+      color: var(--white); margin-bottom: 6px;
+    }
+    .modal p { font-size: 0.85rem; color: var(--muted2); margin-bottom: 24px; }
+    .google-btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; padding: 12px;
+      border: 1px solid var(--border2); border-radius: 9px;
+      background: var(--card);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; transition: all .2s;
+      color: var(--white); margin-bottom: 16px;
+    }
+    .google-btn:hover { border-color: var(--border2); background: var(--bg3); }
+    .google-btn svg { width: 18px; height: 18px; }
+    .modal-divider {
+      font-size: 0.75rem; color: var(--muted);
+      margin: 4px 0 14px; position: relative;
+    }
+    .modal-divider::before, .modal-divider::after {
+      content: ''; position: absolute; top: 50%;
+      width: 36%; height: 1px; background: var(--border);
+    }
+    .modal-divider::before { left: 0; }
+    .modal-divider::after { right: 0; }
+    .role-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .role-btn {
+      padding: 14px 8px;
+      border: 1px solid var(--border2); border-radius: 10px;
+      background: var(--card); font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; transition: all .2s; color: var(--muted2);
+    }
+    .role-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .role-btn .role-icon { font-size: 1.3rem; display: block; margin-bottom: 5px; }
+    .modal-terms { font-size: 0.7rem; color: var(--muted); margin-top: 14px; }
+    .modal-terms a { color: var(--blue); }
+
+    @media(max-width:640px){
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      .stat-item { min-width: 100px; padding: 16px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-mark">S</div>
+    <div class="logo-text">silli<span>fur</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#">Browse Mentors</a></li>
+    <li><a href="#">Become a Mentor</a></li>
+    <li><a href="#">How it works</a></li>
+  </ul>
+  <button class="btn-signin" onclick="openModal()">Sign In</button>
+  <div class="nav-hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">&#9733; India's Mentor Marketplace</div>
+  <h1>Learn from mentors<br>who've <em>been there</em></h1>
+  <p>Connect with verified experts in Tech, Career, Business & more. Book a 1:1 session today.</p>
+  <div class="search-bar">
+    <input type="text" placeholder="Search by skill, topic, or mentor name…"/>
+    <button>Search</button>
+  </div>
+  <div class="hero-chips">
+    <span class="chip">System Design</span>
+    <span class="chip">Product Management</span>
+    <span class="chip">UPSC</span>
+    <span class="chip">Data Science</span>
+    <span class="chip">Startup Funding</span>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat-item"><div class="stat-num">500<span>+</span></div><div class="stat-label">Verified Mentors</div></div>
+  <div class="stat-item"><div class="stat-num">12K<span>+</span></div><div class="stat-label">Sessions Completed</div></div>
+  <div class="stat-item"><div class="stat-num">4.8<span>★</span></div><div class="stat-label">Average Rating</div></div>
+  <div class="stat-item"><div class="stat-num">30<span>+</span></div><div class="stat-label">Domains Covered</div></div>
+</div>
+
+<!-- CATEGORIES -->
+<section>
+  <div class="section-header">
+    <div class="section-header-left">
+      <div class="section-tag">Browse by Domain</div>
+      <h2 class="section-title">Find your mentor category</h2>
+    </div>
+    <a href="#" class="view-all">VIEW ALL</a>
+  </div>
+  <div class="cat-scroll-wrap">
+    <div class="cat-grid">
+      <a href="#" class="cat-card active-cat">
+        <div class="cat-name">Tech &amp; Coding</div>
+        <div class="cat-bottom">
+          <div class="cat-badge">128 MENTORS</div>
+          <div class="cat-icon-wrap">💻</div>
+        </div>
+      </a>
+      <a href="#" class="cat-card">
+        <div class="cat-name">Career Growth</div>
+        <div class="cat-bottom">
+          <div class="cat-badge">94 MENTORS</div>
+          <div class="cat-icon-wrap">📈</div>
+        </div>
+      </a>
+      <a href="#" class="cat-card">
+        <div class="cat-name">Startup &amp; Business</div>
+        <div class="cat-bottom">
+          <div class="cat-badge">76 MENTORS</div>
+          <div class="cat-icon-wrap">🚀</div>
+        </div>
+      </a>
+      <a href="#" class="cat-card">
+        <div class="cat-name">UPSC &amp; Exams</div>
+        <div class="cat-bottom">
+          <div class="cat-badge" style="color:#f87171">NEW MENTORS</div>
+          <div class="cat-icon-wrap">📚</div>
+        </div>
+      </a>
+      <a href="#" class="cat-card">
+        <div class="cat-name">Design &amp; Creative</div>
+        <div class="cat-bottom">
+          <div class="cat-badge">52 MENTORS</div>
+          <div class="cat-icon-wrap">🎨</div>
+        </div>
+      </a>
+      <a href="#" class="cat-card">
+        <div class="cat-name">Finance &amp; Investing</div>
+        <div class="cat-bottom">
+          <div class="cat-badge">43 MENTORS</div>
+          <div class="cat-icon-wrap">💰</div>
+        </div>
+      </a>
+      <a href="#" class="cat-card">
+        <div class="cat-name">Product Management</div>
+        <div class="cat-bottom">
+          <div class="cat-badge" style="color:#f87171">TRENDING</div>
+          <div class="cat-icon-wrap">🧠</div>
+        </div>
+      </a>
+      <a href="#" class="cat-card">
+        <div class="cat-name">Data Science &amp; AI</div>
+        <div class="cat-bottom">
+          <div class="cat-badge">71 MENTORS</div>
+          <div class="cat-icon-wrap">🤖</div>
+        </div>
+      </a>
+      <a href="#" class="cat-card">
+        <div class="cat-name">Content &amp; Writing</div>
+        <div class="cat-bottom">
+          <div class="cat-badge">37 MENTORS</div>
+          <div class="cat-icon-wrap">✍️</div>
+        </div>
+      </a>
+      <a href="#" class="cat-card">
+        <div class="cat-name">Marketing &amp; Growth</div>
+        <div class="cat-bottom">
+          <div class="cat-badge">48 MENTORS</div>
+          <div class="cat-icon-wrap">📣</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- TOP MENTORS -->
+<section style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="section-header">
+    <div class="section-header-left">
+      <div class="section-tag">Top Mentors</div>
+      <h2 class="section-title">Most booked this week</h2>
+    </div>
+    <a href="#" class="view-all">VIEW ALL</a>
+  </div>
+  <div class="mentors-grid">
+    <div class="mentor-card">
+      <button class="wishlist-btn" onclick="toggleWishlist(this)">♡</button>
+      <div class="mentor-card-top">
+        <div class="mentor-avatar">AK</div>
+        <div>
+          <div class="mentor-name">Arjun Kumar</div>
+          <div class="mentor-title">Senior SDE @ Google · 6 yrs</div>
+          <div class="mentor-tags"><span class="tag">DSA</span><span class="tag">System Design</span></div>
+        </div>
+      </div>
+      <div class="mentor-card-body">
+        <div class="mentor-rating"><span class="stars">★★★★★</span><span class="rating-num">4.9</span><span>(142)</span></div>
+        <div class="mentor-price-row">
+          <div class="mentor-price">₹999 <span>/ session</span></div>
+          <button class="btn-book" onclick="openModal()">Book</button>
+        </div>
+      </div>
+    </div>
+    <div class="mentor-card">
+      <button class="wishlist-btn" onclick="toggleWishlist(this)">♡</button>
+      <div class="mentor-card-top">
+        <div class="mentor-avatar" style="background:#7c3aed">PR</div>
+        <div>
+          <div class="mentor-name">Priya Rao</div>
+          <div class="mentor-title">Product Manager @ Swiggy · 5 yrs</div>
+          <div class="mentor-tags"><span class="tag">Product</span><span class="tag">Strategy</span></div>
+        </div>
+      </div>
+      <div class="mentor-card-body">
+        <div class="mentor-rating"><span class="stars">★★★★★</span><span class="rating-num">4.8</span><span>(98)</span></div>
+        <div class="mentor-price-row">
+          <div class="mentor-price">₹1,299 <span>/ session</span></div>
+          <button class="btn-book" onclick="openModal()">Book</button>
+        </div>
+      </div>
+    </div>
+    <div class="mentor-card">
+      <button class="wishlist-btn" onclick="toggleWishlist(this)">♡</button>
+      <div class="mentor-card-top">
+        <div class="mentor-avatar" style="background:#059669">SK</div>
+        <div>
+          <div class="mentor-name">Sahil Khan</div>
+          <div class="mentor-title">Founder @ YC Startup · IIT Bombay</div>
+          <div class="mentor-tags"><span class="tag">Startups</span><span class="tag">Funding</span></div>
+        </div>
+      </div>
+      <div class="mentor-card-body">
+        <div class="mentor-rating"><span class="stars">★★★★★</span><span class="rating-num">5.0</span><span>(67)</span></div>
+        <div class="mentor-price-row">
+          <div class="mentor-price">₹1,999 <span>/ session</span></div>
+          <button class="btn-book" onclick="openModal()">Book</button>
+        </div>
+      </div>
+    </div>
+    <div class="mentor-card">
+      <button class="wishlist-btn" onclick="toggleWishlist(this)">♡</button>
+      <div class="mentor-card-top">
+        <div class="mentor-avatar" style="background:#db2777">NM</div>
+        <div>
+          <div class="mentor-name">Neha Mehra</div>
+          <div class="mentor-title">IAS Officer · UPSC AIR 34</div>
+          <div class="mentor-tags"><span class="tag">UPSC</span><span class="tag">Essay</span></div>
+        </div>
+      </div>
+      <div class="mentor-card-body">
+        <div class="mentor-rating"><span class="stars">★★★★★</span><span class="rating-num">4.9</span><span>(211)</span></div>
+        <div class="mentor-price-row">
+          <div class="mentor-price">₹799 <span>/ session</span></div>
+          <button class="btn-book" onclick="openModal()">Book</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <div class="section-header">
+    <div class="section-header-left">
+      <div class="section-tag">Simple Process</div>
+      <h2 class="section-title">How Sillifur works</h2>
+    </div>
+  </div>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <span class="step-icon">🔍</span>
+      <div class="step-title">Find your mentor</div>
+      <div class="step-desc">Browse by domain or describe your goal. Filter by price, rating, and availability.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <span class="step-icon">📅</span>
+      <div class="step-title">Pick a slot</div>
+      <div class="step-desc">Choose a 30 or 60 min session. Pick any date and time that works for you.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <span class="step-icon">💳</span>
+      <div class="step-title">Pay & confirm</div>
+      <div class="step-desc">Pay securely via UPI, card, or netbanking. Get a Google Meet link instantly.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">04</div>
+      <span class="step-icon">🚀</span>
+      <div class="step-title">Meet & grow</div>
+      <div class="step-desc">Join your session, get real guidance, and leave a review to help the community.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-banner">
+  <h2>Are you an expert? <em>Become a mentor.</em></h2>
+  <p>Share your knowledge, set your own price, and earn on your schedule.</p>
+  <div class="cta-btns">
+    <button class="btn-primary" onclick="openModal()">Apply as Mentor</button>
+    <button class="btn-ghost">Learn More</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#" class="logo">
+        <div class="logo-mark">S</div>
+        <div class="logo-text">silli<span>fur</span></div>
+      </a>
+      <p>India's mentor marketplace. Learn from people who've done it.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="#">Browse Mentors</a>
+      <a href="#">Become a Mentor</a>
+      <a href="#">How it Works</a>
+    </div>
+    <div class="footer-col">
+      <h4>Domains</h4>
+      <a href="#">Tech & Coding</a>
+      <a href="#">Career Growth</a>
+      <a href="#">Startup & Business</a>
+      <a href="#">UPSC & Exams</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About Us</a>
+      <a href="#">Blog</a>
+      <a href="#">Contact</a>
+      <a href="#">Open Source ↗</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Sillifur. All rights reserved.</span>
+    <div style="display:flex;gap:16px">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+    </div>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeOnOverlay(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-logo-wrap">
+      <div class="logo-mark">S</div>
+      <div class="logo-text">silli<span>fur</span></div>
+    </div>
+    <h3>Welcome back</h3>
+    <p>Sign in to book sessions, save mentors, and track your growth.</p>
+    <button class="google-btn" onclick="alert('Google Sign-In will be connected here.')">
+      <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+      Continue with Google
+    </button>
+    <div class="modal-divider">I am a</div>
+    <div class="role-row">
+      <button class="role-btn"><span class="role-icon">🎓</span>Mentee</button>
+      <button class="role-btn"><span class="role-icon">🏆</span>Mentor</button>
+    </div>
+    <p class="modal-terms">By signing in you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+  </div>
+</div>
+
+<script>
+  function openModal(){ document.getElementById('modal').classList.add('open'); }
+  function closeModal(){ document.getElementById('modal').classList.remove('open'); }
+  function closeOnOverlay(e){ if(e.target.id==='modal') closeModal(); }
+  function toggleWishlist(btn){
+    const saved = btn.classList.toggle('saved');
+    btn.textContent = saved ? '♥' : '♡';
+  }
+  document.querySelector('.nav-hamburger').addEventListener('click',function(){
+    const links = document.querySelector('.nav-links');
+    if(links.style.display==='flex'){
+      links.style.display='none';
+    } else {
+      links.style.cssText='display:flex;flex-direction:column;position:absolute;top:62px;left:0;right:0;background:var(--bg2);border-bottom:1px solid var(--border);padding:20px 5%;gap:16px;z-index:99';
+    }
+  });
+</script>
+</body>
+</html>
