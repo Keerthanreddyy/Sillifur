@@ -143,8 +143,57 @@
     /* New styles for the password input */
     .password-input { width: 100%; padding: 12px; border-radius: 9px; border: 1px solid var(--border2); background: var(--bg); color: var(--white); font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; margin-bottom: 12px; outline: none; }
     .password-input:focus { border-color: var(--blue); }
-    
-    @media(max-width:640px){ .nav-links{display:none;} }
+
+    /* ── Onboarding Modal ── */
+    .ob-modal { background:var(--card2);border:1px solid var(--border2);border-radius:20px;padding:0;max-width:480px;width:92%;position:relative;overflow:hidden; }
+    .ob-progress-bar { height:3px;background:var(--border);position:relative; }
+    .ob-progress-fill { height:100%;background:var(--blue);border-radius:3px;transition:width .4s ease; }
+    .ob-body { padding:32px 28px 28px; }
+    .ob-step-label { font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);margin-bottom:6px; }
+    .ob-title { font-family:'Outfit',sans-serif;font-size:1.3rem;font-weight:700;color:var(--white);margin-bottom:4px;letter-spacing:-0.3px; }
+    .ob-subtitle { font-size:0.82rem;color:var(--muted);margin-bottom:22px; }
+
+    /* Option grids */
+    .ob-grid { display:grid;gap:9px; }
+    .ob-grid-2 { grid-template-columns:1fr 1fr; }
+    .ob-grid-3 { grid-template-columns:1fr 1fr 1fr; }
+    .ob-option { border:1px solid var(--border2);border-radius:10px;padding:12px 14px;cursor:pointer;transition:all .18s;text-align:left;background:var(--card);color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:0.83rem;font-weight:500;display:flex;align-items:center;gap:9px; }
+    .ob-option:hover { border-color:var(--blue);background:rgba(79,142,247,0.07); }
+    .ob-option.selected { border-color:var(--blue);background:rgba(79,142,247,0.12);color:var(--white); }
+    .ob-option .ob-icon { font-size:1.1rem;flex-shrink:0; }
+    .ob-option-label { font-weight:600; }
+    .ob-option-sub { font-size:0.72rem;color:var(--muted);margin-top:1px; }
+
+    /* Exam chips for step 3 (multi-select) */
+    .ob-chips { display:flex;flex-wrap:wrap;gap:8px; }
+    .ob-chip { border:1px solid var(--border2);border-radius:30px;padding:7px 14px;cursor:pointer;transition:all .18s;background:var(--card);color:var(--muted2);font-family:'Space Grotesk',sans-serif;font-size:0.78rem;font-weight:600; }
+    .ob-chip:hover { border-color:var(--blue);color:var(--white); }
+    .ob-chip.selected { border-color:var(--blue);background:rgba(79,142,247,0.15);color:var(--blue); }
+
+    /* Guidance cards (step 4) */
+    .ob-guidance-grid { display:grid;grid-template-columns:1fr 1fr;gap:9px; }
+    .ob-guidance-card { border:1px solid var(--border2);border-radius:12px;padding:16px 13px;cursor:pointer;transition:all .18s;background:var(--card);text-align:left; }
+    .ob-guidance-card:hover { border-color:var(--blue);background:rgba(79,142,247,0.07); }
+    .ob-guidance-card.selected { border-color:var(--blue);background:rgba(79,142,247,0.12); }
+    .ob-guidance-card .gc-icon { font-size:1.4rem;margin-bottom:8px;display:block; }
+    .ob-guidance-card .gc-title { font-weight:700;font-size:0.83rem;color:var(--white); }
+    .ob-guidance-card .gc-desc { font-size:0.72rem;color:var(--muted);margin-top:3px;line-height:1.4; }
+
+    .ob-footer { display:flex;align-items:center;justify-content:space-between;margin-top:22px; }
+    .ob-back { background:transparent;border:1px solid var(--border2);color:var(--muted2);padding:10px 18px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:0.83rem;font-weight:600;cursor:pointer;transition:all .18s; }
+    .ob-back:hover { border-color:var(--white);color:var(--white); }
+    .ob-next { background:var(--blue);color:white;border:none;padding:10px 24px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:0.83rem;font-weight:600;cursor:pointer;transition:background .18s;display:flex;align-items:center;gap:7px; }
+    .ob-next:hover { background:var(--blue2); }
+    .ob-next:disabled { background:var(--bg3);color:var(--muted);cursor:not-allowed; }
+    .ob-saving { display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--muted); }
+    .ob-spinner { width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    /* step transitions */
+    .ob-step-pane { animation:obFadeIn .25s ease; }
+    @keyframes obFadeIn { from { opacity:0;transform:translateX(10px); } to { opacity:1;transform:translateX(0); } }
+
+    @media(max-width:640px){ .nav-links{display:none;} .ob-guidance-grid{grid-template-columns:1fr;} .ob-grid-3{grid-template-columns:1fr 1fr;} }
   </style>
 </head>
 <body>
@@ -320,7 +369,162 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════
+     ONBOARDING MODAL  — fires once for new mentees
+     ═══════════════════════════════════════════════ -->
+<div class="modal-overlay" id="onboardingModal">
+  <div class="ob-modal">
+
+    <!-- Progress bar -->
+    <div class="ob-progress-bar">
+      <div class="ob-progress-fill" id="obProgressFill" style="width:25%"></div>
+    </div>
+
+    <div class="ob-body">
+
+      <!-- ── STEP 1 : Class / Level ── -->
+      <div class="ob-step-pane" id="obStep1">
+        <div class="ob-step-label">Step 1 of 4</div>
+        <div class="ob-title">What's your current level? 📚</div>
+        <div class="ob-subtitle">We'll personalise mentor recommendations for you.</div>
+        <div class="ob-grid ob-grid-2" id="classOptions">
+          <button class="ob-option" data-val="class8-10" onclick="selectOpt(this,'classOptions')">
+            <span class="ob-icon">🏫</span><div><div class="ob-option-label">Class 8 – 10</div><div class="ob-option-sub">Secondary school</div></div>
+          </button>
+          <button class="ob-option" data-val="class11" onclick="selectOpt(this,'classOptions')">
+            <span class="ob-icon">📗</span><div><div class="ob-option-label">Class 11</div><div class="ob-option-sub">Higher secondary – Yr 1</div></div>
+          </button>
+          <button class="ob-option" data-val="class12" onclick="selectOpt(this,'classOptions')">
+            <span class="ob-icon">📘</span><div><div class="ob-option-label">Class 12</div><div class="ob-option-sub">Board + entrance prep</div></div>
+          </button>
+          <button class="ob-option" data-val="dropper" onclick="selectOpt(this,'classOptions')">
+            <span class="ob-icon">🔁</span><div><div class="ob-option-label">Dropper / Repeater</div><div class="ob-option-sub">Taking a gap year</div></div>
+          </button>
+          <button class="ob-option" data-val="ug" onclick="selectOpt(this,'classOptions')">
+            <span class="ob-icon">🎓</span><div><div class="ob-option-label">Undergraduate</div><div class="ob-option-sub">B.Tech / MBBS / BA…</div></div>
+          </button>
+          <button class="ob-option" data-val="working" onclick="selectOpt(this,'classOptions')">
+            <span class="ob-icon">💼</span><div><div class="ob-option-label">Working Professional</div><div class="ob-option-sub">Prepping alongside job</div></div>
+          </button>
+        </div>
+        <div class="ob-footer">
+          <span></span>
+          <button class="ob-next" id="step1Next" onclick="goToStep(2)" disabled>Next →</button>
+        </div>
+      </div>
+
+      <!-- ── STEP 2 : Stream ── -->
+      <div class="ob-step-pane" id="obStep2" style="display:none">
+        <div class="ob-step-label">Step 2 of 4</div>
+        <div class="ob-title">Which stream / field? 🧪</div>
+        <div class="ob-subtitle">Helps us match you with the right subject experts.</div>
+        <div class="ob-grid ob-grid-3" id="streamOptions">
+          <button class="ob-option" data-val="science-pcm" onclick="selectOpt(this,'streamOptions')"><span class="ob-icon">⚗️</span><div><div class="ob-option-label">Science – PCM</div></div></button>
+          <button class="ob-option" data-val="science-pcb" onclick="selectOpt(this,'streamOptions')"><span class="ob-icon">🧬</span><div><div class="ob-option-label">Science – PCB</div></div></button>
+          <button class="ob-option" data-val="commerce" onclick="selectOpt(this,'streamOptions')"><span class="ob-icon">📊</span><div><div class="ob-option-label">Commerce</div></div></button>
+          <button class="ob-option" data-val="arts-hum" onclick="selectOpt(this,'streamOptions')"><span class="ob-icon">🏛️</span><div><div class="ob-option-label">Arts / Humanities</div></div></button>
+          <button class="ob-option" data-val="engineering" onclick="selectOpt(this,'streamOptions')"><span class="ob-icon">⚙️</span><div><div class="ob-option-label">Engineering / CS</div></div></button>
+          <button class="ob-option" data-val="medical" onclick="selectOpt(this,'streamOptions')"><span class="ob-icon">🩺</span><div><div class="ob-option-label">Medical / Allied</div></div></button>
+          <button class="ob-option" data-val="law" onclick="selectOpt(this,'streamOptions')"><span class="ob-icon">⚖️</span><div><div class="ob-option-label">Law</div></div></button>
+          <button class="ob-option" data-val="management" onclick="selectOpt(this,'streamOptions')"><span class="ob-icon">📈</span><div><div class="ob-option-label">Management / MBA</div></div></button>
+          <button class="ob-option" data-val="civil-services" onclick="selectOpt(this,'streamOptions')"><span class="ob-icon">🏛</span><div><div class="ob-option-label">Civil Services</div></div></button>
+        </div>
+        <div class="ob-footer">
+          <button class="ob-back" onclick="goToStep(1)">← Back</button>
+          <button class="ob-next" id="step2Next" onclick="goToStep(3)" disabled>Next →</button>
+        </div>
+      </div>
+
+      <!-- ── STEP 3 : Target Exam (multi-select) ── -->
+      <div class="ob-step-pane" id="obStep3" style="display:none">
+        <div class="ob-step-label">Step 3 of 4</div>
+        <div class="ob-title">Which exams are you targeting? 🎯</div>
+        <div class="ob-subtitle">Select all that apply — you can change this later.</div>
+        <div class="ob-chips" id="examChips">
+          <button class="ob-chip" data-val="UPSC CSE" onclick="toggleChip(this)">UPSC CSE</button>
+          <button class="ob-chip" data-val="JEE Mains" onclick="toggleChip(this)">JEE Mains</button>
+          <button class="ob-chip" data-val="JEE Advanced" onclick="toggleChip(this)">JEE Advanced</button>
+          <button class="ob-chip" data-val="NEET UG" onclick="toggleChip(this)">NEET UG</button>
+          <button class="ob-chip" data-val="CAT" onclick="toggleChip(this)">CAT</button>
+          <button class="ob-chip" data-val="GATE" onclick="toggleChip(this)">GATE</button>
+          <button class="ob-chip" data-val="CLAT" onclick="toggleChip(this)">CLAT / AILET</button>
+          <button class="ob-chip" data-val="IBPS" onclick="toggleChip(this)">IBPS / Bank PO</button>
+          <button class="ob-chip" data-val="SSC CGL" onclick="toggleChip(this)">SSC CGL</button>
+          <button class="ob-chip" data-val="SSC CHSL" onclick="toggleChip(this)">SSC CHSL</button>
+          <button class="ob-chip" data-val="CUET UG" onclick="toggleChip(this)">CUET UG</button>
+          <button class="ob-chip" data-val="CUET PG" onclick="toggleChip(this)">CUET PG</button>
+          <button class="ob-chip" data-val="NDA" onclick="toggleChip(this)">NDA / CDS</button>
+          <button class="ob-chip" data-val="NIFT" onclick="toggleChip(this)">NIFT / NID</button>
+          <button class="ob-chip" data-val="CA Foundation" onclick="toggleChip(this)">CA Foundation</button>
+          <button class="ob-chip" data-val="GRE" onclick="toggleChip(this)">GRE</button>
+          <button class="ob-chip" data-val="GMAT" onclick="toggleChip(this)">GMAT</button>
+          <button class="ob-chip" data-val="JEST JAM" onclick="toggleChip(this)">JEST / JAM</button>
+        </div>
+        <div class="ob-footer">
+          <button class="ob-back" onclick="goToStep(2)">← Back</button>
+          <button class="ob-next" id="step3Next" onclick="goToStep(4)" disabled>Next →</button>
+        </div>
+      </div>
+
+      <!-- ── STEP 4 : Guidance Type (multi-select cards) ── -->
+      <div class="ob-step-pane" id="obStep4" style="display:none">
+        <div class="ob-step-label">Step 4 of 4</div>
+        <div class="ob-title">What kind of help do you need? 🤝</div>
+        <div class="ob-subtitle">Pick everything that resonates — no wrong answers.</div>
+        <div class="ob-guidance-grid" id="guidanceCards">
+          <button class="ob-guidance-card" data-val="strategy" onclick="toggleGuidance(this)">
+            <span class="gc-icon">🗺️</span>
+            <div class="gc-title">Exam Strategy</div>
+            <div class="gc-desc">Roadmap, timeline & topper approach</div>
+          </button>
+          <button class="ob-guidance-card" data-val="subject" onclick="toggleGuidance(this)">
+            <span class="gc-icon">📖</span>
+            <div class="gc-title">Subject Clarity</div>
+            <div class="gc-desc">Concepts, doubts & topic deep-dives</div>
+          </button>
+          <button class="ob-guidance-card" data-val="mocks" onclick="toggleGuidance(this)">
+            <span class="gc-icon">📝</span>
+            <div class="gc-title">Mock & Answer Review</div>
+            <div class="gc-desc">Test evaluation & score improvement</div>
+          </button>
+          <button class="ob-guidance-card" data-val="studyplan" onclick="toggleGuidance(this)">
+            <span class="gc-icon">📅</span>
+            <div class="gc-title">Study Plan</div>
+            <div class="gc-desc">Daily/weekly schedule & resources</div>
+          </button>
+          <button class="ob-guidance-card" data-val="motivation" onclick="toggleGuidance(this)">
+            <span class="gc-icon">💬</span>
+            <div class="gc-title">Motivation & Mindset</div>
+            <div class="gc-desc">Beat burnout, stay consistent</div>
+          </button>
+          <button class="ob-guidance-card" data-val="interview" onclick="toggleGuidance(this)">
+            <span class="gc-icon">🎤</span>
+            <div class="gc-title">Interview / Personality</div>
+            <div class="gc-desc">PI, GD & personality test prep</div>
+          </button>
+        </div>
+        <div class="ob-footer">
+          <button class="ob-back" onclick="goToStep(3)">← Back</button>
+          <button class="ob-next" id="step4Submit" onclick="submitOnboarding()" disabled>
+            Finish Setup 🎉
+          </button>
+        </div>
+      </div>
+
+      <!-- ── SAVING state ── -->
+      <div class="ob-step-pane" id="obSaving" style="display:none;text-align:center;padding:20px 0 8px;">
+        <div style="font-size:2.5rem;margin-bottom:14px">🚀</div>
+        <div class="ob-title" style="text-align:center">Setting up your profile…</div>
+        <div class="ob-subtitle" style="text-align:center">Just a moment!</div>
+        <div style="display:flex;justify-content:center;margin-top:16px"><div class="ob-spinner" style="width:24px;height:24px"></div></div>
+      </div>
+
+    </div><!-- /.ob-body -->
+  </div><!-- /.ob-modal -->
+</div>
+
 <script>
+  /* ── Sign-in / Profile modal helpers ── */
   function openModal(){ document.getElementById('modal').classList.add('open'); }
   function closeModal(){ document.getElementById('modal').classList.remove('open'); }
   function closeOnOverlay(e){ if(e.target.id==='modal') closeModal(); }
@@ -328,24 +532,93 @@
     const saved = btn.classList.toggle('saved');
     btn.textContent = saved ? '♥' : '♡';
   }
-
-  // Logic for the new Profile Modal
   function openProfileModal(){ document.getElementById('profileModal').classList.add('open'); }
   function closeProfileModal(){ 
     document.getElementById('profileModal').classList.remove('open'); 
-    document.getElementById('password-message').innerText = ""; // clear message on close
+    document.getElementById('password-message').innerText = '';
   }
   function closeProfileOverlay(e){ if(e.target.id==='profileModal') closeProfileModal(); }
+
+  /* ══════════════════════════════════════════════════
+     ONBOARDING STATE MACHINE
+     ══════════════════════════════════════════════════ */
+  const OB = window.OB = {
+    classLevel:  null,   // step 1
+    stream:      null,   // step 2
+    exams:       [],     // step 3 (multi)
+    guidance:    [],     // step 4 (multi)
+  };
+
+  /* progress fill map: step → % */
+  const OB_PROGRESS = { 1:25, 2:50, 3:75, 4:100 };
+
+  function openOnboarding(){
+    document.getElementById('onboardingModal').classList.add('open');
+    goToStep(1, true); // reset to step 1 without animation
+  }
+
+  function goToStep(n, silent){
+    // hide all panes
+    [1,2,3,4,'Saving'].forEach(s => {
+      const el = document.getElementById('obStep'+ s);
+      if(el) el.style.display = 'none';
+    });
+    document.getElementById('obSaving').style.display = 'none';
+
+    const pane = document.getElementById('obStep'+n);
+    if(!pane) return;
+    pane.style.display = '';
+    if(!silent) pane.classList.remove('ob-step-pane'); void pane.offsetWidth; pane.classList.add('ob-step-pane');
+
+    // Update progress bar
+    document.getElementById('obProgressFill').style.width = OB_PROGRESS[n] + '%';
+
+    // Sync Next button states
+    if(n===1) syncStep1();
+    if(n===2) syncStep2();
+    if(n===3) syncStep3();
+    if(n===4) syncStep4();
+  }
+
+  /* ── single-select helper ── */
+  function selectOpt(btn, groupId){
+    document.querySelectorAll('#'+groupId+' .ob-option').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    // store value
+    if(groupId === 'classOptions') { OB.classLevel = btn.dataset.val; syncStep1(); }
+    if(groupId === 'streamOptions') { OB.stream = btn.dataset.val; syncStep2(); }
+  }
+
+  /* ── multi-select: exam chips ── */
+  function toggleChip(btn){
+    btn.classList.toggle('selected');
+    OB.exams = [...document.querySelectorAll('#examChips .ob-chip.selected')].map(b=>b.dataset.val);
+    syncStep3();
+  }
+
+  /* ── multi-select: guidance cards ── */
+  function toggleGuidance(btn){
+    btn.classList.toggle('selected');
+    OB.guidance = [...document.querySelectorAll('#guidanceCards .ob-guidance-card.selected')].map(b=>b.dataset.val);
+    syncStep4();
+  }
+
+  function syncStep1(){ document.getElementById('step1Next').disabled = !OB.classLevel; }
+  function syncStep2(){ document.getElementById('step2Next').disabled = !OB.stream; }
+  function syncStep3(){ document.getElementById('step3Next').disabled = OB.exams.length === 0; }
+  function syncStep4(){ document.getElementById('step4Submit').disabled = OB.guidance.length === 0; }
+
+  /* submitOnboarding is called from the module below via window.submitOnboarding */
+  /* defined inside the module so it can access `db` and `auth` */
 </script>
 
 <script type="module">
   import { initializeApp }       from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, EmailAuthProvider, linkWithCredential }
                                  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc }
+  import { getFirestore, doc, setDoc, getDoc, updateDoc }
                                  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  // ▼▼▼ PASTE YOUR FIREBASE CONFIG HERE ▼▼▼
   const firebaseConfig = {
     apiKey:            "AIzaSyDEWvEXCo_W5i7OZ1wT4QuPED3ur2q5N7c",
     authDomain:        "sillifur-341e9.firebaseapp.com",
@@ -354,100 +627,161 @@
     messagingSenderId: "848515376957",
     appId:             "1:848515376957:web:ac13cbb93fdcc9ba834754"
   };
-  // ▲▲▲ PASTE YOUR FIREBASE CONFIG HERE ▲▲▲
 
   const app      = initializeApp(firebaseConfig);
   const auth     = getAuth(app);
   const db       = getFirestore(app);
   const provider = new GoogleAuthProvider();
 
+  /* ── Sign in ── */
   async function signInWithGoogle(role) {
     try {
       const result = await signInWithPopup(auth, provider);
       const user   = result.user;
 
-      // Save new users to Firestore
       const userRef  = doc(db, "users", user.uid);
       const userSnap = await getDoc(userRef);
+      let isNewUser  = false;
+
       if (!userSnap.exists()) {
+        isNewUser = true;
         await setDoc(userRef, {
           uid:       user.uid,
           name:      user.displayName,
           email:     user.email,
           photo:     user.photoURL,
           role:      role,
+          onboardingDone: false,
           createdAt: new Date().toISOString()
         });
       }
 
       closeModal();
       updateNavbar(user);
+
+      // Show onboarding only for new mentees OR existing mentees who never finished it
+      if (role === 'mentee') {
+        const data = userSnap.exists() ? userSnap.data() : { onboardingDone: false };
+        if (isNewUser || !data.onboardingDone) {
+          setTimeout(() => openOnboarding(), 300);
+        }
+      }
+
     } catch (err) {
       console.error("Sign-in error:", err.message);
     }
   }
 
+  /* ── Onboarding submit (exposed to window so plain script can call it) ── */
+  window.submitOnboarding = async function() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    // Show saving state
+    ['obStep4'].forEach(id => document.getElementById(id).style.display = 'none');
+    document.getElementById('obSaving').style.display = '';
+
+    try {
+      const userRef = doc(db, "users", user.uid);
+      await updateDoc(userRef, {
+        onboardingDone: true,
+        profile: {
+          classLevel: window.OB.classLevel,
+          stream:     window.OB.stream,
+          exams:      window.OB.exams,
+          guidance:   window.OB.guidance,
+          updatedAt:  new Date().toISOString()
+        }
+      });
+
+      // Close and celebrate 🎉
+      setTimeout(() => {
+        document.getElementById('onboardingModal').classList.remove('open');
+        showWelcomeBanner(user.displayName.split(' ')[0]);
+      }, 900);
+
+    } catch(err) {
+      console.error("Onboarding save error:", err);
+      // Gracefully fall back to step 4
+      document.getElementById('obSaving').style.display = 'none';
+      document.getElementById('obStep4').style.display = '';
+    }
+  };
+
+  /* brief "all set!" toast */
+  function showWelcomeBanner(firstName) {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+      position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(60px);
+      background:#22d3a0;color:#0b0d11;padding:12px 24px;border-radius:10px;
+      font-family:'Space Grotesk',sans-serif;font-size:0.9rem;font-weight:700;
+      z-index:9999;box-shadow:0 8px 30px rgba(34,211,160,0.35);
+      transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+    `;
+    toast.textContent = `You're all set, ${firstName}! 🎉 Find your mentor below.`;
+    document.body.appendChild(toast);
+    requestAnimationFrame(() => { requestAnimationFrame(() => { toast.style.transform = 'translateX(-50%) translateY(0)'; }); });
+    setTimeout(() => {
+      toast.style.transform = 'translateX(-50%) translateY(60px)';
+      setTimeout(() => toast.remove(), 500);
+    }, 3500);
+  }
+
+  /* ── Navbar update ── */
   function updateNavbar(user) {
     const btn = document.getElementById('navSignInBtn');
     btn.innerHTML = `<img src="${user.photoURL}"
       style="width:26px;height:26px;border-radius:50%;">
       ${user.displayName.split(' ')[0]}`;
-      
-    // Clicking the avatar now opens the profile modal instead of logging out
     btn.onclick = () => {
       document.getElementById('profileEmail').innerText = user.email;
       openProfileModal();
     };
   }
 
-  // Stay logged in across page reloads
+  /* ── Persist login across reloads ── */
   onAuthStateChanged(auth, user => {
     if (user) updateNavbar(user);
   });
 
-  // Wire up Login modal buttons
+  /* ── Wire up main login buttons ── */
   document.getElementById('googleSignInBtn').onclick = () => signInWithGoogle('mentee');
   document.getElementById('menteeBtn').onclick        = () => signInWithGoogle('mentee');
   document.getElementById('mentorBtn').onclick        = () => signInWithGoogle('mentor');
 
-  // Wire up Log Out button in the Profile Modal
+  /* ── Log out ── */
   document.getElementById('logoutBtn').onclick = () => signOut(auth).then(() => location.reload());
 
-  // ============================================================
-  // SET PASSWORD LOGIC (Account Linking)
-  // ============================================================
+  /* ── Expose OB state to window so the plain <script>'s functions can write to it ── */
+  // (OB object is already on window since it's declared in the plain script)
+
+  /* ════════════════════════════════════════════════
+     SET PASSWORD LOGIC (Account Linking)
+     ════════════════════════════════════════════════ */
   document.getElementById("set-password-btn").addEventListener("click", async () => {
-    const newPassword = document.getElementById("new-password-input").value;
+    const newPassword    = document.getElementById("new-password-input").value;
     const messageElement = document.getElementById("password-message");
-    const user = auth.currentUser; 
-    
-    if (!user) return; // Failsafe
+    const user           = auth.currentUser;
+    if (!user) return;
 
     if (newPassword.length < 6) {
-      messageElement.style.color = "#f87171"; // Red text
-      messageElement.innerText = "Password must be at least 6 characters.";
+      messageElement.style.color = "#f87171";
+      messageElement.innerText   = "Password must be at least 6 characters.";
       return;
     }
 
     try {
-      // Create the Email/Password credential using their Google email
       const credential = EmailAuthProvider.credential(user.email, newPassword);
-
-      // Link it to the existing account
       await linkWithCredential(user, credential);
-      
-      messageElement.style.color = "#4ade80"; // Green text
-      messageElement.innerText = "Success! Password saved.";
-      document.getElementById("new-password-input").value = ""; // Clear the input
-
+      messageElement.style.color = "#4ade80";
+      messageElement.innerText   = "Success! Password saved.";
+      document.getElementById("new-password-input").value = "";
     } catch (error) {
-      console.error("Error linking password:", error);
-      messageElement.style.color = "#f87171"; // Red text
-      
+      messageElement.style.color = "#f87171";
       if (error.code === 'auth/credential-already-in-use') {
         messageElement.innerText = "An account with this email/password already exists.";
       } else if (error.code === 'auth/requires-recent-login') {
-         messageElement.innerText = "Please log out and log back in with Google before setting a password.";
+        messageElement.innerText = "Please log out and log back in before setting a password.";
       } else {
         messageElement.innerText = "Failed to set password: " + error.message;
       }
