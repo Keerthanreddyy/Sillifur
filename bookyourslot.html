@@ -765,13 +765,61 @@
       showPayment();
     });
 
-    payNowBtn.addEventListener("click", () => {
+   <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDEWvEXCo_W5i7OZ1wT4QuPED3ur2q5N7c",
+    authDomain: "sillifur-341e9.firebaseapp.com",
+    projectId: "sillifur-341e9",
+    storageBucket: "sillifur-341e9.appspot.com",
+    messagingSenderId: "848515376957",
+    appId: "1:848515376957:web:ac13cbb93fdcc9ba834754"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  async function saveBooking(booking) {
+    const docRef = await addDoc(collection(db, "bookings"), {
+      ...booking,
+      createdAt: serverTimestamp()
+    });
+    return docRef.id;
+  }
+
+  // Replace your existing payNowBtn listener with this:
+  payNowBtn.addEventListener("click", async () => {
+    try {
+      const total = selectedMentor.fee + 49;
+
+      const bookingId = await saveBooking({
+        date: selectedDate,
+        time: selectedSlot,
+        sessionMinutes: Number(sessionType.value),
+        mentorName: selectedMentor.name,
+        mentorTitle: selectedMentor.title,
+        sessionFee: selectedMentor.fee,
+        platformFee: 49,
+        totalAmount: total,
+        status: "pending_payment"
+      });
+
       paymentStatus.className = "status ok";
-      paymentStatus.textContent = "Redirecting to payment gateway... (connect your real payment link here)";
+      paymentStatus.textContent = `Booking saved: ${bookingId}. Redirecting...`;
+
       setTimeout(() => {
         window.location.href = "#payment-gateway";
       }, 900);
-    });
+    } catch (err) {
+      console.error(err);
+      paymentStatus.className = "status error";
+      paymentStatus.textContent = "Firebase save failed: " + err.message;
+    }
+  });
+</script>
+   
 
     resetBtn.addEventListener("click", () => {
       const firstBtn = dateGrid.querySelector(".date-btn");
