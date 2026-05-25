@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Your Slot | Sillifur</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0b0d11;
+      --bg2: #12151c;
+      --card: #181c27;
+      --card2: #1f2335;
+      --blue: #4f8ef7;
+      --blue2: #3a76e8;
+      --green: #22d3a0;
+      --white: #ffffff;
+      --text: #e8eaf0;
+      --muted: #6b7280;
+      --muted2: #9ca3af;
+      --border: rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.12);
+      --radius: 14px;
+      --danger: #f87171;
+    }
+
+    body {
+      font-family: "Space Grotesk", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    nav {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      text-decoration: none;
+    }
+
+    .logo-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Outfit", sans-serif;
+      font-weight: 800;
+      color: var(--white);
+      background: var(--blue);
+    }
+
+    .logo-text {
+      font-family: "Outfit", sans-serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--white);
+    }
+
+    .logo-text span {
+      color: var(--blue);
+    }
+
+    .page {
+      width: min(960px, 92%);
+      margin: 34px auto 60px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -26px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 620px;
+      height: 260px;
+      background: radial-gradient(ellipse, rgba(79,142,247,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(79,142,247,0.1);
+      border: 1px solid rgba(79,142,247,0.25);
+      color: var(--blue);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-family: "Outfit", sans-serif;
+      font-size: clamp(1.8rem, 4.8vw, 2.8rem);
+      letter-spacing: -0.8px;
+      margin-bottom: 8px;
+      color: var(--white);
+    }
+
+    .hero p {
+      color: var(--muted2);
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 22px;
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      font-family: "Outfit", sans-serif;
+      font-size: 1.25rem;
+      margin-bottom: 14px;
+      color: var(--white);
+      letter-spacing: -0.3px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field label {
+      color: var(--muted2);
+      font-size: 0.86rem;
+      font-weight: 500;
+    }
+
+    .input, select {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid var(--border2);
+      background: var(--bg2);
+      color: var(--text);
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 0.95rem;
+      padding: 12px 12px;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .input:focus, select:focus {
+      border-color: var(--blue);
+    }
+
+    .date-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .date-btn {
+      border: 1px solid var(--border2);
+      background: var(--bg2);
+      color: var(--muted2);
+      border-radius: 12px;
+      padding: 10px 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .date-btn:hover {
+      border-color: var(--blue);
+      color: var(--text);
+    }
+
+    .date-btn.selected {
+      border-color: rgba(79,142,247,0.55);
+      background: rgba(79,142,247,0.18);
+      color: var(--white);
+    }
+
+    .date-day {
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.9;
+    }
+
+    .date-num {
+      display: block;
+      font-size: 1.18rem;
+      line-height: 1.15;
+      font-weight: 700;
+      margin-top: 2px;
+      color: var(--white);
+    }
+
+    .date-mon {
+      font-size: 0.78rem;
+      opacity: 0.95;
+    }
+
+    .slot-grid {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px;
+    }
+
+    .slot-btn {
+      border: 1px solid var(--border2);
+      background: var(--bg2);
+      color: var(--muted2);
+      border-radius: 10px;
+      padding: 10px 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .slot-btn:hover {
+      border-color: var(--blue);
+      color: var(--text);
+    }
+
+    .slot-btn.selected {
+      border-color: rgba(79,142,247,0.45);
+      color: var(--white);
+      background: rgba(79,142,247,0.18);
+    }
+
+    .actions {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 11px 16px;
+      font-family: "Space Grotesk", sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background: var(--blue2);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border2);
+      color: var(--muted2);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--white);
+      color: var(--white);
+    }
+
+    .summary {
+      border: 1px dashed var(--border2);
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 14px;
+      font-size: 0.88rem;
+      color: var(--muted2);
+    }
+
+    .summary strong {
+      color: var(--text);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .mentor-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 12px;
+    }
+
+    .mentor-card {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .mentor-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-2px);
+    }
+
+    .mentor-card.selected {
+      border-color: rgba(79,142,247,0.55);
+      background: rgba(79,142,247,0.1);
+    }
+
+    .mentor-name {
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .mentor-title {
+      font-size: 0.83rem;
+      color: var(--muted2);
+    }
+
+    .mentor-price {
+      font-size: 0.9rem;
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .payment-box {
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      background: var(--bg2);
+      padding: 14px;
+      margin-top: 10px;
+    }
+
+    .payment-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 6px 0;
+      font-size: 0.9rem;
+      color: var(--muted2);
+    }
+
+    .payment-total {
+      font-weight: 700;
+      color: var(--white);
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+      margin-top: 10px;
+    }
+
+    .status {
+      margin-top: 14px;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .status.ok {
+      color: var(--green);
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 99;
+      padding: 16px;
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: min(520px, 100%);
+      background: var(--card2);
+      border: 1px solid var(--border2);
+      border-radius: 14px;
+      padding: 22px;
+    }
+
+    .modal-card h3 {
+      font-family: "Outfit", sans-serif;
+      font-size: 1.25rem;
+      margin-bottom: 8px;
+      color: var(--white);
+    }
+
+    .modal-card p {
+      color: var(--muted2);
+      font-size: 0.92rem;
+    }
+
+    .modal-summary {
+      margin-top: 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      background: rgba(255,255,255,0.02);
+      color: var(--muted2);
+      font-size: 0.88rem;
+    }
+
+    @media (max-width: 720px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a class="logo" href="#">
+      <div class="logo-mark">S</div>
+      <div class="logo-text">silli<span>fur</span></div>
+    </a>
+  </nav>
+
+  <div class="page">
+    <section class="hero">
+      <div class="hero-badge">Book Session</div>
+      <h1>Book Your Slot</h1>
+      <p>Select your date and time, confirm provisional booking, pick your mentor, and move to payment.</p>
+    </section>
+
+    <section class="card" id="slotCard">
+      <h2>1. Select Date and Time Slot</h2>
+      <div class="grid">
+        <div class="field">
+          <label>Select Date (Next 7 Days)</label>
+          <div class="date-grid" id="dateGrid"></div>
+        </div>
+        <div class="field">
+          <label for="sessionType">Session Type</label>
+          <select id="sessionType">
+            <option value="">Choose session length</option>
+            <option value="30">30 minutes (Quick Strategy Call)</option>
+            <option value="60">60 minutes (Deep Mentoring Session)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:12px;">
+        <label>Available Time Slots</label>
+        <div class="slot-grid" id="slotGrid"></div>
+      </div>
+
+      <div class="summary" id="bookingSummary">
+        <strong>Current selection:</strong> No date and time selected yet.
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="provisionalBtn">Provisional Booking</button>
+        <button class="btn btn-ghost" id="resetBtn">Reset</button>
+      </div>
+      <div class="status" id="slotStatus"></div>
+    </section>
+
+    <section class="card hidden" id="mentorCard">
+      <h2>2. Select Available Mentor</h2>
+      <p style="color:var(--muted2);font-size:0.9rem;margin-bottom:12px;">
+        These mentors are available for your selected slot. Choose one to continue.
+      </p>
+      <div class="mentor-list" id="mentorList"></div>
+      <div class="actions">
+        <button class="btn btn-primary" id="toPaymentBtn">Continue to Payment</button>
+      </div>
+      <div class="status" id="mentorStatus"></div>
+    </section>
+
+    <section class="card hidden" id="paymentCard">
+      <h2>3. Payment</h2>
+      <p style="color:var(--muted2);font-size:0.9rem;">Review and pay to confirm your slot.</p>
+      <div class="payment-box">
+        <div class="payment-row"><span>Mentor</span><strong id="payMentor">-</strong></div>
+        <div class="payment-row"><span>Date</span><strong id="payDate">-</strong></div>
+        <div class="payment-row"><span>Time</span><strong id="payTime">-</strong></div>
+        <div class="payment-row"><span>Session</span><strong id="payType">-</strong></div>
+        <div class="payment-row"><span>Session Fee</span><strong id="payFee">-</strong></div>
+        <div class="payment-row"><span>Platform Fee</span><strong>INR 49</strong></div>
+        <div class="payment-row payment-total"><span>Total</span><strong id="payTotal">-</strong></div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary" id="payNowBtn">Pay Now</button>
+      </div>
+      <div class="status" id="paymentStatus"></div>
+    </section>
+  </div>
+
+  <div class="modal" id="provisionalModal">
+    <div class="modal-card">
+      <h3>Provisional Booking Confirmed</h3>
+      <p>Your slot is temporarily reserved for 10 minutes. Please select a mentor to proceed to payment.</p>
+      <div class="modal-summary" id="modalSummary"></div>
+      <div class="actions" style="margin-top:14px;">
+        <button class="btn btn-primary" id="closeModalBtn">Choose Mentor</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const slotOptions = [
+      "07:00 AM", "08:00 AM", "09:00 AM", "10:00 AM",
+      "11:00 AM", "12:00 PM", "02:00 PM", "03:00 PM",
+      "04:00 PM", "05:00 PM", "06:00 PM", "08:00 PM"
+    ];
+
+    const mentorPool = [
+      { name: "Neha Mehra", title: "IAS Officer · UPSC AIR 34", fee30: 799, fee60: 1399 },
+      { name: "Rohit Kumar", title: "IIT Delhi · JEE Advanced AIR 42", fee30: 899, fee60: 1499 },
+      { name: "Ananya Sharma", title: "AIIMS Delhi · NEET AIR 19", fee30: 999, fee60: 1699 },
+      { name: "Vikram Tiwari", title: "IIM Ahmedabad · CAT 99.8%ile", fee30: 1099, fee60: 1799 },
+      { name: "Shreya Nair", title: "NLSIU Bengaluru · CLAT Topper", fee30: 749, fee60: 1299 }
+    ];
+
+    const dateGrid = document.getElementById("dateGrid");
+    const sessionType = document.getElementById("sessionType");
+    const slotGrid = document.getElementById("slotGrid");
+    const bookingSummary = document.getElementById("bookingSummary");
+    const provisionalBtn = document.getElementById("provisionalBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const slotStatus = document.getElementById("slotStatus");
+    const mentorCard = document.getElementById("mentorCard");
+    const mentorList = document.getElementById("mentorList");
+    const mentorStatus = document.getElementById("mentorStatus");
+    const toPaymentBtn = document.getElementById("toPaymentBtn");
+    const paymentCard = document.getElementById("paymentCard");
+    const paymentStatus = document.getElementById("paymentStatus");
+    const payNowBtn = document.getElementById("payNowBtn");
+    const provisionalModal = document.getElementById("provisionalModal");
+    const modalSummary = document.getElementById("modalSummary");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+
+    let selectedDate = "";
+    let selectedSlot = "";
+    let selectedMentor = null;
+
+    function formatDate(value) {
+      const date = new Date(value + "T00:00:00");
+      return date.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+    }
+
+    function toIsoDate(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const d = String(dateObj.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function renderDateBoxes() {
+      dateGrid.innerHTML = "";
+
+      const now = new Date();
+      const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const end = new Date(start);
+      end.setDate(end.getDate() + 6);
+
+      const cursor = new Date(start);
+      let firstDateIso = "";
+
+      while (cursor <= end) {
+        const iso = toIsoDate(cursor);
+        if (!firstDateIso) firstDateIso = iso;
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "date-btn";
+        btn.dataset.value = iso;
+
+        const day = cursor.toLocaleDateString("en-US", { weekday: "short" });
+        const num = cursor.getDate();
+        const mon = cursor.toLocaleDateString("en-US", { month: "short" });
+
+        btn.innerHTML = `
+          <span class="date-day">${day}</span>
+          <span class="date-num">${num}</span>
+          <span class="date-mon">${mon}</span>
+        `;
+
+        btn.addEventListener("click", () => {
+          selectedDate = iso;
+          document.querySelectorAll(".date-btn").forEach(d => d.classList.remove("selected"));
+          btn.classList.add("selected");
+          updateSummary();
+        });
+
+        dateGrid.appendChild(btn);
+        cursor.setDate(cursor.getDate() + 1);
+      }
+
+      if (firstDateIso) {
+        selectedDate = firstDateIso;
+        const firstBtn = dateGrid.querySelector(".date-btn");
+        if (firstBtn) firstBtn.classList.add("selected");
+      }
+    }
+
+    function renderSlots() {
+      slotGrid.innerHTML = "";
+      slotOptions.forEach(slot => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "slot-btn";
+        btn.textContent = slot;
+        btn.addEventListener("click", () => {
+          selectedSlot = slot;
+          document.querySelectorAll(".slot-btn").forEach(b => b.classList.remove("selected"));
+          btn.classList.add("selected");
+          updateSummary();
+        });
+        slotGrid.appendChild(btn);
+      });
+    }
+
+    function updateSummary() {
+      const date = selectedDate ? formatDate(selectedDate) : "Not selected";
+      const typeText = sessionType.value ? `${sessionType.value} mins` : "Not selected";
+      const slot = selectedSlot || "Not selected";
+      bookingSummary.innerHTML = `<strong>Current selection:</strong> ${date} · ${slot} · ${typeText}`;
+    }
+
+    function pickAvailableMentors() {
+      const shuffled = [...mentorPool].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, 4);
+    }
+
+    function renderMentors(list) {
+      mentorList.innerHTML = "";
+      selectedMentor = null;
+      list.forEach(mentor => {
+        const card = document.createElement("div");
+        card.className = "mentor-card";
+        const fee = sessionType.value === "60" ? mentor.fee60 : mentor.fee30;
+        card.innerHTML = `
+          <div class="mentor-name">${mentor.name}</div>
+          <div class="mentor-title">${mentor.title}</div>
+          <div class="mentor-price">INR ${fee} / session</div>
+        `;
+        card.addEventListener("click", () => {
+          document.querySelectorAll(".mentor-card").forEach(el => el.classList.remove("selected"));
+          card.classList.add("selected");
+          selectedMentor = { ...mentor, fee };
+          mentorStatus.className = "status ok";
+          mentorStatus.textContent = `${mentor.name} selected. You can continue to payment.`;
+        });
+        mentorList.appendChild(card);
+      });
+    }
+
+    function validateStepOne() {
+      if (!selectedDate) {
+        slotStatus.className = "status error";
+        slotStatus.textContent = "Please choose a date.";
+        return false;
+      }
+      if (!sessionType.value) {
+        slotStatus.className = "status error";
+        slotStatus.textContent = "Please choose session type.";
+        return false;
+      }
+      if (!selectedSlot) {
+        slotStatus.className = "status error";
+        slotStatus.textContent = "Please choose a time slot.";
+        return false;
+      }
+      slotStatus.className = "status ok";
+      slotStatus.textContent = "Slot details look good.";
+      return true;
+    }
+
+    function openProvisionalModal() {
+      modalSummary.innerHTML = `
+        <strong>Date:</strong> ${formatDate(selectedDate)}<br>
+        <strong>Time:</strong> ${selectedSlot}<br>
+        <strong>Session:</strong> ${sessionType.value} minutes
+      `;
+      provisionalModal.classList.add("open");
+    }
+
+    function closeProvisionalModal() {
+      provisionalModal.classList.remove("open");
+    }
+
+    function showPayment() {
+      const fee = selectedMentor.fee;
+      const total = fee + 49;
+      document.getElementById("payMentor").textContent = selectedMentor.name;
+      document.getElementById("payDate").textContent = formatDate(selectedDate);
+      document.getElementById("payTime").textContent = selectedSlot;
+      document.getElementById("payType").textContent = `${sessionType.value} minutes`;
+      document.getElementById("payFee").textContent = `INR ${fee}`;
+      document.getElementById("payTotal").textContent = `INR ${total}`;
+      paymentCard.classList.remove("hidden");
+      paymentCard.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    provisionalBtn.addEventListener("click", () => {
+      if (!validateStepOne()) return;
+      renderMentors(pickAvailableMentors());
+      openProvisionalModal();
+      mentorCard.classList.remove("hidden");
+      mentorStatus.className = "status";
+      mentorStatus.textContent = "";
+    });
+
+    closeModalBtn.addEventListener("click", () => {
+      closeProvisionalModal();
+      mentorCard.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    toPaymentBtn.addEventListener("click", () => {
+      if (!selectedMentor) {
+        mentorStatus.className = "status error";
+        mentorStatus.textContent = "Please select a mentor to continue.";
+        return;
+      }
+      showPayment();
+    });
+
+    payNowBtn.addEventListener("click", () => {
+      paymentStatus.className = "status ok";
+      paymentStatus.textContent = "Redirecting to payment gateway... (connect your real payment link here)";
+      setTimeout(() => {
+        window.location.href = "#payment-gateway";
+      }, 900);
+    });
+
+    resetBtn.addEventListener("click", () => {
+      const firstBtn = dateGrid.querySelector(".date-btn");
+      selectedDate = firstBtn ? firstBtn.dataset.value : "";
+      sessionType.value = "";
+      selectedSlot = "";
+      selectedMentor = null;
+      document.querySelectorAll(".date-btn").forEach(b => b.classList.remove("selected"));
+      if (firstBtn) firstBtn.classList.add("selected");
+      updateSummary();
+      slotStatus.textContent = "";
+      mentorStatus.textContent = "";
+      paymentStatus.textContent = "";
+      mentorCard.classList.add("hidden");
+      paymentCard.classList.add("hidden");
+      document.querySelectorAll(".slot-btn").forEach(b => b.classList.remove("selected"));
+    });
+
+    sessionType.addEventListener("change", updateSummary);
+
+    renderDateBoxes();
+    renderSlots();
+    updateSummary();
+  </script>
+</body>
+</html>
