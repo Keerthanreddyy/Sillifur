@@ -552,7 +552,7 @@
   /* progress fill map: step → % */
   const OB_PROGRESS = { 1:25, 2:50, 3:75, 4:100 };
 
-  function openOnboarding(){
+ window.openOnboarding = function(){
     document.getElementById('onboardingModal').classList.add('open');
     goToStep(1, true); // reset to step 1 without animation
   }
