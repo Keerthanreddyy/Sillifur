@@ -782,10 +782,19 @@
       font-weight:600;text-decoration:none;
       transition:all .2s;margin-left:8px;
     `;
-    dashBtn.innerHTML = `📊 Dashboard`;
+    dashBtn.innerHTML = `Dashboard`;
+dashBtn.style.cssText = `
+  display:flex;align-items:center;gap:6px;
+  background:rgba(34,211,160,0.12);
+  border:1px solid rgba(34,211,160,0.3);
+  color:#22d3a0;padding:6px 12px;
+  border-radius:8px;font-size:0.78rem;
+  font-weight:600;text-decoration:none;
+  transition:all .2s;
+`;
     dashBtn.onmouseover = () => dashBtn.style.background = 'rgba(34,211,160,0.2)';
     dashBtn.onmouseout  = () => dashBtn.style.background = 'rgba(34,211,160,0.12)';
-    btn.parentNode.insertBefore(dashBtn, btn);
+   btn.parentNode.insertBefore(dashBtn, btn.nextSibling);
   }
 }
 
