@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mentor Dashboard — Sillifur</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0b0d11; --bg2:#12151c; --bg3:#1a1e2a;
+      --card:#181c27; --card2:#1f2335;
+      --blue:#4f8ef7; --blue2:#3a76e8;
+      --green:#22d3a0; --green2:#16a37a;
+      --yellow:#fbbf24; --red:#f87171; --purple:#a78bfa;
+      --white:#ffffff; --text:#e8eaf0;
+      --muted:#6b7280; --muted2:#9ca3af;
+      --border:rgba(255,255,255,0.07);
+      --border2:rgba(255,255,255,0.13);
+      --radius:14px;
+    }
+    body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+    /* ── LOGIN SCREEN ── */
+    .login-screen {
+      min-height:100vh; display:flex; align-items:center; justify-content:center;
+      background:var(--bg);
+      background-image: radial-gradient(ellipse at 20% 50%, rgba(79,142,247,0.06) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 20%, rgba(34,211,160,0.05) 0%, transparent 60%);
+    }
+    .login-card {
+      background:var(--card2); border:1px solid var(--border2);
+      border-radius:20px; padding:40px 36px; width:100%; max-width:400px;
+      text-align:center;
+    }
+    .login-logo { display:flex; align-items:center; justify-content:center; gap:9px; margin-bottom:24px; text-decoration:none; }
+    .logo-mark { width:36px; height:36px; background:var(--blue); border-radius:9px; display:flex; align-items:center; justify-content:center; font-family:'Outfit',sans-serif; font-weight:800; font-size:1.1rem; color:white; }
+    .logo-text { font-family:'Outfit',sans-serif; font-weight:700; font-size:1.25rem; color:var(--white); }
+    .logo-text span { color:var(--blue); }
+    .login-title { font-family:'Outfit',sans-serif; font-size:1.4rem; font-weight:700; color:var(--white); margin-bottom:6px; }
+    .login-sub { font-size:0.85rem; color:var(--muted2); margin-bottom:28px; }
+    .google-btn {
+      display:flex; align-items:center; justify-content:center; gap:10px;
+      width:100%; padding:13px; border:1px solid var(--border2);
+      border-radius:10px; background:var(--card); font-family:'DM Sans',sans-serif;
+      font-size:0.92rem; font-weight:600; cursor:pointer; transition:all .2s;
+      color:var(--white); margin-bottom:16px;
+    }
+    .google-btn:hover { background:var(--bg3); border-color:var(--border2); }
+    .google-btn svg { width:18px; height:18px; flex-shrink:0; }
+    .login-divider { font-size:0.75rem; color:var(--muted); margin:4px 0 16px; position:relative; }
+    .login-divider::before,.login-divider::after { content:''; position:absolute; top:50%; width:42%; height:1px; background:var(--border); }
+    .login-divider::before { left:0; } .login-divider::after { right:0; }
+    .email-input { width:100%; padding:12px 14px; background:var(--bg); border:1px solid var(--border2); border-radius:9px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.88rem; outline:none; margin-bottom:10px; transition:border-color .2s; }
+    .email-input:focus { border-color:var(--blue); }
+    .email-input::placeholder { color:var(--muted); }
+    .btn-email-login { width:100%; padding:12px; background:var(--blue); color:white; border:none; border-radius:9px; font-family:'DM Sans',sans-serif; font-size:0.9rem; font-weight:600; cursor:pointer; transition:background .2s; }
+    .btn-email-login:hover { background:var(--blue2); }
+    .login-note { font-size:0.75rem; color:var(--muted); margin-top:18px; line-height:1.6; }
+    .login-note a { color:var(--blue); text-decoration:none; }
+    .login-error { font-size:0.78rem; color:var(--red); margin-top:8px; min-height:16px; font-weight:600; }
+
+    /* ── PENDING SCREEN ── */
+    .pending-screen {
+      min-height:100vh; display:flex; align-items:center; justify-content:center;
+      padding:20px;
+    }
+    .pending-card {
+      background:var(--card2); border:1px solid var(--border2);
+      border-radius:20px; padding:48px 36px; width:100%; max-width:460px; text-align:center;
+    }
+    .pending-icon { font-size:3.5rem; margin-bottom:16px; display:block; }
+    .pending-title { font-family:'Outfit',sans-serif; font-size:1.5rem; font-weight:700; color:var(--white); margin-bottom:8px; }
+    .pending-desc { font-size:0.88rem; color:var(--muted2); line-height:1.7; margin-bottom:24px; }
+    .status-pill { display:inline-flex; align-items:center; gap:6px; padding:6px 16px; border-radius:20px; font-size:0.78rem; font-weight:700; }
+    .status-pending { background:rgba(251,191,36,0.12); border:1px solid rgba(251,191,36,0.3); color:var(--yellow); }
+    .status-approved { background:rgba(34,211,160,0.12); border:1px solid rgba(34,211,160,0.3); color:var(--green); }
+    .status-rejected { background:rgba(248,113,113,0.12); border:1px solid rgba(248,113,113,0.3); color:var(--red); }
+    .btn-logout-sm { margin-top:20px; background:transparent; border:1px solid var(--border2); color:var(--muted2); padding:9px 20px; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; transition:all .2s; }
+    .btn-logout-sm:hover { border-color:var(--white); color:var(--white); }
+
+    /* ── DASHBOARD LAYOUT ── */
+    .dashboard { display:none; min-height:100vh; }
+
+    /* TOP NAV */
+    .dash-nav {
+      background:var(--bg2); border-bottom:1px solid var(--border);
+      height:62px; padding:0 24px; display:flex; align-items:center;
+      justify-content:space-between; position:sticky; top:0; z-index:100;
+    }
+    .dash-nav-left { display:flex; align-items:center; gap:20px; }
+    .nav-logo { display:flex; align-items:center; gap:8px; text-decoration:none; }
+    .nav-logo-mark { width:30px; height:30px; background:var(--blue); border-radius:7px; display:flex; align-items:center; justify-content:center; font-family:'Outfit',sans-serif; font-weight:800; font-size:0.9rem; color:white; }
+    .nav-logo-text { font-family:'Outfit',sans-serif; font-weight:700; font-size:1.1rem; color:var(--white); }
+    .nav-logo-text span { color:var(--blue); }
+    .nav-badge { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; background:rgba(34,211,160,0.12); color:var(--green); border:1px solid rgba(34,211,160,0.25); padding:3px 10px; border-radius:20px; }
+    .dash-nav-right { display:flex; align-items:center; gap:12px; }
+    .nav-avatar { width:34px; height:34px; border-radius:50%; border:2px solid var(--border2); object-fit:cover; cursor:pointer; }
+    .nav-avatar-initials { width:34px; height:34px; border-radius:50%; background:var(--blue); display:flex; align-items:center; justify-content:center; font-family:'Outfit',sans-serif; font-weight:700; font-size:0.85rem; color:white; cursor:pointer; }
+    .nav-mentor-name { font-size:0.85rem; font-weight:600; color:var(--white); }
+    .btn-nav-logout { background:transparent; border:1px solid var(--border2); color:var(--muted2); padding:7px 14px; border-radius:7px; font-family:'DM Sans',sans-serif; font-size:0.78rem; font-weight:600; cursor:pointer; transition:all .2s; }
+    .btn-nav-logout:hover { border-color:var(--red); color:var(--red); }
+
+    /* SIDEBAR + CONTENT */
+    .dash-body { display:flex; min-height:calc(100vh - 62px); }
+    .sidebar {
+      width:220px; flex-shrink:0; background:var(--bg2);
+      border-right:1px solid var(--border); padding:24px 0;
+      position:sticky; top:62px; height:calc(100vh - 62px); overflow-y:auto;
+    }
+    .sidebar-section { margin-bottom:8px; }
+    .sidebar-label { font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); padding:0 20px; margin-bottom:6px; }
+    .sidebar-link {
+      display:flex; align-items:center; gap:10px; padding:10px 20px;
+      color:var(--muted2); text-decoration:none; font-size:0.85rem; font-weight:500;
+      transition:all .2s; cursor:pointer; border:none; background:none; width:100%; text-align:left;
+    }
+    .sidebar-link:hover { color:var(--white); background:rgba(255,255,255,0.04); }
+    .sidebar-link.active { color:var(--white); background:rgba(79,142,247,0.1); border-right:2px solid var(--blue); }
+    .sidebar-link .sl-icon { font-size:1rem; flex-shrink:0; }
+    .sidebar-link .sl-badge { margin-left:auto; background:var(--blue); color:white; font-size:0.65rem; font-weight:700; padding:2px 7px; border-radius:10px; }
+
+    /* MAIN CONTENT */
+    .dash-content { flex:1; padding:28px; overflow-y:auto; }
+
+    /* PAGE SECTIONS */
+    .dash-page { display:none; }
+    .dash-page.active { display:block; animation:fadeIn .2s ease; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+    .page-header { margin-bottom:24px; }
+    .page-title { font-family:'Outfit',sans-serif; font-size:1.5rem; font-weight:700; color:var(--white); letter-spacing:-0.3px; }
+    .page-sub { font-size:0.85rem; color:var(--muted); margin-top:4px; }
+
+    /* STAT CARDS */
+    .stats-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:14px; margin-bottom:24px; }
+    .stat-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px; }
+    .stat-card-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+    .stat-card-icon { font-size:1.3rem; }
+    .stat-card-trend { font-size:0.72rem; font-weight:600; }
+    .trend-up { color:var(--green); }
+    .trend-neu { color:var(--muted); }
+    .stat-card-val { font-family:'Outfit',sans-serif; font-size:1.8rem; font-weight:800; color:var(--white); line-height:1; margin-bottom:4px; }
+    .stat-card-label { font-size:0.75rem; color:var(--muted); }
+
+    /* SECTION CARD */
+    .section-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:18px; overflow:hidden; }
+    .section-card-header { padding:18px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .section-card-title { font-family:'Outfit',sans-serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .section-card-body { padding:20px; }
+
+    /* BOOKING CARDS */
+    .booking-card {
+      background:var(--card2); border:1px solid var(--border);
+      border-radius:12px; padding:16px 18px; margin-bottom:12px;
+      display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center;
+    }
+    .booking-card:last-child { margin-bottom:0; }
+    .booking-mentee { font-weight:600; font-size:0.9rem; color:var(--white); margin-bottom:3px; }
+    .booking-meta { font-size:0.78rem; color:var(--muted2); display:flex; gap:12px; flex-wrap:wrap; }
+    .booking-meta span { display:flex; align-items:center; gap:4px; }
+    .booking-status { display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; font-weight:700; padding:4px 10px; border-radius:20px; }
+    .bs-upcoming { background:rgba(79,142,247,0.12); color:var(--blue); border:1px solid rgba(79,142,247,0.25); }
+    .bs-completed { background:rgba(34,211,160,0.1); color:var(--green); border:1px solid rgba(34,211,160,0.2); }
+    .bs-cancelled { background:rgba(248,113,113,0.1); color:var(--red); border:1px solid rgba(248,113,113,0.2); }
+    .bs-pending { background:rgba(251,191,36,0.1); color:var(--yellow); border:1px solid rgba(251,191,36,0.2); }
+
+    .empty-state { text-align:center; padding:40px 20px; color:var(--muted); }
+    .empty-icon { font-size:2.5rem; margin-bottom:12px; display:block; }
+    .empty-text { font-size:0.88rem; line-height:1.6; }
+
+    /* PROFILE FORM */
+    .profile-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .profile-field { display:flex; flex-direction:column; gap:6px; }
+    .profile-field.full { grid-column:1/-1; }
+    .profile-label { font-size:0.75rem; font-weight:600; color:var(--muted2); letter-spacing:0.02em; }
+    .profile-val { font-size:0.88rem; color:var(--white); font-weight:500; }
+    .profile-input { width:100%; padding:10px 13px; background:var(--bg); border:1px solid var(--border2); border-radius:8px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.85rem; outline:none; transition:border-color .2s; }
+    .profile-input:focus { border-color:var(--blue); }
+    .profile-input::placeholder { color:var(--muted); }
+    .profile-textarea { resize:vertical; min-height:80px; }
+    .btn-save { background:var(--blue); color:white; border:none; padding:10px 22px; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:0.85rem; font-weight:600; cursor:pointer; transition:background .2s; }
+    .btn-save:hover { background:var(--blue2); }
+
+    /* AVAILABILITY TOGGLE */
+    .avail-toggle { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border); }
+    .avail-toggle:last-child { border-bottom:none; }
+    .avail-info { font-size:0.85rem; color:var(--white); font-weight:500; }
+    .avail-sub { font-size:0.75rem; color:var(--muted); margin-top:2px; }
+    .toggle { width:40px; height:22px; background:var(--border2); border-radius:11px; position:relative; cursor:pointer; transition:background .2s; flex-shrink:0; border:none; }
+    .toggle.on { background:var(--green); }
+    .toggle::after { content:''; position:absolute; width:16px; height:16px; background:white; border-radius:50%; top:3px; left:3px; transition:transform .2s; }
+    .toggle.on::after { transform:translateX(18px); }
+
+    /* EARNINGS */
+    .earnings-bar { height:8px; background:var(--border); border-radius:4px; overflow:hidden; margin-top:8px; }
+    .earnings-fill { height:100%; background:linear-gradient(90deg,var(--blue),var(--green)); border-radius:4px; transition:width .8s ease; }
+
+    /* LOADING SPINNER */
+    .spinner { width:28px; height:28px; border:3px solid var(--border2); border-top-color:var(--blue); border-radius:50%; animation:spin .7s linear infinite; margin:0 auto; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .loading-wrap { text-align:center; padding:32px; color:var(--muted); font-size:0.85rem; }
+    .loading-wrap .spinner { margin-bottom:12px; }
+
+    /* TOAST */
+    .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(60px); background:var(--green); color:#0b0d11; padding:11px 22px; border-radius:9px; font-family:'DM Sans',sans-serif; font-size:0.88rem; font-weight:700; z-index:9999; transition:transform .4s cubic-bezier(.34,1.56,.64,1); white-space:nowrap; }
+    .toast.show { transform:translateX(-50%) translateY(0); }
+
+    /* CHIPS DISPLAY */
+    .chip-list { display:flex; flex-wrap:wrap; gap:6px; }
+    .chip { background:rgba(79,142,247,0.1); color:#93b4fa; font-size:0.72rem; font-weight:600; padding:3px 10px; border-radius:20px; border:1px solid rgba(79,142,247,0.2); }
+    .chip-green { background:rgba(34,211,160,0.1); color:var(--green); border-color:rgba(34,211,160,0.2); }
+
+    @media(max-width:768px) {
+      .sidebar { display:none; }
+      .dash-content { padding:16px; }
+      .stats-grid { grid-template-columns:1fr 1fr; }
+      .profile-grid { grid-template-columns:1fr; }
+      .booking-card { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     1. LOGIN SCREEN
+══════════════════════════════════════ -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <a href="index.html" class="login-logo">
+      <div class="logo-mark">S</div>
+      <div class="logo-text">silli<span>fur</span></div>
+    </a>
+    <div class="login-title">Mentor Dashboard</div>
+    <div class="login-sub">Sign in to manage your bookings, profile & earnings.</div>
+
+    <!-- Google Sign In -->
+    <button class="google-btn" id="googleLoginBtn">
+      <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+      Continue with Google
+    </button>
+
+    <div class="login-divider">or sign in with email</div>
+
+    <input type="email" class="email-input" id="loginEmail" placeholder="Email address"/>
+    <input type="password" class="email-input" id="loginPassword" placeholder="Password"/>
+    <button class="btn-email-login" id="emailLoginBtn">Sign In</button>
+
+    <div class="login-error" id="loginError"></div>
+    <div class="login-note">
+      Don't have an account yet? <a href="mentor-register.html">Apply to become a mentor →</a><br>
+      This dashboard is for approved mentors only.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     2. PENDING / REJECTED SCREEN
+══════════════════════════════════════ -->
+<div class="pending-screen" id="pendingScreen" style="display:none">
+  <div class="pending-card">
+    <span class="pending-icon" id="pendingIcon">⏳</span>
+    <div class="pending-title" id="pendingTitle">Application Under Review</div>
+    <p class="pending-desc" id="pendingDesc">
+      Your mentor application is being reviewed by our team. We'll notify you within 48 hours at your registered email address.
+    </p>
+    <div class="status-pill status-pending" id="pendingPill">⏳ Pending Review</div>
+    <br>
+    <button class="btn-logout-sm" id="pendingLogout">Sign Out</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     3. APPROVED DASHBOARD
+══════════════════════════════════════ -->
+<div class="dashboard" id="dashboard">
+
+  <!-- TOP NAV -->
+  <nav class="dash-nav">
+    <div class="dash-nav-left">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-mark">S</div>
+        <div class="nav-logo-text">silli<span>fur</span></div>
+      </a>
+      <div class="nav-badge">Mentor Portal</div>
+    </div>
+    <div class="dash-nav-right">
+      <span class="nav-mentor-name" id="navMentorName"></span>
+      <div class="nav-avatar-initials" id="navAvatar"></div>
+      <button class="btn-nav-logout" id="dashLogout">Sign Out</button>
+    </div>
+  </nav>
+
+  <div class="dash-body">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Main</div>
+        <button class="sidebar-link active" onclick="showPage('overview')">
+          <span class="sl-icon">📊</span> Overview
+        </button>
+        <button class="sidebar-link" onclick="showPage('bookings')">
+          <span class="sl-icon">📅</span> Bookings
+          <span class="sl-badge" id="bookingBadge">0</span>
+        </button>
+        <button class="sidebar-link" onclick="showPage('earnings')">
+          <span class="sl-icon">💰</span> Earnings
+        </button>
+      </div>
+      <div class="sidebar-section" style="margin-top:16px">
+        <div class="sidebar-label">Settings</div>
+        <button class="sidebar-link" onclick="showPage('profile')">
+          <span class="sl-icon">👤</span> My Profile
+        </button>
+        <button class="sidebar-link" onclick="showPage('availability')">
+          <span class="sl-icon">🕐</span> Availability
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="dash-content">
+
+      <!-- ── OVERVIEW PAGE ── -->
+      <div class="dash-page active" id="page-overview">
+        <div class="page-header">
+          <div class="page-title">Welcome back, <span id="welcomeName">Mentor</span> 👋</div>
+          <div class="page-sub" id="welcomeSub">Here's what's happening with your sessions.</div>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-top"><span class="stat-card-icon">📅</span><span class="stat-card-trend trend-up" id="upcomingTrend"></span></div>
+            <div class="stat-card-val" id="statUpcoming">—</div>
+            <div class="stat-card-label">Upcoming Sessions</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top"><span class="stat-card-icon">✅</span><span class="stat-card-trend trend-up"></span></div>
+            <div class="stat-card-val" id="statCompleted">—</div>
+            <div class="stat-card-label">Sessions Completed</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top"><span class="stat-card-icon">💰</span><span class="stat-card-trend trend-up"></span></div>
+            <div class="stat-card-val" id="statEarnings">—</div>
+            <div class="stat-card-label">Total Earnings</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top"><span class="stat-card-icon">⭐</span><span class="stat-card-trend trend-neu"></span></div>
+            <div class="stat-card-val" id="statRating">—</div>
+            <div class="stat-card-label">Avg. Rating</div>
+          </div>
+        </div>
+
+        <!-- UPCOMING SESSIONS -->
+        <div class="section-card">
+          <div class="section-card-header">
+            <div class="section-card-title">Upcoming Sessions</div>
+            <button class="sidebar-link" style="padding:4px 0;font-size:0.8rem;color:var(--blue);width:auto" onclick="showPage('bookings')">View all →</button>
+          </div>
+          <div class="section-card-body" id="overviewUpcoming">
+            <div class="loading-wrap"><div class="spinner"></div>Loading…</div>
+          </div>
+        </div>
+
+        <!-- PROFILE SNAPSHOT -->
+        <div class="section-card">
+          <div class="section-card-header">
+            <div class="section-card-title">Your Public Profile</div>
+            <button class="sidebar-link" style="padding:4px 0;font-size:0.8rem;color:var(--blue);width:auto" onclick="showPage('profile')">Edit →</button>
+          </div>
+          <div class="section-card-body">
+            <div class="profile-grid" id="profileSnapshot">
+              <div class="loading-wrap" style="grid-column:1/-1"><div class="spinner"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── BOOKINGS PAGE ── -->
+      <div class="dash-page" id="page-bookings">
+        <div class="page-header">
+          <div class="page-title">Bookings</div>
+          <div class="page-sub">All student sessions booked with you.</div>
+        </div>
+
+        <!-- Filter tabs -->
+        <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap">
+          <button class="sidebar-link active" id="filter-all" style="border-radius:8px;border:1px solid var(--border2);padding:7px 16px;width:auto" onclick="filterBookings('all',this)">All</button>
+          <button class="sidebar-link" id="filter-upcoming" style="border-radius:8px;border:1px solid var(--border2);padding:7px 16px;width:auto" onclick="filterBookings('upcoming',this)">Upcoming</button>
+          <button class="sidebar-link" id="filter-completed" style="border-radius:8px;border:1px solid var(--border2);padding:7px 16px;width:auto" onclick="filterBookings('completed',this)">Completed</button>
+          <button class="sidebar-link" id="filter-pending" style="border-radius:8px;border:1px solid var(--border2);padding:7px 16px;width:auto" onclick="filterBookings('pending',this)">Pending</button>
+        </div>
+
+        <div id="bookingsList">
+          <div class="loading-wrap"><div class="spinner"></div>Loading bookings…</div>
+        </div>
+      </div>
+
+      <!-- ── EARNINGS PAGE ── -->
+      <div class="dash-page" id="page-earnings">
+        <div class="page-header">
+          <div class="page-title">Earnings</div>
+          <div class="page-sub">Your revenue from completed sessions.</div>
+        </div>
+
+        <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="stat-card">
+            <div class="stat-card-top"><span class="stat-card-icon">💰</span></div>
+            <div class="stat-card-val" id="earnTotal">₹0</div>
+            <div class="stat-card-label">Total Earned</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top"><span class="stat-card-icon">📆</span></div>
+            <div class="stat-card-val" id="earnMonth">₹0</div>
+            <div class="stat-card-label">This Month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top"><span class="stat-card-icon">📈</span></div>
+            <div class="stat-card-val" id="earnAvg">₹0</div>
+            <div class="stat-card-label">Avg per Session</div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-card-header"><div class="section-card-title">Session Breakdown</div></div>
+          <div class="section-card-body" id="earningsBreakdown">
+            <div class="empty-state">
+              <span class="empty-icon">💸</span>
+              <div class="empty-text">No completed sessions yet.<br>Your earnings will appear here once sessions are done.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PROFILE PAGE ── -->
+      <div class="dash-page" id="page-profile">
+        <div class="page-header">
+          <div class="page-title">My Profile</div>
+          <div class="page-sub">This is what students see on your mentor card. Keep it updated.</div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-card-header"><div class="section-card-title">Profile Info</div></div>
+          <div class="section-card-body" id="profileEditForm">
+            <div class="loading-wrap"><div class="spinner"></div></div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-card-header"><div class="section-card-title">Pricing</div></div>
+          <div class="section-card-body">
+            <div class="profile-field" style="margin-bottom:16px">
+              <label class="profile-label">Price per session (₹)</label>
+              <input type="number" class="profile-input" id="editPrice" placeholder="e.g. 799" min="200" max="5000"/>
+            </div>
+            <button class="btn-save" onclick="savePrice()">Save Price</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── AVAILABILITY PAGE ── -->
+      <div class="dash-page" id="page-availability">
+        <div class="page-header">
+          <div class="page-title">Availability</div>
+          <div class="page-sub">Control when students can book you. Changes apply immediately.</div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-card-header"><div class="section-card-title">Time Slots</div></div>
+          <div class="section-card-body" id="availabilityPanel">
+            <div class="loading-wrap"><div class="spinner"></div></div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-card-header"><div class="section-card-title">Session Capacity</div></div>
+          <div class="section-card-body">
+            <div class="profile-field" style="margin-bottom:16px">
+              <label class="profile-label">Max sessions per week</label>
+              <select class="profile-input" id="editCapacity">
+                <option value="1-3">1 – 3 sessions/week</option>
+                <option value="4-7">4 – 7 sessions/week</option>
+                <option value="8-14">8 – 14 sessions/week</option>
+                <option value="15+">15+ sessions/week</option>
+              </select>
+            </div>
+            <button class="btn-save" onclick="saveAvailability()">Save Availability</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════
+     FIREBASE + DASHBOARD LOGIC
+══════════════════════════════════════ -->
+<script type="module">
+  import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getAuth, signInWithPopup, signInWithEmailAndPassword,
+    GoogleAuthProvider, onAuthStateChanged, signOut
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getFirestore, collection, query, where,
+    getDocs, doc, getDoc, updateDoc, orderBy
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey:            "AIzaSyDEWvEXCo_W5i7OZ1wT4QuPED3ur2q5N7c",
+    authDomain:        "sillifur-341e9.firebaseapp.com",
+    projectId:         "sillifur-341e9",
+    storageBucket:     "sillifur-341e9.appspot.com",
+    messagingSenderId: "848515376957",
+    appId:             "1:848515376957:web:ac13cbb93fdcc9ba834754"
+  };
+
+  const app      = initializeApp(firebaseConfig);
+  const auth     = getAuth(app);
+  const db       = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+
+  let MENTOR_DATA = null;   // Firestore mentor doc
+  let ALL_BOOKINGS = [];    // all bookings for this mentor
+
+  /* ══════════════════════════════
+     AUTH STATE
+  ══════════════════════════════ */
+  onAuthStateChanged(auth, async user => {
+    if (!user) {
+      showScreen('login');
+      return;
+    }
+    await loadMentorData(user);
+  });
+
+  async function loadMentorData(user) {
+    // Look up mentor application by email
+    const q = query(
+      collection(db, "mentorApplications"),
+      where("email", "==", user.email)
+    );
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      // Not a mentor applicant at all
+      showScreen('login');
+      setLoginError("No mentor application found for this account. Please apply first.");
+      await signOut(auth);
+      return;
+    }
+
+    const docSnap = snap.docs[0];
+    MENTOR_DATA = { id: docSnap.id, ...docSnap.data() };
+
+    if (MENTOR_DATA.status === 'pending') {
+      showPendingScreen('pending');
+      return;
+    }
+    if (MENTOR_DATA.status === 'rejected') {
+      showPendingScreen('rejected');
+      return;
+    }
+    if (MENTOR_DATA.status === 'approved') {
+      showDashboard();
+      loadAllDashboardData();
+      return;
+    }
+  }
+
+  /* ══════════════════════════════
+     SCREEN HELPERS
+  ══════════════════════════════ */
+  function showScreen(name) {
+    document.getElementById('loginScreen').style.display   = name==='login'  ? 'flex' : 'none';
+    document.getElementById('pendingScreen').style.display = name==='pending'? 'flex' : 'none';
+    document.getElementById('dashboard').style.display     = name==='dash'   ? 'block': 'none';
+  }
+
+  function showPendingScreen(type) {
+    showScreen('pending');
+    if (type === 'rejected') {
+      document.getElementById('pendingIcon').textContent  = '❌';
+      document.getElementById('pendingTitle').textContent = 'Application Not Approved';
+      document.getElementById('pendingDesc').textContent  = 'Unfortunately your application was not approved at this time. Please contact us at support@sillifur.com for more information.';
+      document.getElementById('pendingPill').className    = 'status-pill status-rejected';
+      document.getElementById('pendingPill').textContent  = '✕ Not Approved';
+    }
+  }
+
+  function showDashboard() {
+    showScreen('dash');
+    const name = MENTOR_DATA.fullName?.split(' ')[0] || 'Mentor';
+    document.getElementById('navMentorName').textContent = MENTOR_DATA.fullName || '';
+    document.getElementById('navAvatar').textContent     = name[0].toUpperCase();
+    document.getElementById('welcomeName').textContent   = name;
+    document.getElementById('welcomeSub').textContent    = `Approved mentor · ₹${(MENTOR_DATA.pricePerSession||0).toLocaleString('en-IN')}/session`;
+  }
+
+  /* ══════════════════════════════
+     LOAD ALL DATA
+  ══════════════════════════════ */
+  async function loadAllDashboardData() {
+    await loadBookings();
+    renderProfileSnapshot();
+    renderProfileEditForm();
+    renderAvailabilityPanel();
+    renderEarnings();
+  }
+
+  /* ── BOOKINGS ── */
+  async function loadBookings() {
+    try {
+      const q = query(
+        collection(db, "bookings"),
+        where("mentorId", "==", MENTOR_DATA.id)
+      );
+      const snap = await getDocs(q);
+      ALL_BOOKINGS = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      // Sort by date desc
+      ALL_BOOKINGS.sort((a, b) => new Date(b.sessionDate) - new Date(a.sessionDate));
+
+      renderStats();
+      renderOverviewUpcoming();
+      renderBookingsList(ALL_BOOKINGS);
+
+      // Update badge
+      const upcoming = ALL_BOOKINGS.filter(b => b.status === 'upcoming').length;
+      document.getElementById('bookingBadge').textContent = upcoming;
+
+    } catch(e) {
+      console.error("Bookings load error:", e);
+      document.getElementById('overviewUpcoming').innerHTML = emptyState('📅', 'Could not load bookings.');
+    }
+  }
+
+  /* ── STATS ── */
+  function renderStats() {
+    const upcoming  = ALL_BOOKINGS.filter(b => b.status === 'upcoming').length;
+    const completed = ALL_BOOKINGS.filter(b => b.status === 'completed').length;
+    const earnings  = ALL_BOOKINGS.filter(b => b.status === 'completed').reduce((s,b) => s+(b.price||0), 0);
+    const ratings   = ALL_BOOKINGS.filter(b => b.rating).map(b => b.rating);
+    const avgRating = ratings.length ? (ratings.reduce((s,r)=>s+r,0)/ratings.length).toFixed(1) : '—';
+
+    document.getElementById('statUpcoming').textContent  = upcoming;
+    document.getElementById('statCompleted').textContent = completed;
+    document.getElementById('statEarnings').textContent  = `₹${earnings.toLocaleString('en-IN')}`;
+    document.getElementById('statRating').textContent    = avgRating;
+
+    // Earnings page
+    const thisMonth = ALL_BOOKINGS.filter(b => {
+      if (b.status !== 'completed') return false;
+      const d = new Date(b.sessionDate);
+      const now = new Date();
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    }).reduce((s,b) => s+(b.price||0), 0);
+
+    document.getElementById('earnTotal').textContent = `₹${earnings.toLocaleString('en-IN')}`;
+    document.getElementById('earnMonth').textContent = `₹${thisMonth.toLocaleString('en-IN')}`;
+    document.getElementById('earnAvg').textContent   = completed ? `₹${Math.round(earnings/completed).toLocaleString('en-IN')}` : '₹0';
+  }
+
+  /* ── OVERVIEW UPCOMING ── */
+  function renderOverviewUpcoming() {
+    const el = document.getElementById('overviewUpcoming');
+    const upcoming = ALL_BOOKINGS.filter(b => b.status === 'upcoming').slice(0,3);
+    if (!upcoming.length) {
+      el.innerHTML = emptyState('📅', 'No upcoming sessions yet.<br>Share your profile link to get bookings!');
+      return;
+    }
+    el.innerHTML = upcoming.map(b => bookingCardHTML(b)).join('');
+  }
+
+  /* ── BOOKINGS LIST ── */
+  function renderBookingsList(bookings) {
+    const el = document.getElementById('bookingsList');
+    if (!bookings.length) {
+      el.innerHTML = emptyState('📋', 'No bookings found.<br>Your sessions will appear here once students book you.');
+      return;
+    }
+    el.innerHTML = bookings.map(b => bookingCardHTML(b)).join('');
+  }
+
+  /* ── BOOKING CARD HTML ── */
+  function bookingCardHTML(b) {
+    const statusClass = { upcoming:'bs-upcoming', completed:'bs-completed', cancelled:'bs-cancelled', pending:'bs-pending' }[b.status] || 'bs-pending';
+    const statusLabel = { upcoming:'📅 Upcoming', completed:'✅ Completed', cancelled:'✕ Cancelled', pending:'⏳ Pending' }[b.status] || b.status;
+    const date = b.sessionDate ? new Date(b.sessionDate).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
+    const time = b.sessionTime || '—';
+    return `
+      <div class="booking-card">
+        <div>
+          <div class="booking-mentee">${b.menteeName || 'Student'}</div>
+          <div class="booking-meta">
+            <span>📅 ${date}</span>
+            <span>🕐 ${time}</span>
+            <span>⏱ ${b.duration || 60} min</span>
+            <span>💰 ₹${(b.price||0).toLocaleString('en-IN')}</span>
+            ${b.exam ? `<span>📚 ${b.exam}</span>` : ''}
+          </div>
+        </div>
+        <div><span class="booking-status ${statusClass}">${statusLabel}</span></div>
+      </div>`;
+  }
+
+  /* ── PROFILE SNAPSHOT (overview) ── */
+  function renderProfileSnapshot() {
+    if (!MENTOR_DATA) return;
+    const el = document.getElementById('profileSnapshot');
+    el.innerHTML = `
+      <div class="profile-field">
+        <div class="profile-label">Full Name</div>
+        <div class="profile-val">${MENTOR_DATA.fullName||'—'}</div>
+      </div>
+      <div class="profile-field">
+        <div class="profile-label">Title / Role</div>
+        <div class="profile-val">${MENTOR_DATA.title||'—'}</div>
+      </div>
+      <div class="profile-field">
+        <div class="profile-label">Price per Session</div>
+        <div class="profile-val">₹${(MENTOR_DATA.pricePerSession||0).toLocaleString('en-IN')}</div>
+      </div>
+      <div class="profile-field">
+        <div class="profile-label">Exams</div>
+        <div class="chip-list">${(MENTOR_DATA.examsCleared||[]).map(e=>`<span class="chip">${e}</span>`).join('')||'—'}</div>
+      </div>
+      <div class="profile-field full">
+        <div class="profile-label">Bio</div>
+        <div class="profile-val" style="line-height:1.6;font-size:0.85rem">${MENTOR_DATA.bio||'—'}</div>
+      </div>`;
+  }
+
+  /* ── PROFILE EDIT FORM ── */
+  function renderProfileEditForm() {
+    if (!MENTOR_DATA) return;
+    const el = document.getElementById('profileEditForm');
+    el.innerHTML = `
+      <div class="profile-grid" style="margin-bottom:16px">
+        <div class="profile-field">
+          <label class="profile-label">Full Name</label>
+          <input class="profile-input" id="editName" value="${MENTOR_DATA.fullName||''}" placeholder="Full Name"/>
+        </div>
+        <div class="profile-field">
+          <label class="profile-label">Title / Role</label>
+          <input class="profile-input" id="editTitle" value="${MENTOR_DATA.title||''}" placeholder="e.g. IAS Officer · UPSC AIR 34"/>
+        </div>
+        <div class="profile-field">
+          <label class="profile-label">City</label>
+          <input class="profile-input" id="editCity" value="${MENTOR_DATA.city||''}" placeholder="City"/>
+        </div>
+        <div class="profile-field">
+          <label class="profile-label">LinkedIn</label>
+          <input class="profile-input" id="editLinkedin" value="${MENTOR_DATA.linkedin||''}" placeholder="LinkedIn URL"/>
+        </div>
+        <div class="profile-field full">
+          <label class="profile-label">Bio</label>
+          <textarea class="profile-input profile-textarea" id="editBio" placeholder="Your bio…">${MENTOR_DATA.bio||''}</textarea>
+        </div>
+        <div class="profile-field full">
+          <label class="profile-label">Subjects you teach</label>
+          <input class="profile-input" id="editSubjects" value="${MENTOR_DATA.subjects||''}" placeholder="e.g. Physics, Maths, Modern History"/>
+        </div>
+      </div>
+      <button class="btn-save" onclick="saveProfile()">Save Changes</button>`;
+
+    // Set price
+    document.getElementById('editPrice').value = MENTOR_DATA.pricePerSession || '';
+  }
+
+  /* ── AVAILABILITY PANEL ── */
+  function renderAvailabilityPanel() {
+    if (!MENTOR_DATA) return;
+    const days  = MENTOR_DATA.availableDays || [];
+    const slots = MENTOR_DATA.timeSlots || [];
+    const allDays  = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    const allSlots = ['6AM–8AM','8AM–10AM','10AM–12PM','12PM–2PM','2PM–4PM','4PM–6PM','6PM–8PM','8PM–10PM','10PM–12AM'];
+
+    const el = document.getElementById('availabilityPanel');
+    el.innerHTML = `
+      <div style="margin-bottom:20px">
+        <div class="profile-label" style="margin-bottom:10px">Available Days</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap" id="editDays">
+          ${allDays.map(d=>`<button type="button" onclick="toggleEditDay(this)" data-val="${d}"
+            style="width:44px;height:44px;border-radius:50%;border:1px solid ${days.includes(d)?'var(--green)':'var(--border2)'};
+            background:${days.includes(d)?'rgba(34,211,160,0.12)':'var(--bg)'};
+            color:${days.includes(d)?'var(--green)':'var(--muted2)'};
+            font-size:0.75rem;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;"
+            class="${days.includes(d)?'selected':''}">${d}</button>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div class="profile-label" style="margin-bottom:10px">Available Time Slots</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px" id="editSlots">
+          ${allSlots.map(s=>`<button type="button" onclick="toggleEditSlot(this)" data-val="${s}"
+            style="padding:9px 8px;border-radius:9px;border:1px solid ${slots.includes(s)?'var(--green)':'var(--border2)'};
+            background:${slots.includes(s)?'rgba(34,211,160,0.12)':'var(--bg)'};
+            color:${slots.includes(s)?'var(--green)':'var(--muted2)'};
+            font-size:0.74rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;text-align:center;"
+            class="${slots.includes(s)?'selected':''}">${s.replace('–',' – ')}</button>`).join('')}
+        </div>
+      </div>`;
+
+    // Set capacity
+    if(MENTOR_DATA.sessionsPerWeek) document.getElementById('editCapacity').value = MENTOR_DATA.sessionsPerWeek;
+  }
+
+  /* ── EARNINGS BREAKDOWN ── */
+  function renderEarnings() {
+    const completed = ALL_BOOKINGS.filter(b => b.status === 'completed');
+    if (!completed.length) return;
+    document.getElementById('earningsBreakdown').innerHTML = completed.map(b => {
+      const date = b.sessionDate ? new Date(b.sessionDate).toLocaleDateString('en-IN',{day:'numeric',month:'short'}) : '—';
+      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:0.85rem">
+        <div><div style="color:var(--white);font-weight:500">${b.menteeName||'Student'}</div><div style="color:var(--muted);font-size:0.75rem;margin-top:2px">${date} · ${b.duration||60} min</div></div>
+        <div style="color:var(--green);font-weight:700;font-family:'Outfit',sans-serif">+₹${(b.price||0).toLocaleString('en-IN')}</div>
+      </div>`;
+    }).join('');
+  }
+
+  /* ══════════════════════════════
+     SAVE ACTIONS
+  ══════════════════════════════ */
+  window.saveProfile = async function() {
+    try {
+      const updates = {
+        fullName: document.getElementById('editName').value.trim(),
+        title:    document.getElementById('editTitle').value.trim(),
+        city:     document.getElementById('editCity').value.trim(),
+        linkedin: document.getElementById('editLinkedin').value.trim(),
+        bio:      document.getElementById('editBio').value.trim(),
+        subjects: document.getElementById('editSubjects').value.trim(),
+      };
+      await updateDoc(doc(db, "mentorApplications", MENTOR_DATA.id), updates);
+      Object.assign(MENTOR_DATA, updates);
+      renderProfileSnapshot();
+      showToast('Profile saved ✓');
+    } catch(e) { showToast('Error saving. Try again.'); }
+  };
+
+  window.savePrice = async function() {
+    const price = Number(document.getElementById('editPrice').value);
+    if (!price || price < 200) { showToast('Enter a valid price (min ₹200)'); return; }
+    try {
+      await updateDoc(doc(db, "mentorApplications", MENTOR_DATA.id), { pricePerSession: price });
+      MENTOR_DATA.pricePerSession = price;
+      document.getElementById('welcomeSub').textContent = `Approved mentor · ₹${price.toLocaleString('en-IN')}/session`;
+      showToast('Price updated ✓');
+    } catch(e) { showToast('Error saving.'); }
+  };
+
+  window.saveAvailability = async function() {
+    const days  = [...document.querySelectorAll('#editDays button.selected')].map(b=>b.dataset.val);
+    const slots = [...document.querySelectorAll('#editSlots button.selected')].map(b=>b.dataset.val);
+    const cap   = document.getElementById('editCapacity').value;
+    try {
+      await updateDoc(doc(db, "mentorApplications", MENTOR_DATA.id), { availableDays:days, timeSlots:slots, sessionsPerWeek:cap });
+      Object.assign(MENTOR_DATA, { availableDays:days, timeSlots:slots, sessionsPerWeek:cap });
+      showToast('Availability saved ✓');
+    } catch(e) { showToast('Error saving.'); }
+  };
+
+  /* ══════════════════════════════
+     LOGIN HANDLERS
+  ══════════════════════════════ */
+  document.getElementById('googleLoginBtn').onclick = async () => {
+    setLoginError('');
+    try {
+      await signInWithPopup(auth, provider);
+    } catch(e) { setLoginError(e.message); }
+  };
+
+  document.getElementById('emailLoginBtn').onclick = async () => {
+    setLoginError('');
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass  = document.getElementById('loginPassword').value;
+    if (!email || !pass) { setLoginError('Please enter email and password.'); return; }
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+    } catch(e) {
+      setLoginError('Invalid email or password.');
+    }
+  };
+
+  document.getElementById('dashLogout').onclick    = () => signOut(auth).then(() => location.reload());
+  document.getElementById('pendingLogout').onclick = () => signOut(auth).then(() => location.reload());
+
+  function setLoginError(msg) { document.getElementById('loginError').textContent = msg; }
+
+  /* ══════════════════════════════
+     FILTER BOOKINGS
+  ══════════════════════════════ */
+  window.filterBookings = function(status, btn) {
+    document.querySelectorAll('[id^=filter-]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filtered = status === 'all' ? ALL_BOOKINGS : ALL_BOOKINGS.filter(b => b.status === status);
+    renderBookingsList(filtered);
+  };
+
+  /* ══════════════════════════════
+     AVAILABILITY TOGGLES
+  ══════════════════════════════ */
+  window.toggleEditDay = function(btn) {
+    btn.classList.toggle('selected');
+    const on = btn.classList.contains('selected');
+    btn.style.borderColor = on ? 'var(--green)' : 'var(--border2)';
+    btn.style.background  = on ? 'rgba(34,211,160,0.12)' : 'var(--bg)';
+    btn.style.color       = on ? 'var(--green)' : 'var(--muted2)';
+  };
+  window.toggleEditSlot = function(btn) {
+    btn.classList.toggle('selected');
+    const on = btn.classList.contains('selected');
+    btn.style.borderColor = on ? 'var(--green)' : 'var(--border2)';
+    btn.style.background  = on ? 'rgba(34,211,160,0.12)' : 'var(--bg)';
+    btn.style.color       = on ? 'var(--green)' : 'var(--muted2)';
+  };
+
+  /* ══════════════════════════════
+     HELPERS
+  ══════════════════════════════ */
+  function emptyState(icon, text) {
+    return `<div class="empty-state"><span class="empty-icon">${icon}</span><div class="empty-text">${text}</div></div>`;
+  }
+
+  window.showToast = function(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  };
+</script>
+
+<script>
+  /* Page navigation — plain script so onclick attrs work */
+  window.showPage = function(name) {
+    document.querySelectorAll('.dash-page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-'+name).classList.add('active');
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    event?.currentTarget?.classList.add('active');
+  };
+</script>
+
+</body>
+</html>
