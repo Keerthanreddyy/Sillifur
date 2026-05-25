@@ -327,6 +327,9 @@
             </div>
           </div>
         </div>
+        <p id="photoSizeError" style="display:none; color:var(--red); font-size:0.75rem; margin-top:6px; font-weight:600;">
+           Photo is too large. Please upload an image under 2MB.
+        </p>
 
         <div class="field-row">
           <div class="field">
@@ -683,19 +686,20 @@
   };
 
   /* ════════════ PHOTO ════════════ */
-  function handlePhoto(input) {
-    const file = input.files[0];
-    if (!file) return;
-    APP.photoFile = file;
-    const reader = new FileReader();
-    reader.onload = e => {
-      APP.photoBase64 = e.target.result;
-      document.getElementById('photoPreview').src = e.target.result;
-      document.getElementById('photoPreview').style.display = 'block';
-      document.getElementById('photoPlaceholder').style.display = 'none';
-    };
-    reader.readAsDataURL(file);
+ function handlePhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  // Check file size — warn if over 2MB
+  if (file.size > 2 * 1024 * 1024) {
+    document.getElementById('photoSizeError').style.display = 'block';
+    input.value = ''; // clear the input
+    return;
   }
+  document.getElementById('photoSizeError').style.display = 'none';
+
+  APP.photoFile = file;
+  // ... rest of function
 
   /* ════════════ CHAR COUNT ════════════ */
   function updateCharCount(el, countId, max) {
