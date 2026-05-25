@@ -31,7 +31,27 @@
     .hero-badge { display:inline-flex;align-items:center;gap:6px;background:rgba(79,142,247,0.1);border:1px solid rgba(79,142,247,0.25);color:var(--blue);font-size:0.78rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:22px; }
     .hero h1 { font-family:'Outfit',sans-serif;font-size:clamp(2rem,5vw,3.6rem);font-weight:800;color:var(--white);line-height:1.15;max-width:760px;margin:0 auto 18px;letter-spacing:-1.5px; }
     .hero h1 em { font-style:normal;color:var(--blue); }
-    .hero p { color:var(--muted2);font-size:1rem;max-width:480px;margin:0 auto 36px; }
+   .hero p { color:var(--muted2);font-size:1rem;max-width:480px;margin:0 auto 18px; }
+    .book-slot-cta{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  background:var(--blue);
+  color:#fff;
+  text-decoration:none;
+  padding:12px 22px;
+  border-radius:10px;
+  font-size:.92rem;
+  font-weight:700;
+  border:1px solid rgba(79,142,247,.35);
+  transition:all .2s;
+  margin-bottom:28px;
+}
+.book-slot-cta:hover{
+  background:var(--blue2);
+  transform:translateY(-1px);
+}
+.slot-icon{font-size:1rem;line-height:1;}
     .search-bar { display:flex;max-width:540px;margin:0 auto 32px;background:var(--card2);border:1px solid var(--border2);border-radius:12px;overflow:hidden; }
     .search-bar input { flex:1;border:none;outline:none;padding:15px 18px;font-family:'Space Grotesk',sans-serif;font-size:0.9rem;color:var(--text);background:transparent; }
     .search-bar input::placeholder { color:var(--muted); }
@@ -215,10 +235,10 @@
   <div class="hero-badge">&#9733; India's Exam Mentor Marketplace</div>
   <h1>Crack your exam with mentors<br>who've <em>been there</em></h1>
   <p>Connect with toppers & verified experts for UPSC, JEE, NEET, CAT & more. Book a 1:1 session today.</p>
-  <div class="search-bar">
-    <input type="text" placeholder="Search by exam, subject, or mentor name…"/>
-    <button>Search</button>
-  </div>
+ <a href="book-your-slot.html" class="book-slot-cta">
+  <span class="slot-icon">📅</span>
+  Book Your Slot
+</a>
   <div class="exam-logos-label">Popular exams — click to explore mentors</div>
   <div class="exam-logos-grid">
     <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#1a3a6c;color:#fff;">UPSC</div><span class="exam-pill-name">UPSC CSE</span></a>
