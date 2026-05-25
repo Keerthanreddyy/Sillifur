@@ -636,8 +636,8 @@
   import { initializeApp }       from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, EmailAuthProvider, linkWithCredential }
                                  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, updateDoc }
-                                 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, query, where, getDocs, collection }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey:            "AIzaSyDEWvEXCo_W5i7OZ1wT4QuPED3ur2q5N7c",
@@ -748,16 +748,46 @@
   }
 
   /* ── Navbar update ── */
-  function updateNavbar(user) {
-    const btn = document.getElementById('navSignInBtn');
-    btn.innerHTML = `<img src="${user.photoURL}"
-      style="width:26px;height:26px;border-radius:50%;">
-      ${user.displayName.split(' ')[0]}`;
-    btn.onclick = () => {
-      document.getElementById('profileEmail').innerText = user.email;
-      openProfileModal();
-    };
+ async function updateNavbar(user) {
+  const btn = document.getElementById('navSignInBtn');
+  btn.innerHTML = `<img src="${user.photoURL}"
+    style="width:26px;height:26px;border-radius:50%;">
+    ${user.displayName.split(' ')[0]}`;
+  btn.onclick = () => {
+    document.getElementById('profileEmail').innerText = user.email;
+    openProfileModal();
+  };
+
+  // Check if this user is an approved mentor
+  const q = await getDocs(
+    query(collection(db, "mentorApplications"),
+    where("email", "==", user.email),
+    where("status", "==", "approved"))
+  );
+
+  if (!q.empty) {
+    // Show dashboard button next to avatar
+    const existing = document.getElementById('mentorDashBtn');
+    if (existing) return;
+    const dashBtn = document.createElement('a');
+    dashBtn.id = 'mentorDashBtn';
+    dashBtn.href = 'mentor-dashboard.html';
+    dashBtn.title = 'Mentor Dashboard';
+    dashBtn.style.cssText = `
+      display:flex;align-items:center;gap:6px;
+      background:rgba(34,211,160,0.12);
+      border:1px solid rgba(34,211,160,0.3);
+      color:#22d3a0;padding:6px 12px;
+      border-radius:8px;font-size:0.78rem;
+      font-weight:600;text-decoration:none;
+      transition:all .2s;margin-left:8px;
+    `;
+    dashBtn.innerHTML = `📊 Dashboard`;
+    dashBtn.onmouseover = () => dashBtn.style.background = 'rgba(34,211,160,0.2)';
+    dashBtn.onmouseout  = () => dashBtn.style.background = 'rgba(34,211,160,0.12)';
+    btn.parentNode.insertBefore(dashBtn, btn);
   }
+}
 
   /* ── Persist login across reloads ── */
   onAuthStateChanged(auth, user => {
