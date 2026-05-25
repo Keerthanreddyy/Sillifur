@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sillifur — Find Your Mentor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #1a1f2e;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    overflow: hidden;
+  }
+
+  /* ── ORBIT WRAPPER ── */
+  .orbit-wrapper {
+    position: relative;
+    width: 420px;
+    height: 420px;
+    margin-bottom: 2.5rem;
+    flex-shrink: 0;
+  }
+
+  /* dashed orbit ring */
+  .orbit-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1.5px dashed rgba(255,255,255,0.18);
+  }
+
+  /* center logo */
+  .center-logo {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 110px; height: 110px;
+    background: linear-gradient(145deg, #4a8ef5, #2563eb);
+    border-radius: 24px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 40px rgba(37,99,235,0.5);
+    z-index: 5;
+  }
+
+
+
+  /* each orbiting icon bubble */
+  .orb {
+    position: absolute;
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+    transform: translate(-50%, -50%);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: default;
+  }
+  .orb:hover {
+    transform: translate(-50%, -50%) scale(1.12);
+    box-shadow: 0 6px 28px rgba(37,99,235,0.4);
+  }
+
+  .orb img {
+    width: 52px; height: 52px;
+    object-fit: contain;
+  }
+
+  /* fallback text if image fails */
+  .orb-text {
+    font-size: 0.6rem; font-weight: 700;
+    color: #222; text-align: center; line-height: 1.2;
+    padding: 4px;
+  }
+
+  /* ── HEADLINE ── */
+  .headline {
+    text-align: center;
+    margin-bottom: 2rem;
+    line-height: 1.15;
+  }
+
+  .headline h1 {
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    font-weight: 800;
+    color: #fff;
+  }
+
+  .headline .colored {
+    color: #4a90f5;
+  }
+
+  /* ── SIGN IN BUTTON ── */
+  .btn-signin {
+    display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    padding: 1rem 3rem;
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 360px; max-width: 90vw;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(37,99,235,0.45);
+  }
+  .btn-signin:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(37,99,235,0.55);
+  }
+  .btn-signin:active { transform: translateY(0); }
+
+  /* Google G icon */
+  .g-icon {
+    width: 22px; height: 22px; flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── ORBIT ── -->
+<div class="orbit-wrapper">
+  <div class="orbit-ring"></div>
+
+  <!-- Center Sillifur Logo -->
+  <div class="center-logo">
+    <svg width="90" height="90" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="logoGrad" x1="0" y1="0" x2="90" y2="90" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="100%" stop-color="#bfdbfe"/>
+        </linearGradient>
+      </defs>
+      <!-- S -->
+      <text x="26" y="60"
+        font-family="Georgia, serif"
+        font-size="52" font-weight="700"
+        fill="url(#logoGrad)"
+        letter-spacing="-3">S</text>
+      <!-- i — smaller, lighter -->
+      <text x="56" y="55"
+        font-family="Georgia, serif"
+        font-size="36" font-weight="400" font-style="italic"
+        fill="rgba(255,255,255,0.65)">i</text>
+      <!-- thin accent line below -->
+      <rect x="12" y="66" width="66" height="1.5" rx="0.75" fill="rgba(255,255,255,0.25)"/>
+    </svg>
+  </div>
+
+  <!-- 9 orbiting exam logo bubbles, placed via JS below -->
+  <!-- UPSC -->
+  <div class="orb" id="orb0">
+    <svg width="52" height="52" viewBox="0 0 52 52">
+      <circle cx="26" cy="26" r="26" fill="#fff"/>
+      <text x="26" y="22" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" font-weight="800" fill="#1a3a6e">UPSC</text>
+      <text x="26" y="32" text-anchor="middle" font-family="Inter,sans-serif" font-size="5.5" fill="#1a3a6e">Civil Services</text>
+      <rect x="14" y="35" width="24" height="2.5" rx="1.25" fill="#FF9933"/>
+      <rect x="14" y="38" width="24" height="2.5" rx="1.25" fill="#ffffff" stroke="#ccc" stroke-width="0.3"/>
+      <rect x="14" y="41" width="24" height="2.5" rx="1.25" fill="#138808"/>
+    </svg>
+  </div>
+
+  <!-- JEE -->
+  <div class="orb" id="orb1">
+    <svg width="52" height="52" viewBox="0 0 52 52">
+      <circle cx="26" cy="26" r="26" fill="#fff"/>
+      <text x="26" y="24" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="900" fill="#003087">JEE</text>
+      <text x="26" y="35" text-anchor="middle" font-family="Inter,sans-serif" font-size="6" fill="#003087">Mains &amp; Adv.</text>
+    </svg>
+  </div>
+
+  <!-- NEET -->
+  <div class="orb" id="orb2">
+    <svg width="52" height="52" viewBox="0 0 52 52">
+      <circle cx="26" cy="26" r="26" fill="#fff"/>
+      <text x="26" y="24" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="900" fill="#c0392b">NEET</text>
+      <text x="26" y="35" text-anchor="middle" font-family="Inter,sans-serif" font-size="6.5" fill="#c0392b">UG / PG</text>
+    </svg>
+  </div>
+
+  <!-- CAT -->
+  <div class="orb" id="orb3">
+    <svg width="52" height="52" viewBox="0 0 52 52">
+      <circle cx="26" cy="26" r="26" fill="#fff"/>
+      <text x="26" y="24" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="900" fill="#6d28d9">CAT</text>
+      <text x="26" y="35" text-anchor="middle" font-family="Inter,sans-serif" font-size="6.5" fill="#6d28d9">MBA Entrance</text>
+    </svg>
+  </div>
+
+  <!-- GATE -->
+  <div class="orb" id="orb4">
+    <svg width="52" height="52" viewBox="0 0 52 52">
+      <circle cx="26" cy="26" r="26" fill="#fff"/>
+      <text x="26" y="24" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="900" fill="#0e7490">GATE</text>
+      <text x="26" y="35" text-anchor="middle" font-family="Inter,sans-serif" font-size="6.5" fill="#0e7490">Engineering</text>
+    </svg>
+  </div>
+
+  <!-- SSC -->
+  <div class="orb" id="orb5">
+    <svg width="52" height="52" viewBox="0 0 52 52">
+      <circle cx="26" cy="26" r="26" fill="#fff"/>
+      <text x="26" y="24" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="900" fill="#d97706">SSC</text>
+      <text x="26" y="35" text-anchor="middle" font-family="Inter,sans-serif" font-size="6.5" fill="#d97706">CGL / CHSL</text>
+    </svg>
+  </div>
+
+  <!-- IBPS -->
+  <div class="orb" id="orb6">
+    <svg width="52" height="52" viewBox="0 0 52 52">
+      <circle cx="26" cy="26" r="26" fill="#fff"/>
+      <text x="26" y="24" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="900" fill="#065f46">IBPS</text>
+      <text x="26" y="35" text-anchor="middle" font-family="Inter,sans-serif" font-size="6.5" fill="#065f46">Bank PO</text>
+    </svg>
+  </div>
+
+  <!-- CLAT -->
+  <div class="orb" id="orb7">
+    <svg width="52" height="52" viewBox="0 0 52 52">
+      <circle cx="26" cy="26" r="26" fill="#fff"/>
+      <text x="26" y="24" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" font-weight="900" fill="#9d174d">CLAT</text>
+      <text x="26" y="35" text-anchor="middle" font-family="Inter,sans-serif" font-size="6.5" fill="#9d174d">Law Entrance</text>
+    </svg>
+  </div>
+
+  <!-- NDA -->
+  <div class="orb" id="orb8">
+    <svg width="52" height="52" viewBox="0 0 52 52">
+      <circle cx="26" cy="26" r="26" fill="#fff"/>
+      <text x="26" y="24" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="900" fill="#1e3a5f">NDA</text>
+      <text x="26" y="35" text-anchor="middle" font-family="Inter,sans-serif" font-size="6.5" fill="#1e3a5f">Defence</text>
+    </svg>
+  </div>
+</div>
+
+<!-- ── HEADLINE ── -->
+<div class="headline">
+  <h1>Welcome to the new way to</h1>
+  <h1><span class="colored">find mentors</span> &amp; <span class="colored">crack exams</span></h1>
+</div>
+
+<!-- ── SIGN IN ── -->
+<button class="btn-signin">
+  <!-- Google G SVG -->
+  <svg class="g-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+  </svg>
+  Login With Google
+</button>
+
+<script>
+  // Position each orb around the orbit ring
+  const wrapper = document.querySelector('.orbit-wrapper');
+  const wSize = 420;
+  const radius = 175; // px from center
+  const orbs = document.querySelectorAll('.orb');
+  const count = orbs.length;
+
+  orbs.forEach((orb, i) => {
+    // start from top (-90deg), go clockwise
+    const angle = (i / count) * 2 * Math.PI - Math.PI / 2;
+    const cx = wSize / 2 + radius * Math.cos(angle);
+    const cy = wSize / 2 + radius * Math.sin(angle);
+    orb.style.left = cx + 'px';
+    orb.style.top  = cy + 'px';
+  });
+</script>
+
+</body>
+</html>
