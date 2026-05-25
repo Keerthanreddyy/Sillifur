@@ -503,15 +503,10 @@
      FIREBASE + DASHBOARD LOGIC
 ══════════════════════════════════════ -->
 <script type="module">
-  // Handle redirect result after Google sign-in
-const { getRedirectResult } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
-try {
-  await getRedirectResult(auth);
-} catch(e) { console.error(e); }
   import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import {
-    getAuth, signInWithPopup, signInWithEmailAndPassword,
-    GoogleAuthProvider, onAuthStateChanged, signOut
+    getAuth, signInWithPopup, signInWithRedirect, getRedirectResult,
+    signInWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, signOut
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import {
     getFirestore, collection, query, where,
@@ -538,6 +533,11 @@ try {
   /* ══════════════════════════════
      AUTH STATE
   ══════════════════════════════ */
+  // Handle Google redirect result first
+  try {
+    await getRedirectResult(auth);
+  } catch(e) { console.error('Redirect result error:', e); }
+
   onAuthStateChanged(auth, async user => {
     if (!user) {
       showScreen('login');
@@ -547,7 +547,6 @@ try {
   });
 
   async function loadMentorData(user) {
-    // Look up mentor application by email
     const q = query(
       collection(db, "mentorApplications"),
       where("email", "==", user.email)
@@ -555,28 +554,27 @@ try {
     const snap = await getDocs(q);
 
     if (snap.empty) {
-      // Not a mentor applicant at all
       showScreen('login');
-      setLoginError("No mentor application found for this account. Please apply first.");
+      setLoginError("No mentor application found. Please apply first.");
       await signOut(auth);
       return;
     }
 
-    const docSnap = snap.docs[0];
-    MENTOR_DATA = { id: docSnap.id, ...docSnap.data() };
+    // Pick approved doc first, else most recent
+    const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const approvedDoc = docs.find(d => d.status?.toLowerCase() === 'approved');
+    const chosenDoc   = approvedDoc || docs[docs.length - 1];
+    MENTOR_DATA = chosenDoc;
 
-    if (MENTOR_DATA.status === 'pending') {
-      showPendingScreen('pending');
-      return;
-    }
-    if (MENTOR_DATA.status === 'rejected') {
-      showPendingScreen('rejected');
-      return;
-    }
-    if (MENTOR_DATA.status === 'approved') {
+    const status = (MENTOR_DATA.status || '').toLowerCase();
+
+    if (status === 'approved') {
       showDashboard();
       loadAllDashboardData();
-      return;
+    } else if (status === 'rejected') {
+      showPendingScreen('rejected');
+    } else {
+      showPendingScreen('pending');
     }
   }
 
@@ -872,21 +870,22 @@ try {
     } catch(e) { showToast('Error saving.'); }
   };
 
-  
-document.getElementById('googleLoginBtn').onclick = async () => {
-  setLoginError('');
-  try {
-    await signInWithPopup(auth, provider);
-  } catch(e) {
-    // If popup blocked, fall back to redirect
-    if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user') {
-      const { signInWithRedirect, getRedirectResult } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
-      await signInWithRedirect(auth, provider);
-    } else {
-      setLoginError(e.message);
+  /* ══════════════════════════════
+     LOGIN HANDLERS
+  ══════════════════════════════ */
+  document.getElementById('googleLoginBtn').onclick = async () => {
+    setLoginError('');
+    try {
+      await signInWithPopup(auth, provider);
+    } catch(e) {
+      if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user') {
+        await signInWithRedirect(auth, provider);
+      } else {
+        setLoginError('Google sign-in failed. Try email login below.');
+        console.error(e);
+      }
     }
-  }
-};
+  };
 
   document.getElementById('emailLoginBtn').onclick = async () => {
     setLoginError('');
