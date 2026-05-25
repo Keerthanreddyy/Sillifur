@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How Sillifur Works</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:#0b0d11;
+      --bg2:#12151c;
+      --card:#181c27;
+      --blue:#4f8ef7;
+      --blue2:#3a76e8;
+      --white:#ffffff;
+      --text:#e8eaf0;
+      --muted:#6b7280;
+      --muted2:#9ca3af;
+      --border:rgba(255,255,255,0.07);
+      --radius:14px;
+    }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    nav {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo { display: flex; align-items: center; gap: 9px; text-decoration: none; }
+    .logo-mark {
+      width: 34px; height: 34px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--blue); color: #fff;
+      font-family: 'Outfit', sans-serif; font-weight: 800;
+      letter-spacing: -1px;
+    }
+    .logo-text {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700; font-size: 1.2rem;
+      color: var(--white); letter-spacing: -0.3px;
+    }
+    .logo-text span { color: var(--blue); }
+
+    .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+    .nav-links a {
+      color: var(--muted2); text-decoration: none;
+      font-size: 0.875rem; font-weight: 500; transition: color .2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--white); }
+
+    .hero {
+      padding: 78px 5% 40px;
+      text-align: center;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 400px;
+      background: radial-gradient(ellipse, rgba(79,142,247,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(79,142,247,0.1);
+      border: 1px solid rgba(79,142,247,0.25);
+      color: var(--blue);
+      font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 5px 14px; border-radius: 20px;
+      margin-bottom: 22px;
+    }
+    .hero h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1.15;
+      max-width: 760px;
+      margin: 0 auto 16px;
+      letter-spacing: -1.2px;
+    }
+    .hero p {
+      color: var(--muted2);
+      font-size: 1rem;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .content-wrap {
+      padding: 10px 5% 70px;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .motive-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 34px 28px;
+      box-shadow: 0 14px 34px rgba(0,0,0,0.22);
+    }
+
+    .motive-card h2 {
+      font-family: 'Outfit', sans-serif;
+      color: var(--white);
+      font-size: 1.65rem;
+      margin-bottom: 18px;
+    }
+
+    .motive-card p {
+      color: var(--muted2);
+      font-size: 1rem;
+      margin-bottom: 18px;
+    }
+
+    .motive-card p:last-child { margin-bottom: 0; }
+    .motive-card strong { color: var(--text); }
+
+    footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 28px 5%;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .motive-card { padding: 26px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="#" class="logo">
+      <div class="logo-mark">S</div>
+      <div class="logo-text">silli<span>fur</span></div>
+    </a>
+    
+  </nav>
+
+  <section class="hero">
+    <div class="hero-badge">Our Mission</div>
+    <h1>Why Sillifur Exists</h1>
+    <p>Guidance should not be a privilege. It should be available to every serious aspirant.</p>
+  </section>
+
+  <main class="content-wrap">
+    <section class="motive-card">
+      <h2>Our Motive</h2>
+      <p>
+        At Sillifur, we believe that talent is everywhere, but the right guidance is not. Every competitive exam journey is filled with confusion, pressure, self-doubt, and endless information from random sources. Many students work hard, yet still feel lost because they lack one thing that can completely change their direction: the right mentor at the right time.
+      </p>
+      <p>
+        Sillifur was built from real experiences, the struggles, mistakes, and lessons faced during the preparation journey itself. Our mission is simple: <strong>to create clean, genuine, and accessible mentorship opportunities for every aspirant.</strong> We want students to stop wasting months figuring things out alone and instead gain clarity, discipline, and direction from mentors who truly understand the journey.
+      </p>
+    </section>
+  </main>
+
+  <footer>© 2025 Sillifur. All rights reserved.</footer>
+</body>
+</html>
