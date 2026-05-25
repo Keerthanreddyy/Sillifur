@@ -796,5 +796,36 @@
     renderSlots();
     updateSummary();
   </script>
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDEWvEXCo_W5i7OZ1wT4QuPED3ur2q5N7c",
+    authDomain: "sillifur-341e9.firebaseapp.com",
+    projectId: "sillifur-341e9",
+    storageBucket: "sillifur-341e9.appspot.com",
+    messagingSenderId: "848515376957",
+    appId: "1:848515376957:web:ac13cbb93fdcc9ba834754"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  let currentUser = null;
+  onAuthStateChanged(auth, (user) => { currentUser = user; });
+
+  window.saveBookingToFirestore = async (booking) => {
+    const docRef = await addDoc(collection(db, "bookings"), {
+      ...booking,
+      uid: currentUser ? currentUser.uid : null,
+      email: currentUser ? currentUser.email : null,
+      createdAt: serverTimestamp()
+    });
+    return docRef.id;
+  };
+</script>
 </body>
 </html>
