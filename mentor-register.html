@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Become a Mentor — Sillifur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:#0b0d11; --bg2:#12151c; --bg3:#1a1e2a;
+    --card:#181c27; --card2:#1f2335;
+    --blue:#4f8ef7; --blue2:#3a76e8;
+    --green:#22d3a0;
+    --white:#ffffff;
+    --text:#e8eaf0; --muted:#6b7280; --muted2:#9ca3af;
+    --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+    --red:#f87171;
+    --radius:14px;
+  }
+
+  body { font-family:'Space Grotesk',sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+
+  /* ── NAV (identical to index) ── */
+  nav {
+    background:var(--bg2); border-bottom:1px solid var(--border);
+    padding:0 5%; height:62px;
+    display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:100;
+  }
+  .logo { display:flex; align-items:center; gap:9px; text-decoration:none; }
+  .logo-mark { width:34px; height:34px; background:var(--blue); border-radius:9px; display:flex; align-items:center; justify-content:center; font-family:'Outfit',sans-serif; font-weight:800; font-size:1rem; color:white; letter-spacing:-1px; }
+  .logo-text { font-family:'Outfit',sans-serif; font-weight:700; font-size:1.2rem; color:var(--white); letter-spacing:-0.3px; }
+  .logo-text span { color:var(--blue); }
+  .nav-links { display:flex; align-items:center; gap:28px; list-style:none; }
+  .nav-links a { color:var(--muted2); text-decoration:none; font-size:0.875rem; font-weight:500; transition:color .2s; }
+  .nav-links a:hover { color:var(--white); }
+  .nav-links a.active { color:var(--blue); }
+  .btn-signin { background:var(--blue); color:white; border:none; padding:8px 20px; border-radius:8px; font-family:'Space Grotesk',sans-serif; font-size:0.875rem; font-weight:600; cursor:pointer; transition:background .2s; }
+  .btn-signin:hover { background:var(--blue2); }
+
+  /* ── PAGE ── */
+  .page { max-width:760px; margin:0 auto; padding:52px 24px 80px; }
+
+  /* header */
+  .page-header { text-align:center; margin-bottom:40px; }
+  .hero-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(79,142,247,0.1); border:1px solid rgba(79,142,247,0.25); color:var(--blue); font-size:0.78rem; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; padding:5px 14px; border-radius:20px; margin-bottom:18px; }
+  .page-header h1 { font-family:'Outfit',sans-serif; font-size:clamp(1.8rem,4vw,2.8rem); font-weight:800; color:var(--white); letter-spacing:-1px; margin-bottom:10px; }
+  .page-header h1 em { font-style:normal; color:var(--blue); }
+  .page-header p { color:var(--muted2); font-size:0.92rem; }
+
+  /* stepper */
+  .stepper {
+    display:flex; align-items:center;
+    background:var(--card); border:1px solid var(--border);
+    border-radius:var(--radius); padding:20px 24px;
+    margin-bottom:32px; overflow-x:auto; gap:0;
+  }
+  .s-item { display:flex; flex-direction:column; align-items:center; gap:6px; flex:1; min-width:0; position:relative; }
+  .s-item:not(:last-child)::after {
+    content:''; position:absolute; top:15px;
+    left:calc(50% + 20px); right:calc(-50% + 20px);
+    height:1px; background:var(--border2); transition:background .4s;
+  }
+  .s-item.done:not(:last-child)::after { background:var(--blue); }
+  .s-dot {
+    width:30px; height:30px; border-radius:50%;
+    border:2px solid var(--border2); background:var(--bg3);
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; font-weight:700; color:var(--muted);
+    transition:all .3s; z-index:1; flex-shrink:0;
+  }
+  .s-item.active .s-dot { border-color:var(--blue); background:var(--blue); color:white; box-shadow:0 0 0 4px rgba(79,142,247,0.15); }
+  .s-item.done .s-dot { border-color:var(--blue); background:var(--blue); color:white; }
+  .s-item.done .s-dot .s-num { display:none; }
+  .s-item.done .s-dot::after { content:'✓'; font-size:13px; }
+  .s-lbl { font-size:11px; font-weight:600; color:var(--muted); white-space:nowrap; transition:color .3s; letter-spacing:.2px; }
+  .s-item.active .s-lbl { color:var(--blue); }
+  .s-item.done  .s-lbl { color:var(--muted2); }
+
+  /* progress */
+  .progress-row { display:flex; justify-content:space-between; font-size:0.8rem; color:var(--muted2); margin-bottom:8px; font-weight:500; }
+  .progress-row strong { color:var(--text); }
+  .progress-track { height:3px; background:var(--border2); border-radius:2px; margin-bottom:28px; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(90deg, var(--blue), var(--blue2)); border-radius:2px; transition:width .5s cubic-bezier(.4,0,.2,1); }
+
+  /* form card */
+  .form-card { background:var(--card2); border:1px solid var(--border2); border-radius:var(--radius); padding:32px; }
+  .step-pane { display:none; animation:fadeUp .3s ease both; }
+  .step-pane.active { display:block; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  .pane-title { font-family:'Outfit',sans-serif; font-size:1.25rem; font-weight:700; color:var(--white); margin-bottom:4px; }
+  .pane-sub { font-size:0.82rem; color:var(--muted2); margin-bottom:26px; line-height:1.5; }
+
+  /* fields */
+  .frow { display:grid; gap:18px; margin-bottom:18px; }
+  .frow.c2 { grid-template-columns:1fr 1fr; }
+  .frow.c3 { grid-template-columns:1fr 1fr 1fr; }
+  .field { display:flex; flex-direction:column; gap:7px; }
+  .field label { font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--muted2); }
+  .field input, .field select, .field textarea {
+    font-family:'Space Grotesk',sans-serif; font-size:0.88rem;
+    background:var(--card); border:1px solid var(--border2);
+    border-radius:8px; padding:10px 13px;
+    color:var(--text); outline:none; width:100%;
+    transition:border-color .2s, box-shadow .2s;
+    appearance:none; -webkit-appearance:none;
+  }
+  .field input::placeholder, .field textarea::placeholder { color:var(--muted); }
+  .field select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b7280'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:34px; cursor:pointer; }
+  .field select option { background:#1f2335; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(79,142,247,0.12); }
+  .field textarea { resize:vertical; min-height:88px; line-height:1.6; }
+  .field-hint { font-size:0.72rem; color:var(--muted); }
+  .field-err  { font-size:0.72rem; color:var(--red); display:none; font-weight:600; }
+  .field.invalid .field-err { display:block; }
+  .field.invalid input, .field.invalid select, .field.invalid textarea { border-color:var(--red); }
+
+  .sec-label {
+    font-size:0.68rem; font-weight:700; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--muted);
+    padding-bottom:10px; margin:24px 0 16px;
+    border-bottom:1px solid var(--border);
+  }
+
+  /* price preview */
+  .price-preview {
+    display:none; margin-top:6px;
+    background:var(--card); border:1px solid var(--border2);
+    border-radius:8px; padding:16px 18px;
+    justify-content:space-between; align-items:center;
+  }
+  .price-preview.show { display:flex; }
+  .pp-label { font-size:0.68rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:3px; }
+  .pp-val { font-family:'Outfit',sans-serif; font-size:1.5rem; font-weight:800; color:var(--blue); }
+  .pp-val2 { font-size:0.95rem; font-weight:700; color:var(--text); }
+
+  /* chips */
+  .chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+  .chip { cursor:pointer; }
+  .chip input { display:none; }
+  .chip-lbl {
+    display:block; padding:7px 15px;
+    background:var(--card); border:1px solid var(--border2);
+    border-radius:30px; font-size:0.8rem; font-weight:600;
+    color:var(--muted2); transition:all .15s; user-select:none;
+  }
+  .chip input:checked + .chip-lbl { background:rgba(79,142,247,0.12); border-color:var(--blue); color:var(--blue); }
+
+  /* slot chips */
+  .slot-chips { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:8px; }
+  .slot-chip { cursor:pointer; }
+  .slot-chip input { display:none; }
+  .slot-lbl {
+    display:block; text-align:center; padding:9px 10px;
+    background:var(--card); border:1px solid var(--border2);
+    border-radius:8px; font-size:0.78rem; font-weight:600;
+    color:var(--muted2); transition:all .15s;
+  }
+  .slot-chip input:checked + .slot-lbl { background:rgba(79,142,247,0.12); border-color:var(--blue); color:var(--blue); }
+
+  /* exp options */
+  .exp-opts { display:flex; gap:9px; flex-wrap:wrap; margin-top:8px; }
+  .exp-opt { cursor:pointer; }
+  .exp-opt input { display:none; }
+  .exp-lbl {
+    display:flex; flex-direction:column; align-items:center; gap:5px;
+    padding:13px 16px; min-width:86px;
+    background:var(--card); border:1px solid var(--border2);
+    border-radius:10px; font-size:0.75rem; font-weight:600;
+    color:var(--muted2); transition:all .2s; text-align:center;
+  }
+  .exp-lbl .ico { font-size:1.3rem; }
+  .exp-opt input:checked + .exp-lbl { border-color:var(--blue); background:rgba(79,142,247,0.1); color:var(--text); }
+
+  /* actions */
+  .actions {
+    display:flex; justify-content:space-between; align-items:center;
+    margin-top:28px; padding-top:22px; border-top:1px solid var(--border);
+  }
+  .btn { font-family:'Space Grotesk',sans-serif; font-size:0.875rem; font-weight:600; padding:10px 24px; border-radius:8px; border:none; cursor:pointer; transition:all .2s; }
+  .btn-ghost { background:transparent; border:1px solid var(--border2); color:var(--muted2); }
+  .btn-ghost:hover { border-color:var(--white); color:var(--white); }
+  .btn-primary { background:var(--blue); color:white; }
+  .btn-primary:hover { background:var(--blue2); }
+  .btn-primary:active { transform:scale(.98); }
+  .btn-primary:disabled { background:var(--bg3); color:var(--muted); cursor:not-allowed; }
+
+  /* success */
+  #success { display:none; flex-direction:column; align-items:center; text-align:center; padding:56px 32px; animation:fadeUp .4s ease both; }
+  #success.show { display:flex; }
+  .s-icon { width:68px; height:68px; border-radius:50%; background:rgba(34,211,160,0.1); border:2px solid rgba(34,211,160,0.3); font-size:28px; display:flex; align-items:center; justify-content:center; margin-bottom:22px; }
+  #success h2 { font-family:'Outfit',sans-serif; font-size:1.7rem; font-weight:800; color:var(--white); margin-bottom:10px; }
+  #success p { color:var(--muted2); font-size:0.88rem; line-height:1.7; max-width:360px; margin-bottom:22px; }
+  .s-badge { background:var(--card); border:1px solid var(--border2); border-radius:8px; padding:11px 22px; font-size:0.82rem; color:var(--muted2); }
+  .s-badge strong { color:var(--green); }
+
+  /* loading */
+  .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.72); z-index:999; align-items:center; justify-content:center; flex-direction:column; gap:14px; }
+  .overlay.show { display:flex; }
+  .spinner { width:38px; height:38px; border:3px solid var(--border2); border-top-color:var(--blue); border-radius:50%; animation:spin .7s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .overlay p { font-size:0.85rem; color:var(--muted2); }
+
+  /* footer (matches index) */
+  footer { background:var(--bg2); border-top:1px solid var(--border); padding:48px 5% 28px; }
+  .footer-top { display:flex; justify-content:space-between; flex-wrap:wrap; gap:32px; margin-bottom:40px; }
+  .footer-brand p { font-size:0.82rem; color:var(--muted); margin-top:12px; max-width:200px; line-height:1.6; }
+  .footer-col h4 { font-weight:600; font-size:0.82rem; color:var(--white); margin-bottom:14px; }
+  .footer-col a { display:block; color:var(--muted); text-decoration:none; font-size:0.82rem; margin-bottom:9px; transition:color .2s; }
+  .footer-col a:hover { color:var(--blue); }
+  .footer-bottom { border-top:1px solid var(--border); padding-top:20px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; font-size:0.76rem; color:var(--muted); }
+  .footer-bottom a { color:var(--muted); text-decoration:none; }
+  .footer-bottom a:hover { color:var(--blue); }
+
+  @media(max-width:640px){
+    nav { padding:0 20px; }
+    .nav-links { display:none; }
+    .page { padding:32px 16px 60px; }
+    .form-card { padding:22px 18px; }
+    .frow.c2, .frow.c3 { grid-template-columns:1fr; }
+    .slot-chips { grid-template-columns:repeat(2,1fr); }
+    .stepper { padding:16px 10px; }
+    .s-lbl { display:none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-mark">S</div>
+    <div class="logo-text">silli<span>fur</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Browse Mentors</a></li>
+    <li><a href="mentor-register.html" class="active">Become a Mentor</a></li>
+    <li><a href="index.html#how">How it works</a></li>
+  </ul>
+  <button class="btn-signin" id="navSignInBtn">Sign In</button>
+</nav>
+
+<!-- LOADING -->
+<div class="overlay" id="overlay">
+  <div class="spinner"></div>
+  <p>Submitting your application…</p>
+</div>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="hero-badge">★ Join Sillifur</div>
+    <h1>Become a <em>Mentor</em></h1>
+    <p>Share your journey. Help aspirants crack what you already have. Takes less than 5 minutes.</p>
+  </div>
+
+  <!-- STEPPER -->
+  <div class="stepper" id="stepper">
+    <div class="s-item active" data-s="1"><div class="s-dot"><span class="s-num">1</span></div><div class="s-lbl">Personal</div></div>
+    <div class="s-item"        data-s="2"><div class="s-dot"><span class="s-num">2</span></div><div class="s-lbl">Exam</div></div>
+    <div class="s-item"        data-s="3"><div class="s-dot"><span class="s-num">3</span></div><div class="s-lbl">Pricing</div></div>
+    <div class="s-item"        data-s="4"><div class="s-dot"><span class="s-num">4</span></div><div class="s-lbl">Availability</div></div>
+    <div class="s-item"        data-s="5"><div class="s-dot"><span class="s-num">5</span></div><div class="s-lbl">Profile</div></div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-row">
+    <span><strong id="pLabel">Step 1 of 5</strong> — Personal Info</span>
+    <span style="color:var(--blue);font-weight:700" id="pPct">20%</span>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="pFill" style="width:20%"></div></div>
+
+  <!-- FORM CARD -->
+  <div class="form-card" id="formCard">
+    <form id="mForm" novalidate>
+
+      <!-- ── STEP 1 ── -->
+      <div class="step-pane active" id="p1">
+        <div class="pane-title">Personal Information</div>
+        <div class="pane-sub">This becomes your public mentor profile on Sillifur.</div>
+        <div class="frow c2">
+          <div class="field" id="ff-firstName"><label>First Name *</label><input type="text" name="firstName" placeholder="Arjun"/><span class="field-err">Required</span></div>
+          <div class="field" id="ff-lastName"><label>Last Name *</label><input type="text" name="lastName" placeholder="Sharma"/><span class="field-err">Required</span></div>
+        </div>
+        <div class="frow">
+          <div class="field" id="ff-email"><label>Email Address *</label><input type="email" name="email" placeholder="arjun@example.com"/><span class="field-err">Enter a valid email</span></div>
+        </div>
+        <div class="frow c2">
+          <div class="field" id="ff-phone"><label>Phone Number *</label><input type="tel" name="phone" placeholder="+91 98765 43210"/><span class="field-err">Required</span></div>
+          <div class="field" id="ff-city"><label>City *</label><input type="text" name="city" placeholder="Hyderabad"/><span class="field-err">Required</span></div>
+        </div>
+        <div class="frow">
+          <div class="field" id="ff-photoUrl"><label>Profile Photo URL</label><input type="url" name="photoUrl" placeholder="https://your-photo-link.com/photo.jpg"/><span class="field-hint">LinkedIn / Google Drive photo link</span></div>
+        </div>
+        <div class="frow">
+          <div class="field" id="ff-bio"><label>Short Bio *</label><textarea name="bio" rows="4" placeholder="Write 2–3 lines — your background, the exam you cleared, and what you help students with…"></textarea><span class="field-err">Please write at least 30 characters</span></div>
+        </div>
+      </div>
+
+      <!-- ── STEP 2 ── -->
+      <div class="step-pane" id="p2">
+        <div class="pane-title">Exam Details</div>
+        <div class="pane-sub">Your credentials build trust. We verify before you go live.</div>
+        <div class="frow">
+          <div class="field" id="ff-examCleared">
+            <label>Exam Cleared *</label>
+            <select name="examCleared">
+              <option value="">Select exam…</option>
+              <option>UPSC CSE (IAS/IPS/IFS)</option><option>UPSC CDS</option><option>UPSC CAPF</option>
+              <option>JEE Mains</option><option>JEE Advanced</option><option>NEET UG</option>
+              <option>CAT</option><option>GATE</option>
+              <option>SSC CGL</option><option>SSC CHSL</option>
+              <option>IBPS PO</option><option>IBPS Clerk</option><option>SBI PO</option>
+              <option>RBI Grade B</option><option>SEBI Grade A</option>
+              <option>CLAT</option><option>CUET</option><option>NDA / CDS</option>
+              <option>State PSC</option><option>Other</option>
+            </select>
+            <span class="field-err">Please select an exam</span>
+          </div>
+        </div>
+        <div class="frow" id="examOtherRow" style="display:none">
+          <div class="field" id="ff-examOther"><label>Specify Exam *</label><input type="text" name="examOther" placeholder="Name of the exam"/><span class="field-err">Required</span></div>
+        </div>
+        <div class="sec-label">Your Result</div>
+        <div class="frow c3">
+          <div class="field" id="ff-rank"><label>Rank / Roll No.</label><input type="text" name="rank" placeholder="AIR 142"/><span class="field-hint">All India Rank if applicable</span></div>
+          <div class="field" id="ff-percentile"><label>Percentile *</label><input type="number" name="percentile" placeholder="99.2" min="0" max="100" step="0.01"/><span class="field-err">Enter 0–100</span></div>
+          <div class="field" id="ff-yearCleared"><label>Year Cleared *</label><input type="number" name="yearCleared" placeholder="2023" min="2000" max="2025"/><span class="field-err">2000–2025</span></div>
+        </div>
+        <div class="sec-label">Subjects / Areas</div>
+        <div class="frow">
+          <div class="field" id="ff-subjects"><label>Subjects you can mentor *</label><input type="text" name="subjects" placeholder="e.g. GS Paper 1, Essay, Maths, Reasoning…"/><span class="field-hint">Comma-separated</span><span class="field-err">List at least one subject</span></div>
+        </div>
+      </div>
+
+      <!-- ── STEP 3 ── -->
+      <div class="step-pane" id="p3">
+        <div class="pane-title">Session Pricing</div>
+        <div class="pane-sub">Set a fair rate. Easily updated after approval.</div>
+        <div class="frow c2">
+          <div class="field" id="ff-price"><label>Price per Session (₹) *</label><input type="number" name="pricePerSession" id="priceIn" placeholder="799" min="0" step="50"/><span class="field-hint">Enter 0 for free / pro-bono</span><span class="field-err">Required</span></div>
+          <div class="field" id="ff-duration"><label>Session Duration *</label>
+            <select name="sessionDuration" id="durIn">
+              <option value="">Select…</option>
+              <option value="30">30 minutes</option><option value="45">45 minutes</option>
+              <option value="60">60 minutes</option><option value="90">90 minutes</option>
+              <option value="120">120 minutes</option>
+            </select>
+            <span class="field-err">Required</span>
+          </div>
+        </div>
+        <div class="price-preview" id="pricePreview">
+          <div><div class="pp-label">Rate per session</div><div class="pp-val" id="ppAmt">₹0</div></div>
+          <div style="text-align:right"><div class="pp-label">Duration</div><div class="pp-val2" id="ppDur">—</div></div>
+        </div>
+        <div class="sec-label">Mode & Payment</div>
+        <div class="frow c2">
+          <div class="field" id="ff-mode"><label>Session Mode *</label>
+            <select name="sessionMode">
+              <option value="">Select…</option>
+              <option value="video">Video Call (Meet / Zoom)</option>
+              <option value="phone">Phone Call</option>
+              <option value="chat">Chat / WhatsApp</option>
+              <option value="inperson">In-Person</option>
+            </select>
+            <span class="field-err">Required</span>
+          </div>
+          <div class="field" id="ff-payment"><label>Payment via *</label>
+            <select name="paymentMode">
+              <option value="">Select…</option>
+              <option>UPI</option><option>Bank Transfer</option>
+              <option>Razorpay (via Platform)</option><option>PayPal</option>
+            </select>
+            <span class="field-err">Required</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STEP 4 ── -->
+      <div class="step-pane" id="p4">
+        <div class="pane-title">Your Availability</div>
+        <div class="pane-sub">Let aspirants know when to book you. Pick all that apply.</div>
+        <div class="field" id="ff-days">
+          <label>Available Days *</label>
+          <div class="chips">
+            <label class="chip"><input type="checkbox" name="days" value="Mon"><span class="chip-lbl">Mon</span></label>
+            <label class="chip"><input type="checkbox" name="days" value="Tue"><span class="chip-lbl">Tue</span></label>
+            <label class="chip"><input type="checkbox" name="days" value="Wed"><span class="chip-lbl">Wed</span></label>
+            <label class="chip"><input type="checkbox" name="days" value="Thu"><span class="chip-lbl">Thu</span></label>
+            <label class="chip"><input type="checkbox" name="days" value="Fri"><span class="chip-lbl">Fri</span></label>
+            <label class="chip"><input type="checkbox" name="days" value="Sat"><span class="chip-lbl">Sat</span></label>
+            <label class="chip"><input type="checkbox" name="days" value="Sun"><span class="chip-lbl">Sun</span></label>
+          </div>
+          <span class="field-err" id="daysErr" style="display:none;margin-top:6px">Select at least one day</span>
+        </div>
+        <div class="sec-label">Time Slots (IST)</div>
+        <div class="field" id="ff-slots">
+          <label>Available Time Slots *</label>
+          <div class="slot-chips">
+            <label class="slot-chip"><input type="checkbox" name="slots" value="6–8 AM"><span class="slot-lbl">6–8 AM</span></label>
+            <label class="slot-chip"><input type="checkbox" name="slots" value="8–10 AM"><span class="slot-lbl">8–10 AM</span></label>
+            <label class="slot-chip"><input type="checkbox" name="slots" value="10 AM–12 PM"><span class="slot-lbl">10 AM–12 PM</span></label>
+            <label class="slot-chip"><input type="checkbox" name="slots" value="12–2 PM"><span class="slot-lbl">12–2 PM</span></label>
+            <label class="slot-chip"><input type="checkbox" name="slots" value="2–4 PM"><span class="slot-lbl">2–4 PM</span></label>
+            <label class="slot-chip"><input type="checkbox" name="slots" value="4–6 PM"><span class="slot-lbl">4–6 PM</span></label>
+            <label class="slot-chip"><input type="checkbox" name="slots" value="6–8 PM"><span class="slot-lbl">6–8 PM</span></label>
+            <label class="slot-chip"><input type="checkbox" name="slots" value="8–10 PM"><span class="slot-lbl">8–10 PM</span></label>
+            <label class="slot-chip"><input type="checkbox" name="slots" value="10 PM–12 AM"><span class="slot-lbl">10 PM–12 AM</span></label>
+          </div>
+          <span class="field-err" id="slotsErr" style="display:none;margin-top:6px">Select at least one slot</span>
+        </div>
+        <div class="frow" style="margin-top:18px">
+          <div class="field" id="ff-spw"><label>Sessions per week (approx.) *</label>
+            <select name="sessionsPerWeek">
+              <option value="">Select…</option>
+              <option value="1-2">1–2 sessions</option><option value="3-5">3–5 sessions</option>
+              <option value="6-10">6–10 sessions</option><option value="10+">10+ sessions</option>
+            </select>
+            <span class="field-err">Required</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STEP 5 ── -->
+      <div class="step-pane" id="p5">
+        <div class="pane-title">Profile & Experience</div>
+        <div class="pane-sub">Social proof builds trust with aspirants.</div>
+        <div class="frow">
+          <div class="field" id="ff-linkedin"><label>LinkedIn Profile URL</label><input type="url" name="linkedin" placeholder="https://linkedin.com/in/your-profile"/><span class="field-hint">Highly recommended — boosts credibility</span></div>
+        </div>
+        <div class="frow c2">
+          <div class="field"><label>Twitter / X Handle</label><input type="text" name="twitter" placeholder="@yourhandle"/></div>
+          <div class="field"><label>YouTube / Blog URL</label><input type="url" name="youtube" placeholder="https://youtube.com/@channel"/></div>
+        </div>
+        <div class="sec-label">Mentoring Experience</div>
+        <div class="field" id="ff-exp">
+          <label>Prior teaching / mentoring *</label>
+          <div class="exp-opts">
+            <label class="exp-opt"><input type="radio" name="mentoringExp" value="none"><span class="exp-lbl"><span class="ico">🌱</span>First time</span></label>
+            <label class="exp-opt"><input type="radio" name="mentoringExp" value="some"><span class="exp-lbl"><span class="ico">🌿</span>Helped a few</span></label>
+            <label class="exp-opt"><input type="radio" name="mentoringExp" value="regular"><span class="exp-lbl"><span class="ico">🌳</span>Regularly mentor</span></label>
+            <label class="exp-opt"><input type="radio" name="mentoringExp" value="professional"><span class="exp-lbl"><span class="ico">🏆</span>Professional coach</span></label>
+          </div>
+          <span class="field-err" id="expErr" style="display:none;margin-top:6px">Please select your level</span>
+        </div>
+        <div class="frow" style="margin-top:18px">
+          <div class="field" id="ff-achievements"><label>Key Achievements / Social Proof *</label><textarea name="achievements" rows="4" placeholder="e.g. Helped 15 students crack UPSC Prelims 2023 · Ran a Telegram group with 2000+ members · Featured in The Hindu…"></textarea><span class="field-err">Required</span></div>
+        </div>
+        <div class="frow">
+          <div class="field" id="ff-why"><label>Why do you want to mentor? *</label><textarea name="whyMentor" rows="3" placeholder="Share what motivates you to give back to the community…"></textarea><span class="field-err">Required</span></div>
+        </div>
+      </div>
+
+    </form>
+
+    <!-- SUCCESS -->
+    <div id="success">
+      <div class="s-icon">🎉</div>
+      <h2>Application Submitted!</h2>
+      <p>Our team reviews every application carefully and will get back to you within <strong style="color:var(--text)">48 hours</strong> on your registered email.</p>
+      <div class="s-badge">Status: <strong>Pending Review</strong></div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="actions" id="actions">
+      <button class="btn btn-ghost" id="prevBtn" style="visibility:hidden">← Back</button>
+      <button class="btn btn-primary" id="nextBtn">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER (matches index) -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="index.html" class="logo"><div class="logo-mark">S</div><div class="logo-text">silli<span>fur</span></div></a>
+      <p>India's exam mentor marketplace. Learn from toppers who've done it.</p>
+    </div>
+    <div class="footer-col"><h4>Platform</h4><a href="index.html">Browse Mentors</a><a href="mentor-register.html">Become a Mentor</a><a href="index.html#how">How it Works</a></div>
+    <div class="footer-col"><h4>Exams</h4><a href="#">UPSC CSE</a><a href="#">JEE / NEET</a><a href="#">CAT / GATE</a><a href="#">SSC / Bank PO</a></div>
+    <div class="footer-col"><h4>Company</h4><a href="#">About Us</a><a href="#">Blog</a><a href="#">Contact</a><a href="#">Open Source ↗</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Sillifur. All rights reserved.</span>
+    <div style="display:flex;gap:16px"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+  </div>
+</footer>
+
+<script type="module">
+  import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // ── same config as index.html ──
+  const firebaseConfig = {
+    apiKey:            "AIzaSyDEWvEXCo_W5i7OZ1wT4QuPED3ur2q5N7c",
+    authDomain:        "sillifur-341e9.firebaseapp.com",
+    projectId:         "sillifur-341e9",
+    storageBucket:     "sillifur-341e9.appspot.com",
+    messagingSenderId: "848515376957",
+    appId:             "1:848515376957:web:ac13cbb93fdcc9ba834754"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // Reflect auth state in nav button
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      const btn = document.getElementById('navSignInBtn');
+      btn.innerHTML = `<img src="${user.photoURL}" style="width:24px;height:24px;border-radius:50%;vertical-align:middle;margin-right:6px;">${user.displayName.split(' ')[0]}`;
+    }
+  });
+
+  // ── State ──
+  let cur = 1;
+  const TOTAL = 5;
+  const NAMES = ['Personal Info','Exam Details','Pricing','Availability','Profile & Experience'];
+
+  const form    = document.getElementById('mForm');
+  const nextBtn = document.getElementById('nextBtn');
+  const prevBtn = document.getElementById('prevBtn');
+  const pFill   = document.getElementById('pFill');
+  const pLabel  = document.getElementById('pLabel');
+  const pPct    = document.getElementById('pPct');
+  const overlay = document.getElementById('overlay');
+  const success = document.getElementById('success');
+  const actions = document.getElementById('actions');
+
+  // Price preview
+  const priceIn = document.getElementById('priceIn');
+  const durIn   = document.getElementById('durIn');
+  const pp      = document.getElementById('pricePreview');
+  const ppAmt   = document.getElementById('ppAmt');
+  const ppDur   = document.getElementById('ppDur');
+  function refreshPrice() {
+    if (priceIn.value !== '' && durIn.value) {
+      ppAmt.textContent = +priceIn.value === 0 ? 'Free' : `₹${Number(priceIn.value).toLocaleString('en-IN')}`;
+      ppDur.textContent = durIn.options[durIn.selectedIndex].text;
+      pp.classList.add('show');
+    } else { pp.classList.remove('show'); }
+  }
+  priceIn.addEventListener('input', refreshPrice);
+  durIn.addEventListener('change', refreshPrice);
+
+  // Other exam toggle
+  form.querySelector('[name="examCleared"]').addEventListener('change', function() {
+    document.getElementById('examOtherRow').style.display = this.value === 'Other' ? '' : 'none';
+  });
+
+  // Validation
+  function chk(id, name, test) {
+    const wrap = document.getElementById(id); if (!wrap) return true;
+    const el = form.querySelector(`[name="${name}"]`); if (!el) return true;
+    const ok = test(el);
+    wrap.classList.toggle('invalid', !ok);
+    return ok;
+  }
+  function validate(s) {
+    let ok = true;
+    const fail = () => ok = false;
+    if (s===1) {
+      if (!chk('ff-firstName','firstName',e=>e.value.trim())) fail();
+      if (!chk('ff-lastName', 'lastName', e=>e.value.trim())) fail();
+      if (!chk('ff-email',    'email',    e=>/\S+@\S+\.\S+/.test(e.value))) fail();
+      if (!chk('ff-phone',    'phone',    e=>e.value.trim().length>=7)) fail();
+      if (!chk('ff-city',     'city',     e=>e.value.trim())) fail();
+      if (!chk('ff-bio',      'bio',      e=>e.value.trim().length>=30)) fail();
+    }
+    if (s===2) {
+      if (!chk('ff-examCleared','examCleared',e=>e.value)) fail();
+      if (form.querySelector('[name="examCleared"]').value==='Other')
+        if (!chk('ff-examOther','examOther',e=>e.value.trim())) fail();
+      if (!chk('ff-percentile','percentile',e=>e.value!==''&&+e.value>=0&&+e.value<=100)) fail();
+      if (!chk('ff-yearCleared','yearCleared',e=>+e.value>=2000&&+e.value<=2025)) fail();
+      if (!chk('ff-subjects','subjects',e=>e.value.trim())) fail();
+    }
+    if (s===3) {
+      if (!chk('ff-price',  'pricePerSession',e=>e.value!==''&&+e.value>=0)) fail();
+      if (!chk('ff-duration','sessionDuration',e=>e.value)) fail();
+      if (!chk('ff-mode',   'sessionMode',    e=>e.value)) fail();
+      if (!chk('ff-payment','paymentMode',    e=>e.value)) fail();
+    }
+    if (s===4) {
+      const de = document.getElementById('daysErr');
+      const se = document.getElementById('slotsErr');
+      const days  = [...form.querySelectorAll('[name="days"]:checked')];
+      const slots = [...form.querySelectorAll('[name="slots"]:checked')];
+      if (!days.length)  { de.style.display='block'; fail(); } else de.style.display='none';
+      if (!slots.length) { se.style.display='block'; fail(); } else se.style.display='none';
+      if (!chk('ff-spw','sessionsPerWeek',e=>e.value)) fail();
+    }
+    if (s===5) {
+      const ee = document.getElementById('expErr');
+      if (!form.querySelector('[name="mentoringExp"]:checked')) { ee.style.display='block'; fail(); } else ee.style.display='none';
+      if (!chk('ff-achievements','achievements',e=>e.value.trim())) fail();
+      if (!chk('ff-why','whyMentor',e=>e.value.trim())) fail();
+    }
+    return ok;
+  }
+
+  function goTo(n) {
+    document.getElementById(`p${cur}`).classList.remove('active');
+    document.getElementById(`p${n}`).classList.add('active');
+    document.querySelectorAll('.s-item').forEach(el => {
+      const s = +el.dataset.s;
+      el.classList.remove('active','done');
+      if (s < n) el.classList.add('done');
+      else if (s === n) el.classList.add('active');
+    });
+    cur = n;
+    const pct = Math.round(n/TOTAL*100);
+    pFill.style.width = pct+'%';
+    pLabel.textContent = `Step ${n} of ${TOTAL}`;
+    document.querySelector('.progress-row span:first-child').innerHTML =
+      `<strong>Step ${n} of ${TOTAL}</strong> — ${NAMES[n-1]}`;
+    pPct.textContent = pct+'%';
+    prevBtn.style.visibility = n===1 ? 'hidden' : 'visible';
+    nextBtn.textContent = n===TOTAL ? 'Submit Application →' : 'Continue →';
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  nextBtn.addEventListener('click', async () => {
+    if (!validate(cur)) return;
+    if (cur < TOTAL) { goTo(cur+1); return; }
+
+    // collect all data
+    const fd = new FormData(form);
+    const data = {};
+    for (const [k,v] of fd.entries()) {
+      if (data[k]) data[k] = Array.isArray(data[k]) ? [...data[k],v] : [data[k],v];
+      else data[k] = v;
+    }
+    data.days  = [...form.querySelectorAll('[name="days"]:checked')].map(e=>e.value);
+    data.slots = [...form.querySelectorAll('[name="slots"]:checked')].map(e=>e.value);
+    data.status = 'pending';
+    data.submittedAt = serverTimestamp();
+
+    // attach uid if signed in
+    const user = auth.currentUser;
+    if (user) data.uid = user.uid;
+
+    overlay.classList.add('show');
+    nextBtn.disabled = true;
+
+    try {
+      await addDoc(collection(db, 'mentorApplications'), data);
+      overlay.classList.remove('show');
+      form.style.display = 'none';
+      actions.style.display = 'none';
+      success.classList.add('show');
+    } catch(err) {
+      overlay.classList.remove('show');
+      nextBtn.disabled = false;
+      alert('Submission failed. Check your Firebase config.\n\n' + err.message);
+    }
+  });
+
+  prevBtn.addEventListener('click', () => { if (cur > 1) goTo(cur-1); });
+</script>
+</body>
+</html>
