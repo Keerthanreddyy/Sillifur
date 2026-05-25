@@ -546,228 +546,10 @@
     </div>
   </div>
 
-  <script>
-    const slotOptions = [
-      "07:00 AM", "08:00 AM", "09:00 AM", "10:00 AM",
-      "11:00 AM", "12:00 PM", "02:00 PM", "03:00 PM",
-      "04:00 PM", "05:00 PM", "06:00 PM", "08:00 PM"
-    ];
-
-    const mentorPool = [
-      { name: "Neha Mehra", title: "IAS Officer · UPSC AIR 34", fee30: 799, fee60: 1399 },
-      { name: "Rohit Kumar", title: "IIT Delhi · JEE Advanced AIR 42", fee30: 899, fee60: 1499 },
-      { name: "Ananya Sharma", title: "AIIMS Delhi · NEET AIR 19", fee30: 999, fee60: 1699 },
-      { name: "Vikram Tiwari", title: "IIM Ahmedabad · CAT 99.8%ile", fee30: 1099, fee60: 1799 },
-      { name: "Shreya Nair", title: "NLSIU Bengaluru · CLAT Topper", fee30: 749, fee60: 1299 }
-    ];
-
-    const dateGrid = document.getElementById("dateGrid");
-    const sessionType = document.getElementById("sessionType");
-    const slotGrid = document.getElementById("slotGrid");
-    const bookingSummary = document.getElementById("bookingSummary");
-    const provisionalBtn = document.getElementById("provisionalBtn");
-    const resetBtn = document.getElementById("resetBtn");
-    const slotStatus = document.getElementById("slotStatus");
-    const mentorCard = document.getElementById("mentorCard");
-    const mentorList = document.getElementById("mentorList");
-    const mentorStatus = document.getElementById("mentorStatus");
-    const toPaymentBtn = document.getElementById("toPaymentBtn");
-    const paymentCard = document.getElementById("paymentCard");
-    const paymentStatus = document.getElementById("paymentStatus");
-    const payNowBtn = document.getElementById("payNowBtn");
-    const provisionalModal = document.getElementById("provisionalModal");
-    const modalSummary = document.getElementById("modalSummary");
-    const closeModalBtn = document.getElementById("closeModalBtn");
-
-    let selectedDate = "";
-    let selectedSlot = "";
-    let selectedMentor = null;
-
-    function formatDate(value) {
-      const date = new Date(value + "T00:00:00");
-      return date.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
-    }
-
-    function toIsoDate(dateObj) {
-      const y = dateObj.getFullYear();
-      const m = String(dateObj.getMonth() + 1).padStart(2, "0");
-      const d = String(dateObj.getDate()).padStart(2, "0");
-      return `${y}-${m}-${d}`;
-    }
-
-    function renderDateBoxes() {
-      dateGrid.innerHTML = "";
-
-      const now = new Date();
-      const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const end = new Date(start);
-      end.setDate(end.getDate() + 6);
-
-      const cursor = new Date(start);
-      let firstDateIso = "";
-
-      while (cursor <= end) {
-        const iso = toIsoDate(cursor);
-        if (!firstDateIso) firstDateIso = iso;
-
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "date-btn";
-        btn.dataset.value = iso;
-
-        const day = cursor.toLocaleDateString("en-US", { weekday: "short" });
-        const num = cursor.getDate();
-        const mon = cursor.toLocaleDateString("en-US", { month: "short" });
-
-        btn.innerHTML = `
-          <span class="date-day">${day}</span>
-          <span class="date-num">${num}</span>
-          <span class="date-mon">${mon}</span>
-        `;
-
-        btn.addEventListener("click", () => {
-          selectedDate = iso;
-          document.querySelectorAll(".date-btn").forEach(d => d.classList.remove("selected"));
-          btn.classList.add("selected");
-          updateSummary();
-        });
-
-        dateGrid.appendChild(btn);
-        cursor.setDate(cursor.getDate() + 1);
-      }
-
-      if (firstDateIso) {
-        selectedDate = firstDateIso;
-        const firstBtn = dateGrid.querySelector(".date-btn");
-        if (firstBtn) firstBtn.classList.add("selected");
-      }
-    }
-
-    function renderSlots() {
-      slotGrid.innerHTML = "";
-      slotOptions.forEach(slot => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "slot-btn";
-        btn.textContent = slot;
-        btn.addEventListener("click", () => {
-          selectedSlot = slot;
-          document.querySelectorAll(".slot-btn").forEach(b => b.classList.remove("selected"));
-          btn.classList.add("selected");
-          updateSummary();
-        });
-        slotGrid.appendChild(btn);
-      });
-    }
-
-    function updateSummary() {
-      const date = selectedDate ? formatDate(selectedDate) : "Not selected";
-      const typeText = sessionType.value ? `${sessionType.value} mins` : "Not selected";
-      const slot = selectedSlot || "Not selected";
-      bookingSummary.innerHTML = `<strong>Current selection:</strong> ${date} · ${slot} · ${typeText}`;
-    }
-
-    function pickAvailableMentors() {
-      const shuffled = [...mentorPool].sort(() => 0.5 - Math.random());
-      return shuffled.slice(0, 4);
-    }
-
-    function renderMentors(list) {
-      mentorList.innerHTML = "";
-      selectedMentor = null;
-      list.forEach(mentor => {
-        const card = document.createElement("div");
-        card.className = "mentor-card";
-        const fee = sessionType.value === "60" ? mentor.fee60 : mentor.fee30;
-        card.innerHTML = `
-          <div class="mentor-name">${mentor.name}</div>
-          <div class="mentor-title">${mentor.title}</div>
-          <div class="mentor-price">INR ${fee} / session</div>
-        `;
-        card.addEventListener("click", () => {
-          document.querySelectorAll(".mentor-card").forEach(el => el.classList.remove("selected"));
-          card.classList.add("selected");
-          selectedMentor = { ...mentor, fee };
-          mentorStatus.className = "status ok";
-          mentorStatus.textContent = `${mentor.name} selected. You can continue to payment.`;
-        });
-        mentorList.appendChild(card);
-      });
-    }
-
-    function validateStepOne() {
-      if (!selectedDate) {
-        slotStatus.className = "status error";
-        slotStatus.textContent = "Please choose a date.";
-        return false;
-      }
-      if (!sessionType.value) {
-        slotStatus.className = "status error";
-        slotStatus.textContent = "Please choose session type.";
-        return false;
-      }
-      if (!selectedSlot) {
-        slotStatus.className = "status error";
-        slotStatus.textContent = "Please choose a time slot.";
-        return false;
-      }
-      slotStatus.className = "status ok";
-      slotStatus.textContent = "Slot details look good.";
-      return true;
-    }
-
-    function openProvisionalModal() {
-      modalSummary.innerHTML = `
-        <strong>Date:</strong> ${formatDate(selectedDate)}<br>
-        <strong>Time:</strong> ${selectedSlot}<br>
-        <strong>Session:</strong> ${sessionType.value} minutes
-      `;
-      provisionalModal.classList.add("open");
-    }
-
-    function closeProvisionalModal() {
-      provisionalModal.classList.remove("open");
-    }
-
-    function showPayment() {
-      const fee = selectedMentor.fee;
-      const total = fee + 49;
-      document.getElementById("payMentor").textContent = selectedMentor.name;
-      document.getElementById("payDate").textContent = formatDate(selectedDate);
-      document.getElementById("payTime").textContent = selectedSlot;
-      document.getElementById("payType").textContent = `${sessionType.value} minutes`;
-      document.getElementById("payFee").textContent = `INR ${fee}`;
-      document.getElementById("payTotal").textContent = `INR ${total}`;
-      paymentCard.classList.remove("hidden");
-      paymentCard.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    provisionalBtn.addEventListener("click", () => {
-      if (!validateStepOne()) return;
-      renderMentors(pickAvailableMentors());
-      openProvisionalModal();
-      mentorCard.classList.remove("hidden");
-      mentorStatus.className = "status";
-      mentorStatus.textContent = "";
-    });
-
-    closeModalBtn.addEventListener("click", () => {
-      closeProvisionalModal();
-      mentorCard.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-
-    toPaymentBtn.addEventListener("click", () => {
-      if (!selectedMentor) {
-        mentorStatus.className = "status error";
-        mentorStatus.textContent = "Please select a mentor to continue.";
-        return;
-      }
-      showPayment();
-    });
-
-   <script type="module">
+  <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDEWvEXCo_W5i7OZ1wT4QuPED3ur2q5N7c",
@@ -780,18 +562,222 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  let currentUser = null;
+  onAuthStateChanged(auth, (user) => { currentUser = user; });
+
+  const slotOptions = [
+    "07:00 AM","08:00 AM","09:00 AM","10:00 AM",
+    "11:00 AM","12:00 PM","02:00 PM","03:00 PM",
+    "04:00 PM","05:00 PM","06:00 PM","08:00 PM"
+  ];
+
+  const mentorPool = [
+    { name: "Neha Mehra", title: "IAS Officer · UPSC AIR 34", fee30: 799, fee60: 1399 },
+    { name: "Rohit Kumar", title: "IIT Delhi · JEE Advanced AIR 42", fee30: 899, fee60: 1499 },
+    { name: "Ananya Sharma", title: "AIIMS Delhi · NEET AIR 19", fee30: 999, fee60: 1699 },
+    { name: "Vikram Tiwari", title: "IIM Ahmedabad · CAT 99.8%ile", fee30: 1099, fee60: 1799 },
+    { name: "Shreya Nair", title: "NLSIU Bengaluru · CLAT Topper", fee30: 749, fee60: 1299 }
+  ];
+
+  const dateGrid = document.getElementById("dateGrid");
+  const sessionType = document.getElementById("sessionType");
+  const slotGrid = document.getElementById("slotGrid");
+  const bookingSummary = document.getElementById("bookingSummary");
+  const provisionalBtn = document.getElementById("provisionalBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const slotStatus = document.getElementById("slotStatus");
+  const mentorCard = document.getElementById("mentorCard");
+  const mentorList = document.getElementById("mentorList");
+  const mentorStatus = document.getElementById("mentorStatus");
+  const toPaymentBtn = document.getElementById("toPaymentBtn");
+  const paymentCard = document.getElementById("paymentCard");
+  const paymentStatus = document.getElementById("paymentStatus");
+  const payNowBtn = document.getElementById("payNowBtn");
+  const provisionalModal = document.getElementById("provisionalModal");
+  const modalSummary = document.getElementById("modalSummary");
+  const closeModalBtn = document.getElementById("closeModalBtn");
+
+  let selectedDate = "";
+  let selectedSlot = "";
+  let selectedMentor = null;
+
+  function formatDate(value) {
+    const date = new Date(value + "T00:00:00");
+    return date.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+  }
+
+  function toIsoDate(dateObj) {
+    const y = dateObj.getFullYear();
+    const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+    const d = String(dateObj.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+
+  function renderDateBoxes() {
+    dateGrid.innerHTML = "";
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const end = new Date(start);
+    end.setDate(end.getDate() + 6);
+
+    const cursor = new Date(start);
+    let firstDateIso = "";
+
+    while (cursor <= end) {
+      const iso = toIsoDate(cursor);
+      if (!firstDateIso) firstDateIso = iso;
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "date-btn";
+      btn.dataset.value = iso;
+
+      const day = cursor.toLocaleDateString("en-US", { weekday: "short" });
+      const num = cursor.getDate();
+      const mon = cursor.toLocaleDateString("en-US", { month: "short" });
+
+      btn.innerHTML = `<span class="date-day">${day}</span><span class="date-num">${num}</span><span class="date-mon">${mon}</span>`;
+
+      btn.addEventListener("click", () => {
+        selectedDate = iso;
+        document.querySelectorAll(".date-btn").forEach(d => d.classList.remove("selected"));
+        btn.classList.add("selected");
+        updateSummary();
+      });
+
+      dateGrid.appendChild(btn);
+      cursor.setDate(cursor.getDate() + 1);
+    }
+
+    if (firstDateIso) {
+      selectedDate = firstDateIso;
+      const firstBtn = dateGrid.querySelector(".date-btn");
+      if (firstBtn) firstBtn.classList.add("selected");
+    }
+  }
+
+  function renderSlots() {
+    slotGrid.innerHTML = "";
+    slotOptions.forEach(slot => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "slot-btn";
+      btn.textContent = slot;
+      btn.addEventListener("click", () => {
+        selectedSlot = slot;
+        document.querySelectorAll(".slot-btn").forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        updateSummary();
+      });
+      slotGrid.appendChild(btn);
+    });
+  }
+
+  function updateSummary() {
+    const date = selectedDate ? formatDate(selectedDate) : "Not selected";
+    const typeText = sessionType.value ? `${sessionType.value} mins` : "Not selected";
+    const slot = selectedSlot || "Not selected";
+    bookingSummary.innerHTML = `<strong>Current selection:</strong> ${date} · ${slot} · ${typeText}`;
+  }
+
+  function pickAvailableMentors() {
+    const shuffled = [...mentorPool].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 4);
+  }
+
+  function renderMentors(list) {
+    mentorList.innerHTML = "";
+    selectedMentor = null;
+    list.forEach(mentor => {
+      const card = document.createElement("div");
+      card.className = "mentor-card";
+      const fee = sessionType.value === "60" ? mentor.fee60 : mentor.fee30;
+      card.innerHTML = `<div class="mentor-name">${mentor.name}</div><div class="mentor-title">${mentor.title}</div><div class="mentor-price">INR ${fee} / session</div>`;
+      card.addEventListener("click", () => {
+        document.querySelectorAll(".mentor-card").forEach(el => el.classList.remove("selected"));
+        card.classList.add("selected");
+        selectedMentor = { ...mentor, fee };
+        mentorStatus.className = "status ok";
+        mentorStatus.textContent = `${mentor.name} selected. You can continue to payment.`;
+      });
+      mentorList.appendChild(card);
+    });
+  }
+
+  function validateStepOne() {
+    if (!selectedDate) { slotStatus.className = "status error"; slotStatus.textContent = "Please choose a date."; return false; }
+    if (!sessionType.value) { slotStatus.className = "status error"; slotStatus.textContent = "Please choose session type."; return false; }
+    if (!selectedSlot) { slotStatus.className = "status error"; slotStatus.textContent = "Please choose a time slot."; return false; }
+    slotStatus.className = "status ok";
+    slotStatus.textContent = "Slot details look good.";
+    return true;
+  }
+
+  function openProvisionalModal() {
+    modalSummary.innerHTML = `<strong>Date:</strong> ${formatDate(selectedDate)}<br><strong>Time:</strong> ${selectedSlot}<br><strong>Session:</strong> ${sessionType.value} minutes`;
+    provisionalModal.classList.add("open");
+  }
+
+  function closeProvisionalModal() {
+    provisionalModal.classList.remove("open");
+  }
+
+  function showPayment() {
+    const fee = selectedMentor.fee;
+    const total = fee + 49;
+    document.getElementById("payMentor").textContent = selectedMentor.name;
+    document.getElementById("payDate").textContent = formatDate(selectedDate);
+    document.getElementById("payTime").textContent = selectedSlot;
+    document.getElementById("payType").textContent = `${sessionType.value} minutes`;
+    document.getElementById("payFee").textContent = `INR ${fee}`;
+    document.getElementById("payTotal").textContent = `INR ${total}`;
+    paymentCard.classList.remove("hidden");
+    paymentCard.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 
   async function saveBooking(booking) {
     const docRef = await addDoc(collection(db, "bookings"), {
       ...booking,
+      uid: currentUser ? currentUser.uid : null,
+      email: currentUser ? currentUser.email : null,
       createdAt: serverTimestamp()
     });
     return docRef.id;
   }
 
-  // Replace your existing payNowBtn listener with this:
+  provisionalBtn.addEventListener("click", () => {
+    if (!validateStepOne()) return;
+    renderMentors(pickAvailableMentors());
+    openProvisionalModal();
+    mentorCard.classList.remove("hidden");
+    mentorStatus.className = "status";
+    mentorStatus.textContent = "";
+  });
+
+  closeModalBtn.addEventListener("click", () => {
+    closeProvisionalModal();
+    mentorCard.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  toPaymentBtn.addEventListener("click", () => {
+    if (!selectedMentor) {
+      mentorStatus.className = "status error";
+      mentorStatus.textContent = "Please select a mentor to continue.";
+      return;
+    }
+    showPayment();
+  });
+
   payNowBtn.addEventListener("click", async () => {
     try {
+      if (!selectedMentor) {
+        paymentStatus.className = "status error";
+        paymentStatus.textContent = "Please select a mentor first.";
+        return;
+      }
+
       const total = selectedMentor.fee + 49;
 
       const bookingId = await saveBooking({
@@ -818,62 +804,34 @@
       paymentStatus.textContent = "Firebase save failed: " + err.message;
     }
   });
-</script>
-   
-<script>
-    resetBtn.addEventListener("click", () => {
-      const firstBtn = dateGrid.querySelector(".date-btn");
-      selectedDate = firstBtn ? firstBtn.dataset.value : "";
-      sessionType.value = "";
-      selectedSlot = "";
-      selectedMentor = null;
-      document.querySelectorAll(".date-btn").forEach(b => b.classList.remove("selected"));
-      if (firstBtn) firstBtn.classList.add("selected");
-      updateSummary();
-      slotStatus.textContent = "";
-      mentorStatus.textContent = "";
-      paymentStatus.textContent = "";
-      mentorCard.classList.add("hidden");
-      paymentCard.classList.add("hidden");
-      document.querySelectorAll(".slot-btn").forEach(b => b.classList.remove("selected"));
-    });
 
-    sessionType.addEventListener("change", updateSummary);
-
-    renderDateBoxes();
-    renderSlots();
+  resetBtn.addEventListener("click", () => {
+    const firstBtn = dateGrid.querySelector(".date-btn");
+    selectedDate = firstBtn ? firstBtn.dataset.value : "";
+    sessionType.value = "";
+    selectedSlot = "";
+    selectedMentor = null;
+    document.querySelectorAll(".date-btn").forEach(b => b.classList.remove("selected"));
+    if (firstBtn) firstBtn.classList.add("selected");
     updateSummary();
-  </script>
-  <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    slotStatus.textContent = "";
+    mentorStatus.textContent = "";
+    paymentStatus.textContent = "";
+    mentorCard.classList.add("hidden");
+    paymentCard.classList.add("hidden");
+    document.querySelectorAll(".slot-btn").forEach(b => b.classList.remove("selected"));
+  });
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDEWvEXCo_W5i7OZ1wT4QuPED3ur2q5N7c",
-    authDomain: "sillifur-341e9.firebaseapp.com",
-    projectId: "sillifur-341e9",
-    storageBucket: "sillifur-341e9.appspot.com",
-    messagingSenderId: "848515376957",
-    appId: "1:848515376957:web:ac13cbb93fdcc9ba834754"
-  };
+  sessionType.addEventListener("change", updateSummary);
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const auth = getAuth(app);
-
-  let currentUser = null;
-  onAuthStateChanged(auth, (user) => { currentUser = user; });
-
-  window.saveBookingToFirestore = async (booking) => {
-    const docRef = await addDoc(collection(db, "bookings"), {
-      ...booking,
-      uid: currentUser ? currentUser.uid : null,
-      email: currentUser ? currentUser.email : null,
-      createdAt: serverTimestamp()
-    });
-    return docRef.id;
-  };
+  renderDateBoxes();
+  renderSlots();
+  updateSummary();
 </script>
 </body>
 </html>
+
+ 
+
+ 
+
