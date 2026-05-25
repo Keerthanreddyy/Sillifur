@@ -623,20 +623,20 @@
     try {
       const q = query(
         collection(db, "bookings"),
-        where("mentorId", "==", MENTOR_DATA.id)
+        where("mentorName", "==", MENTOR_DATA.fullName.trim())
       );
       const snap = await getDocs(q);
       ALL_BOOKINGS = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
       // Sort by date desc
-      ALL_BOOKINGS.sort((a, b) => new Date(b.sessionDate) - new Date(a.sessionDate));
+      ALL_BOOKINGS.sort((a, b) => new Date(b.date) - new Date(a.date));
 
       renderStats();
       renderOverviewUpcoming();
       renderBookingsList(ALL_BOOKINGS);
 
       // Update badge
-      const upcoming = ALL_BOOKINGS.filter(b => b.status === 'upcoming').length;
+      const upcoming = ALL_BOOKINGS.filter(b => b.status === 'upcoming' || b.status === 'pending_payment').length;
       document.getElementById('bookingBadge').textContent = upcoming;
 
     } catch(e) {
@@ -647,9 +647,9 @@
 
   /* ── STATS ── */
   function renderStats() {
-    const upcoming  = ALL_BOOKINGS.filter(b => b.status === 'upcoming').length;
+    const upcoming  = ALL_BOOKINGS.filter(b => ['upcoming','pending_payment'].includes(b.status)).length;
     const completed = ALL_BOOKINGS.filter(b => b.status === 'completed').length;
-    const earnings  = ALL_BOOKINGS.filter(b => b.status === 'completed').reduce((s,b) => s+(b.price||0), 0);
+    const earnings  = ALL_BOOKINGS.filter(b => b.status === 'completed').reduce((s,b) => s+(b.sessionFee||0), 0);
     const ratings   = ALL_BOOKINGS.filter(b => b.rating).map(b => b.rating);
     const avgRating = ratings.length ? (ratings.reduce((s,r)=>s+r,0)/ratings.length).toFixed(1) : '—';
 
@@ -658,23 +658,21 @@
     document.getElementById('statEarnings').textContent  = `₹${earnings.toLocaleString('en-IN')}`;
     document.getElementById('statRating').textContent    = avgRating;
 
-    // Earnings page
     const thisMonth = ALL_BOOKINGS.filter(b => {
       if (b.status !== 'completed') return false;
-      const d = new Date(b.sessionDate);
+      const d = new Date(b.date);
       const now = new Date();
       return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-    }).reduce((s,b) => s+(b.price||0), 0);
+    }).reduce((s,b) => s+(b.sessionFee||0), 0);
 
     document.getElementById('earnTotal').textContent = `₹${earnings.toLocaleString('en-IN')}`;
     document.getElementById('earnMonth').textContent = `₹${thisMonth.toLocaleString('en-IN')}`;
     document.getElementById('earnAvg').textContent   = completed ? `₹${Math.round(earnings/completed).toLocaleString('en-IN')}` : '₹0';
   }
 
-  /* ── OVERVIEW UPCOMING ── */
   function renderOverviewUpcoming() {
     const el = document.getElementById('overviewUpcoming');
-    const upcoming = ALL_BOOKINGS.filter(b => b.status === 'upcoming').slice(0,3);
+    const upcoming = ALL_BOOKINGS.filter(b => ['upcoming','pending_payment'].includes(b.status)).slice(0,3);
     if (!upcoming.length) {
       el.innerHTML = emptyState('📅', 'No upcoming sessions yet.<br>Share your profile link to get bookings!');
       return;
@@ -694,23 +692,27 @@
 
   /* ── BOOKING CARD HTML ── */
   function bookingCardHTML(b) {
-    const statusClass = { upcoming:'bs-upcoming', completed:'bs-completed', cancelled:'bs-cancelled', pending:'bs-pending' }[b.status] || 'bs-pending';
-    const statusLabel = { upcoming:'📅 Upcoming', completed:'✅ Completed', cancelled:'✕ Cancelled', pending:'⏳ Pending' }[b.status] || b.status;
-    const date = b.sessionDate ? new Date(b.sessionDate).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
-    const time = b.sessionTime || '—';
+    const statusMap = {
+      'upcoming':        { cls:'bs-upcoming',   label:'📅 Upcoming' },
+      'pending_payment': { cls:'bs-pending',     label:'⏳ Pending Payment' },
+      'completed':       { cls:'bs-completed',   label:'✅ Completed' },
+      'cancelled':       { cls:'bs-cancelled',   label:'✕ Cancelled' },
+    };
+    const s = statusMap[b.status] || { cls:'bs-pending', label:b.status };
+    const date = b.date ? new Date(b.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
     return `
       <div class="booking-card">
         <div>
-          <div class="booking-mentee">${b.menteeName || 'Student'}</div>
+          <div class="booking-mentee">${b.uid ? b.uid.substring(0,8)+'…' : 'Student'}</div>
           <div class="booking-meta">
             <span>📅 ${date}</span>
-            <span>🕐 ${time}</span>
-            <span>⏱ ${b.duration || 60} min</span>
-            <span>💰 ₹${(b.price||0).toLocaleString('en-IN')}</span>
-            ${b.exam ? `<span>📚 ${b.exam}</span>` : ''}
+            <span>🕐 ${b.time||'—'}</span>
+            <span>⏱ ${b.sessionMinutes||60} min</span>
+            <span>💰 ₹${(b.sessionFee||0).toLocaleString('en-IN')}</span>
+            ${b.mentorTitle ? `<span>🎓 ${b.mentorTitle}</span>` : ''}
           </div>
         </div>
-        <div><span class="booking-status ${statusClass}">${statusLabel}</span></div>
+        <div><span class="booking-status ${s.cls}">${s.label}</span></div>
       </div>`;
   }
 
@@ -820,10 +822,13 @@
     const completed = ALL_BOOKINGS.filter(b => b.status === 'completed');
     if (!completed.length) return;
     document.getElementById('earningsBreakdown').innerHTML = completed.map(b => {
-      const date = b.sessionDate ? new Date(b.sessionDate).toLocaleDateString('en-IN',{day:'numeric',month:'short'}) : '—';
+      const date = b.date ? new Date(b.date).toLocaleDateString('en-IN',{day:'numeric',month:'short'}) : '—';
       return `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:0.85rem">
-        <div><div style="color:var(--white);font-weight:500">${b.menteeName||'Student'}</div><div style="color:var(--muted);font-size:0.75rem;margin-top:2px">${date} · ${b.duration||60} min</div></div>
-        <div style="color:var(--green);font-weight:700;font-family:'Outfit',sans-serif">+₹${(b.price||0).toLocaleString('en-IN')}</div>
+        <div>
+          <div style="color:var(--white);font-weight:500">${b.uid ? b.uid.substring(0,8)+'…' : 'Student'}</div>
+          <div style="color:var(--muted);font-size:0.75rem;margin-top:2px">${date} · ${b.sessionMinutes||60} min</div>
+        </div>
+        <div style="color:var(--green);font-weight:700;font-family:'Outfit',sans-serif">+₹${(b.sessionFee||0).toLocaleString('en-IN')}</div>
       </div>`;
     }).join('');
   }
