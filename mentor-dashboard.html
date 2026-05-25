@@ -621,12 +621,13 @@
   /* ── BOOKINGS ── */
   async function loadBookings() {
     try {
-      const q = query(
-        collection(db, "bookings"),
-        where("mentorName", "==", MENTOR_DATA.fullName.trim())
-      );
-      const snap = await getDocs(q);
-      ALL_BOOKINGS = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      // Fetch all bookings and filter in JS to handle trailing spaces
+      const snap = await getDocs(collection(db, "bookings"));
+      const mentorName = MENTOR_DATA.fullName.trim().toLowerCase();
+
+      ALL_BOOKINGS = snap.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        .filter(b => (b.mentorName||'').trim().toLowerCase() === mentorName);
 
       // Sort by date desc
       ALL_BOOKINGS.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -635,8 +636,7 @@
       renderOverviewUpcoming();
       renderBookingsList(ALL_BOOKINGS);
 
-      // Update badge
-      const upcoming = ALL_BOOKINGS.filter(b => b.status === 'upcoming' || b.status === 'pending_payment').length;
+      const upcoming = ALL_BOOKINGS.filter(b => ['upcoming','pending_payment'].includes(b.status)).length;
       document.getElementById('bookingBadge').textContent = upcoming;
 
     } catch(e) {
