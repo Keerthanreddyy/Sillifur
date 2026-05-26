@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sillifur — Mentee Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0b0d11;--bg2:#12151c;--bg3:#1a1e2a;--card:#181c27;--card2:#1f2335;
+      --blue:#4f8ef7;--blue2:#3a76e8;--green:#22d3a0;--white:#ffffff;
+      --text:#e8eaf0;--muted:#6b7280;--muted2:#9ca3af;
+      --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--radius:14px;
+      --sidebar-w:240px;
+    }
+    body { font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;display:flex;min-height:100vh; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width:var(--sidebar-w);flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);
+      display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:50;
+    }
+    .sidebar-logo {
+      display:flex;align-items:center;gap:9px;padding:20px 20px 0;text-decoration:none;
+    }
+    .logo-mark { width:34px;height:34px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-weight:800;font-size:1rem;color:white;letter-spacing:-1px; }
+    .logo-text { font-family:'Outfit',sans-serif;font-weight:700;font-size:1.2rem;color:var(--white);letter-spacing:-0.3px; }
+    .logo-text span { color:var(--blue); }
+
+    .sidebar-user {
+      display:flex;align-items:center;gap:11px;padding:18px 20px 16px;
+      border-bottom:1px solid var(--border);margin-top:8px;
+    }
+    .user-avatar {
+      width:40px;height:40px;border-radius:50%;background:var(--blue);
+      display:flex;align-items:center;justify-content:center;
+      font-family:'Outfit',sans-serif;font-size:0.95rem;font-weight:800;color:white;
+      flex-shrink:0;border:2px solid var(--border2);
+    }
+    .user-name { font-weight:700;font-size:0.85rem;color:var(--white); }
+    .user-exam { font-size:0.72rem;color:var(--muted2); }
+
+    .nav-section-label {
+      font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;
+      color:var(--muted);padding:18px 20px 6px;
+    }
+    .sidebar-nav { list-style:none;padding:0 10px; }
+    .sidebar-nav li a {
+      display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;
+      color:var(--muted2);text-decoration:none;font-size:0.84rem;font-weight:500;
+      transition:all .18s;
+    }
+    .sidebar-nav li a:hover { background:var(--card2);color:var(--white); }
+    .sidebar-nav li a.active { background:rgba(79,142,247,0.12);color:var(--blue); }
+    .sidebar-nav li a .nav-icon { font-size:1rem;width:20px;text-align:center; }
+    .nav-badge {
+      margin-left:auto;background:var(--blue);color:white;
+      font-size:0.62rem;font-weight:700;padding:2px 7px;border-radius:20px;
+    }
+
+    .sidebar-bottom {
+      margin-top:auto;padding:16px 10px;border-top:1px solid var(--border);
+    }
+    .sidebar-bottom a {
+      display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;
+      color:var(--muted);text-decoration:none;font-size:0.82rem;font-weight:500;transition:all .18s;
+    }
+    .sidebar-bottom a:hover { color:var(--white); }
+
+    /* ── MAIN ── */
+    .main { margin-left:var(--sidebar-w);flex:1;min-height:100vh;display:flex;flex-direction:column; }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      background:var(--bg2);border-bottom:1px solid var(--border);
+      padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;
+      position:sticky;top:0;z-index:40;
+    }
+    .topbar-title { font-family:'Outfit',sans-serif;font-weight:700;font-size:1.1rem;color:var(--white);letter-spacing:-0.3px; }
+    .topbar-right { display:flex;align-items:center;gap:12px; }
+    .topbar-btn {
+      background:var(--card2);border:1px solid var(--border2);border-radius:8px;
+      padding:7px 14px;font-family:'Space Grotesk',sans-serif;font-size:0.8rem;
+      font-weight:600;color:var(--muted2);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;
+    }
+    .topbar-btn:hover { color:var(--white);border-color:var(--border2); }
+    .btn-find {
+      background:var(--blue);color:white;border:none;padding:8px 18px;border-radius:8px;
+      font-family:'Space Grotesk',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;
+      transition:background .2s;display:flex;align-items:center;gap:7px;
+    }
+    .btn-find:hover { background:var(--blue2); }
+    .notif-dot {
+      position:relative;
+    }
+    .notif-dot::after {
+      content:'';position:absolute;top:6px;right:6px;width:7px;height:7px;
+      background:#f87171;border-radius:50%;border:1.5px solid var(--bg2);
+    }
+
+    /* ── PAGE CONTENT ── */
+    .page { padding:28px 32px;flex:1; }
+
+    /* ── WELCOME BANNER ── */
+    .welcome-banner {
+      background:var(--card2);border:1px solid var(--border);border-radius:var(--radius);
+      padding:24px 28px;display:flex;align-items:center;justify-content:space-between;
+      margin-bottom:24px;position:relative;overflow:hidden;
+    }
+    .welcome-banner::before {
+      content:'';position:absolute;right:-60px;top:-60px;width:280px;height:280px;
+      background:radial-gradient(ellipse,rgba(79,142,247,0.12) 0%,transparent 70%);
+      pointer-events:none;
+    }
+    .welcome-text h2 {
+      font-family:'Outfit',sans-serif;font-size:1.35rem;font-weight:800;color:var(--white);
+      letter-spacing:-0.4px;margin-bottom:4px;
+    }
+    .welcome-text h2 em { font-style:normal;color:var(--blue); }
+    .welcome-text p { font-size:0.83rem;color:var(--muted2);max-width:380px; }
+    .welcome-actions { display:flex;gap:10px;flex-shrink:0; }
+
+    /* ── STATS ROW ── */
+    .stats-row { display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:24px; }
+    .stat-card {
+      background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+      padding:20px 20px 18px;position:relative;overflow:hidden;
+    }
+    .stat-card::after {
+      content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,var(--blue),transparent);opacity:0.4;
+    }
+    .stat-card-top { display:flex;align-items:center;justify-content:space-between;margin-bottom:12px; }
+    .stat-card-label { font-size:0.73rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em; }
+    .stat-card-icon { font-size:1rem;opacity:0.7; }
+    .stat-card-val { font-family:'Outfit',sans-serif;font-size:1.8rem;font-weight:800;color:var(--white);letter-spacing:-0.5px;line-height:1; }
+    .stat-card-sub { font-size:0.72rem;color:var(--muted2);margin-top:5px; }
+    .stat-card-sub .up { color:var(--green);font-weight:600; }
+
+    /* ── TWO COLUMN GRID ── */
+    .grid-2 { display:grid;grid-template-columns:1fr 360px;gap:18px;margin-bottom:18px; }
+
+    /* ── SECTION HEADERS ── */
+    .sec-head { display:flex;align-items:center;justify-content:space-between;margin-bottom:14px; }
+    .sec-head-left { }
+    .sec-tag { font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);margin-bottom:3px; }
+    .sec-title { font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;color:var(--white);letter-spacing:-0.2px; }
+    .link-sm { font-size:0.78rem;color:var(--blue);font-weight:600;text-decoration:none; }
+    .link-sm:hover { text-decoration:underline; }
+
+    /* ── UPCOMING SESSIONS ── */
+    .sessions-list { display:flex;flex-direction:column;gap:10px; }
+    .session-card {
+      background:var(--card2);border:1px solid var(--border);border-radius:12px;
+      padding:16px 18px;display:flex;align-items:center;gap:14px;transition:border-color .2s;
+    }
+    .session-card:hover { border-color:var(--border2); }
+    .session-time-block {
+      background:rgba(79,142,247,0.1);border:1px solid rgba(79,142,247,0.2);
+      border-radius:10px;padding:10px 14px;text-align:center;flex-shrink:0;min-width:64px;
+    }
+    .session-day { font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:800;color:var(--blue);line-height:1; }
+    .session-month { font-size:0.62rem;font-weight:700;text-transform:uppercase;color:var(--muted2);margin-top:1px; }
+    .session-meta { flex:1; }
+    .session-mentor-name { font-weight:700;font-size:0.88rem;color:var(--white);margin-bottom:2px; }
+    .session-detail { font-size:0.75rem;color:var(--muted2); }
+    .session-actions { display:flex;gap:7px;flex-shrink:0; }
+    .btn-sm {
+      padding:6px 12px;border-radius:7px;font-size:0.75rem;font-weight:600;cursor:pointer;
+      font-family:'Space Grotesk',sans-serif;border:none;transition:all .2s;
+    }
+    .btn-join { background:var(--green);color:#0b2018; }
+    .btn-join:hover { opacity:0.9; }
+    .btn-outline { background:transparent;color:var(--muted2);border:1px solid var(--border2); }
+    .btn-outline:hover { color:var(--white);border-color:var(--border2); }
+    .session-tag {
+      display:inline-flex;align-items:center;gap:4px;background:rgba(79,142,247,0.1);
+      color:#93b4fa;font-size:0.65rem;font-weight:600;padding:2px 8px;border-radius:20px;
+      border:1px solid rgba(79,142,247,0.2);margin-top:4px;
+    }
+
+    /* ── SAVED MENTORS PANEL ── */
+    .saved-panel {
+      background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;
+    }
+    .saved-mentor-row {
+      display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--border);
+    }
+    .saved-mentor-row:last-child { border-bottom:none;padding-bottom:0; }
+    .saved-mentor-row:first-child { padding-top:0; }
+    .sm-avatar {
+      width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+      font-family:'Outfit',sans-serif;font-size:0.8rem;font-weight:800;color:white;flex-shrink:0;
+    }
+    .sm-info { flex:1;min-width:0; }
+    .sm-name { font-weight:700;font-size:0.82rem;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+    .sm-exam { font-size:0.7rem;color:var(--muted2); }
+    .sm-price { font-family:'Outfit',sans-serif;font-weight:700;font-size:0.82rem;color:var(--white);white-space:nowrap; }
+    .btn-book-sm {
+      background:var(--blue);color:white;border:none;padding:5px 11px;border-radius:6px;
+      font-size:0.72rem;font-weight:600;cursor:pointer;font-family:'Space Grotesk',sans-serif;
+      transition:background .2s;white-space:nowrap;
+    }
+    .btn-book-sm:hover { background:var(--blue2); }
+
+    /* ── PROGRESS & GOAL ── */
+    .grid-2-eq { display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px; }
+    .inner-card {
+      background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;
+    }
+
+    /* Progress bar */
+    .progress-subject { margin-bottom:14px; }
+    .progress-subject:last-child { margin-bottom:0; }
+    .ps-row { display:flex;align-items:center;justify-content:space-between;margin-bottom:6px; }
+    .ps-name { font-size:0.8rem;font-weight:600;color:var(--text); }
+    .ps-pct { font-family:'Outfit',sans-serif;font-size:0.82rem;font-weight:700;color:var(--white); }
+    .ps-bar { height:6px;background:var(--card2);border-radius:10px;overflow:hidden; }
+    .ps-fill { height:100%;border-radius:10px;transition:width 1s ease; }
+
+    /* Goal countdown */
+    .goal-card { text-align:center; }
+    .goal-exam-badge {
+      display:inline-flex;align-items:center;gap:6px;background:rgba(79,142,247,0.1);
+      border:1px solid rgba(79,142,247,0.25);color:var(--blue);font-size:0.72rem;font-weight:700;
+      text-transform:uppercase;letter-spacing:0.06em;padding:4px 12px;border-radius:20px;margin-bottom:14px;
+    }
+    .countdown-row { display:flex;justify-content:center;gap:10px;margin-bottom:16px; }
+    .count-block {
+      background:var(--card2);border:1px solid var(--border);border-radius:10px;
+      padding:12px 14px;min-width:58px;
+    }
+    .count-num { font-family:'Outfit',sans-serif;font-size:1.6rem;font-weight:800;color:var(--white);line-height:1; }
+    .count-label { font-size:0.62rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-top:3px; }
+    .goal-date { font-size:0.75rem;color:var(--muted2); }
+
+    /* ── RECENT SESSIONS HISTORY ── */
+    .history-table { width:100%;border-collapse:collapse; }
+    .history-table th {
+      font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);
+      font-weight:600;padding:0 12px 10px;text-align:left;border-bottom:1px solid var(--border);
+    }
+    .history-table td {
+      padding:13px 12px;font-size:0.82rem;color:var(--text);border-bottom:1px solid var(--border);
+      vertical-align:middle;
+    }
+    .history-table tr:last-child td { border-bottom:none; }
+    .history-table tr:hover td { background:rgba(255,255,255,0.02); }
+    .h-mentor { display:flex;align-items:center;gap:9px; }
+    .h-avatar { width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:0.65rem;font-weight:800;color:white; }
+    .h-name { font-weight:600;font-size:0.82rem;color:var(--white); }
+    .h-exam { font-size:0.7rem;color:var(--muted2); }
+    .h-rating { color:#fbbf24;font-size:0.78rem; }
+    .status-badge {
+      display:inline-flex;align-items:center;gap:4px;font-size:0.68rem;font-weight:700;
+      padding:3px 9px;border-radius:20px;
+    }
+    .status-completed { background:rgba(34,211,160,0.1);color:var(--green);border:1px solid rgba(34,211,160,0.25); }
+    .status-upcoming { background:rgba(79,142,247,0.1);color:#93b4fa;border:1px solid rgba(79,142,247,0.25); }
+    .status-cancelled { background:rgba(248,113,113,0.08);color:#f87171;border:1px solid rgba(248,113,113,0.2); }
+
+    /* ── FIND MENTOR CTA strip ── */
+    .find-strip {
+      background:linear-gradient(135deg,rgba(79,142,247,0.08),rgba(79,142,247,0.03));
+      border:1px solid rgba(79,142,247,0.2);border-radius:var(--radius);
+      padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+      margin-bottom:18px;
+    }
+    .find-strip-text h4 { font-family:'Outfit',sans-serif;font-weight:700;font-size:0.95rem;color:var(--white);margin-bottom:3px; }
+    .find-strip-text p { font-size:0.78rem;color:var(--muted2); }
+
+    /* ── EMPTY STATE ── */
+    .empty-state { text-align:center;padding:32px 20px;color:var(--muted); }
+    .empty-state .es-icon { font-size:2rem;margin-bottom:10px;opacity:0.5; }
+    .empty-state p { font-size:0.82rem; }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width:5px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:var(--border2);border-radius:10px; }
+
+    @media(max-width:900px) {
+      .sidebar { transform:translateX(-100%); }
+      .main { margin-left:0; }
+      .grid-2 { grid-template-columns:1fr; }
+      .stats-row { grid-template-columns:1fr 1fr; }
+      .grid-2-eq { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ SIDEBAR ══════════════ -->
+<aside class="sidebar">
+  <a href="h.html" class="sidebar-logo">
+    <div class="logo-mark">S</div>
+    <div class="logo-text">silli<span>fur</span></div>
+  </a>
+
+  <div class="sidebar-user">
+    <div class="user-avatar">AM</div>
+    <div>
+      <div class="user-name">Arjun Mehta</div>
+      <div class="user-exam">Preparing · UPSC CSE</div>
+    </div>
+  </div>
+
+  <div class="nav-section-label">Main</div>
+  <ul class="sidebar-nav">
+    <li><a href="#" class="active"><span class="nav-icon">🏠</span> Dashboard</a></li>
+    <li><a href="#"><span class="nav-icon">📅</span> My Sessions <span class="nav-badge">2</span></a></li>
+    <li><a href="#"><span class="nav-icon">🔍</span> Find Mentors</a></li>
+    <li><a href="#"><span class="nav-icon">♡</span> Saved Mentors</a></li>
+  </ul>
+
+  <div class="nav-section-label">Learning</div>
+  <ul class="sidebar-nav">
+    <li><a href="#"><span class="nav-icon">📊</span> My Progress</a></li>
+    <li><a href="#"><span class="nav-icon">📝</span> Session Notes</a></li>
+    <li><a href="#"><span class="nav-icon">⭐</span> Reviews Given</a></li>
+  </ul>
+
+  <div class="nav-section-label">Account</div>
+  <ul class="sidebar-nav">
+    <li><a href="#"><span class="nav-icon">💳</span> Payments</a></li>
+    <li><a href="#"><span class="nav-icon">🔔</span> Notifications <span class="nav-badge" style="background:#f87171">3</span></a></li>
+  </ul>
+
+  <div class="sidebar-bottom">
+    <a href="settings.html"><span class="nav-icon">⚙️</span> Settings</a>
+    <a href="h.html"><span class="nav-icon">🚪</span> Sign Out</a>
+  </div>
+</aside>
+
+<!-- ══════════════ MAIN AREA ══════════════ -->
+<div class="main">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-title">Dashboard</div>
+    <div class="topbar-right">
+      <button class="topbar-btn notif-dot">🔔</button>
+      <button class="topbar-btn" onclick="window.location='settings.html'">⚙️ Settings</button>
+      <button class="btn-find" onclick="window.location='bookyourslot.html'">+ Book a Session</button>
+    </div>
+  </header>
+
+  <!-- PAGE -->
+  <div class="page">
+
+    <!-- WELCOME BANNER -->
+    <div class="welcome-banner">
+      <div class="welcome-text">
+        <h2>Good morning, <em>Arjun</em> 👋</h2>
+        <p>You have <strong style="color:var(--white)">2 upcoming sessions</strong> this week. Keep the momentum going — your UPSC prelims are in <strong style="color:var(--blue)">94 days</strong>.</p>
+      </div>
+      <div class="welcome-actions">
+        <button class="btn-find" onclick="window.location='bookyourslot.html'">🔍 Find New Mentor</button>
+      </div>
+    </div>
+
+    <!-- STATS ROW -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <span class="stat-card-label">Sessions Done</span>
+          <span class="stat-card-icon">🎯</span>
+        </div>
+        <div class="stat-card-val">14</div>
+        <div class="stat-card-sub"><span class="up">↑ 3</span> this month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-top">
+          <span class="stat-card-label">Hours Learned</span>
+          <span class="stat-card-icon">⏱️</span>
+        </div>
+        <div class="stat-card-val">21<span style="font-size:1rem;color:var(--muted2)">h</span></div>
+        <div class="stat-card-sub"><span class="up">↑ 4.5h</span> vs last month</div>
+      </div>
+
+    </div>
+
+    <!-- FIND MENTOR STRIP -->
+    <div class="find-strip">
+      <div class="find-strip-text">
+        <h4>Explore mentors for Geography & Environment 🌿</h4>
+        <p>Based on your progress, you're weakest in Geography. 8 mentors specialize in this topic.</p>
+      </div>
+      <button class="btn-find" onclick="window.location='bookyourslot.html'">Browse 8 Mentors →</button>
+    </div>
+
+    <!-- UPCOMING SESSIONS + SAVED MENTORS -->
+    <div class="grid-2">
+      <div>
+        <div class="sec-head">
+          <div class="sec-head-left">
+            <div class="sec-tag">This Week</div>
+            <div class="sec-title">Upcoming Sessions</div>
+          </div>
+          <a href="#" class="link-sm">View all →</a>
+        </div>
+        <div class="sessions-list">
+
+          <div class="session-card">
+            <div class="session-time-block">
+              <div class="session-day">27</div>
+              <div class="session-month">May</div>
+            </div>
+            <div class="session-meta">
+              <div class="session-mentor-name">Neha Mehra — IAS AIR 34</div>
+              <div class="session-detail">🕙 10:00 AM · 60 min · Google Meet</div>
+              <div class="session-tag">UPSC · Essay Writing</div>
+            </div>
+            <div class="session-actions">
+              <button class="btn-sm btn-join">Join</button>
+              <button class="btn-sm btn-outline">Reschedule</button>
+            </div>
+          </div>
+
+          <div class="session-card">
+            <div class="session-time-block">
+              <div class="session-day">29</div>
+              <div class="session-month">May</div>
+            </div>
+            <div class="session-meta">
+              <div class="session-mentor-name">Karan Iyer — UPSC AIR 112</div>
+              <div class="session-detail">🕔 4:00 PM · 30 min · Google Meet</div>
+              <div class="session-tag">UPSC · Current Affairs</div>
+            </div>
+            <div class="session-actions">
+              <button class="btn-sm btn-outline">Details</button>
+              <button class="btn-sm btn-outline">Cancel</button>
+            </div>
+          </div>
+
+          <div class="session-card" style="border-style:dashed;justify-content:center;padding:20px;">
+            <div style="text-align:center;color:var(--muted);">
+              <div style="font-size:1.4rem;margin-bottom:6px;">➕</div>
+              <div style="font-size:0.8rem;font-weight:600;">Book another session</div>
+              <div style="font-size:0.72rem;margin-top:2px;margin-bottom:10px;">Stay consistent — top rankers average 3 sessions/week</div>
+              <button class="btn-find" style="margin:0 auto;" onclick="window.location='bookyourslot.html'">Find a Mentor</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SAVED MENTORS -->
+      <div>
+        <div class="sec-head">
+          <div class="sec-head-left">
+            <div class="sec-tag">Wishlist</div>
+            <div class="sec-title">Saved Mentors</div>
+          </div>
+          <a href="#" class="link-sm">View all →</a>
+        </div>
+        <div class="saved-panel">
+          <div class="saved-mentor-row">
+            <div class="sm-avatar" style="background:#f97316">RK</div>
+            <div class="sm-info">
+              <div class="sm-name">Rohit Kumar</div>
+              <div class="sm-exam">JEE · IIT Delhi</div>
+            </div>
+            <div class="sm-price">₹999</div>
+            <button class="btn-book-sm" onclick="window.location='bookyourslot.html'">Book</button>
+          </div>
+          <div class="saved-mentor-row">
+            <div class="sm-avatar" style="background:#16a34a">AS</div>
+            <div class="sm-info">
+              <div class="sm-name">Ananya Sharma</div>
+              <div class="sm-exam">NEET · AIIMS Delhi</div>
+            </div>
+            <div class="sm-price">₹1,199</div>
+            <button class="btn-book-sm" onclick="window.location='bookyourslot.html'">Book</button>
+          </div>
+          <div class="saved-mentor-row">
+            <div class="sm-avatar" style="background:#7c3aed">VT</div>
+            <div class="sm-info">
+              <div class="sm-name">Vikram Tiwari</div>
+              <div class="sm-exam">CAT · IIM Ahmedabad</div>
+            </div>
+            <div class="sm-price">₹1,499</div>
+            <button class="btn-book-sm" onclick="window.location='bookyourslot.html'">Book</button>
+          </div>
+          <div class="saved-mentor-row">
+            <div class="sm-avatar" style="background:#0369a1">PD</div>
+            <div class="sm-info">
+              <div class="sm-name">Priya Dubey</div>
+              <div class="sm-exam">UPSC · IFS AIR 8</div>
+            </div>
+            <div class="sm-price">₹899</div>
+            <button class="btn-book-sm" onclick="window.location='bookyourslot.html'">Book</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROGRESS + COUNTDOWN -->
+    <div class="grid-2-eq">
+      <div class="inner-card">
+        <div class="sec-head" style="margin-bottom:16px">
+          <div class="sec-head-left">
+            <div class="sec-tag">Self Assessment</div>
+            <div class="sec-title">Subject-wise Progress</div>
+          </div>
+          <a href="#" class="link-sm">Edit →</a>
+        </div>
+        <div class="progress-subject">
+          <div class="ps-row"><span class="ps-name">History & Culture</span><span class="ps-pct">72%</span></div>
+          <div class="ps-bar"><div class="ps-fill" style="width:72%;background:linear-gradient(90deg,#4f8ef7,#22d3a0)"></div></div>
+        </div>
+        <div class="progress-subject">
+          <div class="ps-row"><span class="ps-name">Polity & Governance</span><span class="ps-pct">65%</span></div>
+          <div class="ps-bar"><div class="ps-fill" style="width:65%;background:linear-gradient(90deg,#4f8ef7,#22d3a0)"></div></div>
+        </div>
+        <div class="progress-subject">
+          <div class="ps-row"><span class="ps-name">Economy</span><span class="ps-pct">55%</span></div>
+          <div class="ps-bar"><div class="ps-fill" style="width:55%;background:linear-gradient(90deg,#f97316,#fbbf24)"></div></div>
+        </div>
+        <div class="progress-subject">
+          <div class="ps-row"><span class="ps-name">Geography & Environment</span><span class="ps-pct">38%</span></div>
+          <div class="ps-bar"><div class="ps-fill" style="width:38%;background:linear-gradient(90deg,#f87171,#f97316)"></div></div>
+        </div>
+        <div class="progress-subject">
+          <div class="ps-row"><span class="ps-name">Science & Technology</span><span class="ps-pct">60%</span></div>
+          <div class="ps-bar"><div class="ps-fill" style="width:60%;background:linear-gradient(90deg,#4f8ef7,#22d3a0)"></div></div>
+        </div>
+      </div>
+
+      <div class="inner-card goal-card">
+        <div class="sec-tag" style="margin-bottom:8px">Exam Countdown</div>
+        <div class="goal-exam-badge">🎯 UPSC CSE Prelims 2025</div>
+        <div class="countdown-row" id="countdown">
+          <div class="count-block"><div class="count-num" id="cd-days">94</div><div class="count-label">Days</div></div>
+          <div class="count-block"><div class="count-num" id="cd-hours">--</div><div class="count-label">Hours</div></div>
+          <div class="count-block"><div class="count-num" id="cd-mins">--</div><div class="count-label">Mins</div></div>
+          <div class="count-block"><div class="count-num" id="cd-secs">--</div><div class="count-label">Secs</div></div>
+        </div>
+        <div class="goal-date" style="margin-bottom:16px">📅 Exam Date: <strong style="color:var(--white)">25 May 2025</strong></div>
+        <div style="background:var(--card2);border-radius:10px;padding:14px;text-align:left;">
+          <div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;font-weight:600;">Weekly Goal</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <span style="font-size:0.82rem;color:var(--text);">Sessions this week</span>
+            <span style="margin-left:auto;font-family:'Outfit',sans-serif;font-weight:700;color:var(--white);">2 / 3</span>
+          </div>
+          <div class="ps-bar" style="margin-bottom:0">
+            <div class="ps-fill" style="width:66%;background:linear-gradient(90deg,#4f8ef7,#22d3a0)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SESSION HISTORY -->
+    <div class="inner-card">
+      <div class="sec-head" style="margin-bottom:16px">
+        <div class="sec-head-left">
+          <div class="sec-tag">History</div>
+          <div class="sec-title">Past Sessions</div>
+        </div>
+        <a href="#" class="link-sm">View all →</a>
+      </div>
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Mentor</th>
+            <th>Topic</th>
+            <th>Date</th>
+            <th>Duration</th>
+            <th>Rating</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="h-mentor"><div class="h-avatar" style="background:#1a3a6c">NM</div><div><div class="h-name">Neha Mehra</div><div class="h-exam">UPSC AIR 34</div></div></div></td>
+            <td style="color:var(--muted2);font-size:0.78rem">GS Paper II · Polity</td>
+            <td style="color:var(--muted2);font-size:0.78rem;white-space:nowrap">20 May 2025</td>
+            <td style="color:var(--muted2);font-size:0.78rem">60 min</td>
+            <td class="h-rating">★★★★★</td>
+            <td><span class="status-badge status-completed">✓ Completed</span></td>
+            <td><a href="#" class="link-sm" style="font-size:0.72rem">Notes</a></td>
+          </tr>
+          <tr>
+            <td><div class="h-mentor"><div class="h-avatar" style="background:#0369a1">PD</div><div><div class="h-name">Priya Dubey</div><div class="h-exam">IFS AIR 8</div></div></div></td>
+            <td style="color:var(--muted2);font-size:0.78rem">World Geography</td>
+            <td style="color:var(--muted2);font-size:0.78rem;white-space:nowrap">15 May 2025</td>
+            <td style="color:var(--muted2);font-size:0.78rem">30 min</td>
+            <td class="h-rating">★★★★☆</td>
+            <td><span class="status-badge status-completed">✓ Completed</span></td>
+            <td><a href="#" class="link-sm" style="font-size:0.72rem">Notes</a></td>
+          </tr>
+          <tr>
+            <td><div class="h-mentor"><div class="h-avatar" style="background:#0f766e">SK</div><div><div class="h-name">Suresh Kumar</div><div class="h-exam">IBPS PO 2022</div></div></div></td>
+            <td style="color:var(--muted2);font-size:0.78rem">Current Affairs</td>
+            <td style="color:var(--muted2);font-size:0.78rem;white-space:nowrap">10 May 2025</td>
+            <td style="color:var(--muted2);font-size:0.78rem">30 min</td>
+            <td style="color:var(--muted);font-size:0.72rem">Not rated</td>
+            <td><span class="status-badge status-cancelled">✕ Cancelled</span></td>
+            <td><a href="#" class="link-sm" style="font-size:0.72rem">Rebook</a></td>
+          </tr>
+          <tr>
+            <td><div class="h-mentor"><div class="h-avatar" style="background:#1a3a6c">NM</div><div><div class="h-name">Neha Mehra</div><div class="h-exam">UPSC AIR 34</div></div></div></td>
+            <td style="color:var(--muted2);font-size:0.78rem">Essay Strategy</td>
+            <td style="color:var(--muted2);font-size:0.78rem;white-space:nowrap">5 May 2025</td>
+            <td style="color:var(--muted2);font-size:0.78rem">60 min</td>
+            <td class="h-rating">★★★★★</td>
+            <td><span class="status-badge status-completed">✓ Completed</span></td>
+            <td><a href="#" class="link-sm" style="font-size:0.72rem">Notes</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /page -->
+</div><!-- /main -->
+
+<script>
+  // Live countdown to UPSC Prelims (example: Aug 28, 2025)
+  const examDate = new Date('2025-08-28T00:00:00');
+  function updateCountdown() {
+    const now = new Date();
+    const diff = examDate - now;
+    if (diff <= 0) {
+      document.getElementById('countdown').innerHTML = '<div style="color:var(--green);font-weight:700;font-size:1rem;">Exam day is here! 🎉</div>';
+      return;
+    }
+    const days  = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins  = Math.floor((diff % 3600000)  / 60000);
+    const secs  = Math.floor((diff % 60000)    / 1000);
+    document.getElementById('cd-days').textContent  = days;
+    document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
+    document.getElementById('cd-mins').textContent  = String(mins).padStart(2,'0');
+    document.getElementById('cd-secs').textContent  = String(secs).padStart(2,'0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+</script>
+</body>
+</html>
