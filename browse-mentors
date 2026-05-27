@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sillifur — Browse Mentors</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing:border-box;margin:0;padding:0; }
+    :root {
+      --bg:#0b0d11;--bg2:#12151c;--bg3:#1a1e2a;--card:#181c27;--card2:#1f2335;
+      --blue:#4f8ef7;--blue2:#3a76e8;--green:#22d3a0;--white:#ffffff;
+      --text:#e8eaf0;--muted:#6b7280;--muted2:#9ca3af;
+      --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--radius:14px;
+      --sidebar-w:240px;
+    }
+    body { font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;display:flex;min-height:100vh; }
+
+    /* ── SIDEBAR ── */
+    .sidebar { width:var(--sidebar-w);flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:50; }
+    .sidebar-logo { display:flex;align-items:center;gap:9px;padding:20px 20px 0;text-decoration:none; }
+    .logo-mark { width:34px;height:34px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-weight:800;font-size:1rem;color:white; }
+    .logo-text { font-family:'Outfit',sans-serif;font-weight:700;font-size:1.2rem;color:var(--white); }
+    .logo-text span { color:var(--blue); }
+    .sidebar-user { display:flex;align-items:center;gap:11px;padding:18px 20px 16px;border-bottom:1px solid var(--border);margin-top:8px; }
+    .user-avatar { width:40px;height:40px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:0.95rem;font-weight:800;color:white;flex-shrink:0;border:2px solid var(--border2); }
+    .user-name { font-weight:700;font-size:0.85rem;color:var(--white); }
+    .user-exam { font-size:0.72rem;color:var(--muted2); }
+    .nav-section-label { font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);padding:18px 20px 6px; }
+    .sidebar-nav { list-style:none;padding:0 10px; }
+    .sidebar-nav li a { display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;color:var(--muted2);text-decoration:none;font-size:0.84rem;font-weight:500;transition:all .18s; }
+    .sidebar-nav li a:hover { background:var(--card2);color:var(--white); }
+    .sidebar-nav li a.active { background:rgba(79,142,247,0.12);color:var(--blue); }
+    .sidebar-nav li a .nav-icon { font-size:1rem;width:20px;text-align:center; }
+    .nav-badge { margin-left:auto;background:var(--blue);color:white;font-size:0.62rem;font-weight:700;padding:2px 7px;border-radius:20px; }
+    .sidebar-bottom { margin-top:auto;padding:16px 10px;border-top:1px solid var(--border); }
+    .sidebar-bottom a { display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;color:var(--muted);text-decoration:none;font-size:0.82rem;font-weight:500;transition:all .18s; }
+    .sidebar-bottom a:hover { color:var(--white); }
+
+    /* ── MAIN ── */
+    .main { margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh; }
+    .topbar { background:var(--bg2);border-bottom:1px solid var(--border);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40; }
+    .topbar-title { font-family:'Outfit',sans-serif;font-weight:700;font-size:1.1rem;color:var(--white); }
+    .topbar-right { display:flex;align-items:center;gap:12px; }
+    .btn-find { background:var(--blue);color:white;border:none;padding:8px 18px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;transition:background .2s; }
+    .btn-find:hover { background:var(--blue2); }
+
+    /* ── PAGE ── */
+    .page { padding:28px 32px;flex:1; }
+
+    /* ── SEARCH + FILTER BAR ── */
+    .filter-bar { display:flex;gap:10px;align-items:center;margin-bottom:24px;flex-wrap:wrap; }
+    .search-wrap { flex:1;min-width:200px;position:relative; }
+    .search-wrap input { width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:10px 14px 10px 38px;font-family:'Space Grotesk',sans-serif;font-size:0.87rem;color:var(--text);outline:none;transition:border-color .2s; }
+    .search-wrap input:focus { border-color:var(--blue); }
+    .search-wrap input::placeholder { color:var(--muted); }
+    .search-icon { position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:0.9rem;pointer-events:none; }
+    .filter-select { background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:10px 32px 10px 14px;font-family:'Space Grotesk',sans-serif;font-size:0.84rem;color:var(--text);outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;transition:border-color .2s; }
+    .filter-select:focus { border-color:var(--blue); }
+    .filter-select option { background:var(--card2); }
+    .results-count { font-size:0.8rem;color:var(--muted);white-space:nowrap; }
+
+    /* ── MENTOR GRID ── */
+    .mentors-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px; }
+
+    /* ── MENTOR CARD ── */
+    .mentor-card { background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all .2s;cursor:pointer;position:relative;display:flex;flex-direction:column; }
+    .mentor-card:hover { border-color:var(--border2);transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,0.3); }
+    .mentor-card-top { background:var(--card2);padding:20px 18px 16px;display:flex;align-items:flex-start;gap:12px; }
+    .mentor-avatar { width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:800;color:white;flex-shrink:0;border:2px solid var(--border2); }
+    .mentor-name { font-weight:700;font-size:0.92rem;color:var(--white);margin-bottom:3px; }
+    .mentor-title { font-size:0.75rem;color:var(--muted2);margin-bottom:7px; }
+    .mentor-tags { display:flex;gap:5px;flex-wrap:wrap; }
+    .tag { background:rgba(79,142,247,0.12);color:#93b4fa;font-size:0.67rem;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid rgba(79,142,247,0.2); }
+    .verified-badge { position:absolute;top:12px;right:44px;background:rgba(34,211,160,0.12);border:1px solid rgba(34,211,160,0.3);color:var(--green);font-size:0.6rem;font-weight:700;padding:2px 7px;border-radius:20px; }
+    .wishlist-btn { position:absolute;top:12px;right:12px;width:28px;height:28px;background:var(--bg3);border:1px solid var(--border2);border-radius:50%;color:var(--muted);font-size:0.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s; }
+    .wishlist-btn:hover { color:#f87171;border-color:rgba(248,113,113,0.4); }
+    .wishlist-btn.saved { color:#f87171;background:rgba(248,113,113,0.1);border-color:rgba(248,113,113,0.4); }
+    .mentor-card-body { padding:14px 18px;flex:1;display:flex;flex-direction:column;justify-content:space-between; }
+    .mentor-rating { display:flex;align-items:center;gap:5px;font-size:0.78rem;color:var(--muted2);margin-bottom:8px; }
+    .stars { color:#fbbf24;font-size:0.78rem; }
+    .rating-num { font-weight:600;color:var(--white); }
+    .sessions-done { font-size:0.72rem;color:var(--muted);margin-bottom:12px; }
+    .mentor-price-row { display:flex;align-items:center;justify-content:space-between; }
+    .mentor-price { font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;color:var(--white); }
+    .mentor-price span { font-family:'Space Grotesk',sans-serif;font-size:0.72rem;font-weight:400;color:var(--muted); }
+    .btn-book { background:var(--blue);color:white;border:none;padding:7px 14px;border-radius:7px;font-family:'Space Grotesk',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:background .2s; }
+    .btn-book:hover { background:var(--blue2); }
+
+    /* ── LOADING ── */
+    .loading-wrap { display:flex;align-items:center;justify-content:center;padding:80px;color:var(--muted);font-size:0.85rem;gap:10px; }
+    .spinner { width:20px;height:20px;border:2px solid var(--border2);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    /* ── EMPTY STATE ── */
+    .empty-state { text-align:center;padding:80px 20px;color:var(--muted); }
+    .empty-icon { font-size:3rem;margin-bottom:14px;opacity:0.35; }
+    .empty-title { font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;color:var(--muted2);margin-bottom:6px; }
+    .empty-sub { font-size:0.83rem; }
+
+    ::-webkit-scrollbar { width:5px; }
+    ::-webkit-scrollbar-thumb { background:var(--border2);border-radius:10px; }
+
+    @media(max-width:900px) {
+      .sidebar { transform:translateX(-100%); }
+      .main { margin-left:0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ SIDEBAR ══════════════ -->
+<aside class="sidebar">
+  <a href="index.html" class="sidebar-logo">
+    <div class="logo-mark">S</div>
+    <div class="logo-text">silli<span>fur</span></div>
+  </a>
+  <div class="sidebar-user">
+    <div class="user-avatar">AM</div>
+    <div>
+      <div class="user-name">Arjun Mehta</div>
+      <div class="user-exam">Preparing · UPSC CSE</div>
+    </div>
+  </div>
+  <div class="nav-section-label">Main</div>
+  <ul class="sidebar-nav">
+    <li><a href="mentee-dashboard.html"><span class="nav-icon">🏠</span> Dashboard</a></li>
+    <li><a href="#"><span class="nav-icon">📅</span> My Sessions <span class="nav-badge">2</span></a></li>
+    <li><a href="browse-mentors.html" class="active"><span class="nav-icon">🔍</span> Find Mentors</a></li>
+    <li><a href="#"><span class="nav-icon">♡</span> Saved Mentors</a></li>
+  </ul>
+  <div class="nav-section-label">Learning</div>
+  <ul class="sidebar-nav">
+    <li><a href="#"><span class="nav-icon">📊</span> My Progress</a></li>
+    <li><a href="#"><span class="nav-icon">📝</span> Session Notes</a></li>
+    <li><a href="#"><span class="nav-icon">⭐</span> Reviews Given</a></li>
+  </ul>
+  <div class="nav-section-label">Account</div>
+  <ul class="sidebar-nav">
+    <li><a href="#"><span class="nav-icon">💳</span> Payments</a></li>
+    <li><a href="#"><span class="nav-icon">🔔</span> Notifications <span class="nav-badge" style="background:#f87171">3</span></a></li>
+  </ul>
+  <div class="sidebar-bottom">
+    <a href="settings.html"><span class="nav-icon">⚙️</span> Settings</a>
+    <a href="index.html"><span class="nav-icon">🚪</span> Sign Out</a>
+  </div>
+</aside>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-title">Find Mentors</div>
+    <div class="topbar-right">
+      <a href="bookyourslot.html"><button class="btn-find">+ Book a Session</button></a>
+    </div>
+  </header>
+
+  <div class="page">
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search by name, exam, or subject…" oninput="applyFilters()"/>
+      </div>
+      <select class="filter-select" id="examFilter" onchange="applyFilters()">
+        <option value="">All Exams</option>
+        <option value="UPSC">UPSC CSE</option>
+        <option value="JEE">JEE</option>
+        <option value="NEET">NEET</option>
+        <option value="CAT">CAT / MBA</option>
+        <option value="GATE">GATE</option>
+        <option value="SSC">SSC</option>
+        <option value="CLAT">CLAT</option>
+        <option value="IBPS">IBPS / Bank PO</option>
+      </select>
+      <select class="filter-select" id="priceFilter" onchange="applyFilters()">
+        <option value="">Any Price</option>
+        <option value="0-500">Under ₹500</option>
+        <option value="500-1000">₹500 – ₹1,000</option>
+        <option value="1000-1500">₹1,000 – ₹1,500</option>
+        <option value="1500+">₹1,500+</option>
+      </select>
+      <select class="filter-select" id="ratingFilter" onchange="applyFilters()">
+        <option value="">Any Rating</option>
+        <option value="4.5">4.5★ & above</option>
+        <option value="4.0">4.0★ & above</option>
+      </select>
+      <div class="results-count" id="resultsCount">Loading…</div>
+    </div>
+
+    <!-- MENTOR GRID -->
+    <div id="mentorGrid">
+      <div class="loading-wrap"><div class="spinner"></div> Loading approved mentors…</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function toggleWishlist(btn) {
+    const saved = btn.classList.toggle('saved');
+    btn.textContent = saved ? '♥' : '♡';
+  }
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getFirestore, collection, query, where, onSnapshot, orderBy
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDEWvEXCo_W5i7OZ1wT4QuPED3ur2q5N7c",
+    authDomain: "sillifur-341e9.firebaseapp.com",
+    projectId: "sillifur-341e9",
+    storageBucket: "sillifur-341e9.appspot.com",
+    messagingSenderId: "848515376957",
+    appId: "1:848515376957:web:ac13cbb93fdcc9ba834754"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
+
+  let approvedMentors = [];
+
+  // Live listener — only approved mentors
+  const q = query(
+    collection(db, "mentors"),
+    where("status", "==", "approved"),
+    orderBy("appliedAt", "desc")
+  );
+
+  onSnapshot(q, snap => {
+    approvedMentors = snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+    applyFilters();
+  });
+
+  window.applyFilters = function() {
+    const search = document.getElementById("searchInput").value.toLowerCase();
+    const exam   = document.getElementById("examFilter").value;
+    const price  = document.getElementById("priceFilter").value;
+    const rating = document.getElementById("ratingFilter").value;
+
+    let filtered = approvedMentors;
+
+    if (search) {
+      filtered = filtered.filter(m =>
+        (m.name || "").toLowerCase().includes(search) ||
+        (m.exam || "").toLowerCase().includes(search) ||
+        (m.title || "").toLowerCase().includes(search) ||
+        (m.tags || []).some(t => t.toLowerCase().includes(search))
+      );
+    }
+
+    if (exam) {
+      filtered = filtered.filter(m => (m.exam || "").toUpperCase().includes(exam));
+    }
+
+    if (price) {
+      filtered = filtered.filter(m => {
+        const p = Number(m.price) || 0;
+        if (price === "0-500")    return p < 500;
+        if (price === "500-1000") return p >= 500 && p < 1000;
+        if (price === "1000-1500")return p >= 1000 && p < 1500;
+        if (price === "1500+")    return p >= 1500;
+        return true;
+      });
+    }
+
+    if (rating) {
+      filtered = filtered.filter(m => (Number(m.rating) || 0) >= Number(rating));
+    }
+
+    renderGrid(filtered);
+  };
+
+  function renderGrid(mentors) {
+    const grid = document.getElementById("mentorGrid");
+    const count = document.getElementById("resultsCount");
+    count.textContent = `${mentors.length} mentor${mentors.length !== 1 ? "s" : ""} found`;
+
+    if (mentors.length === 0) {
+      grid.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">🔍</div>
+          <div class="empty-title">No mentors found</div>
+          <div class="empty-sub">Try adjusting your filters or search term.</div>
+        </div>`;
+      return;
+    }
+
+    grid.innerHTML = `<div class="mentors-grid">${mentors.map(m => mentorCardHTML(m)).join("")}</div>`;
+  }
+
+  function mentorCardHTML(m) {
+    const initials = (m.name || "??").split(" ").map(n => n[0]).join("").slice(0,2).toUpperCase();
+    const color    = m.avatarColor || "#4f8ef7";
+    const stars    = "★".repeat(Math.round(m.rating || 5)) + "☆".repeat(5 - Math.round(m.rating || 5));
+    const tags     = (m.tags || []).map(t => `<span class="tag">${t}</span>`).join("");
+    const sessions = m.sessionsCompleted ? `${m.sessionsCompleted} sessions completed` : "New mentor";
+
+    return `
+      <div class="mentor-card">
+        <span class="verified-badge">✓ Verified</span>
+        <button class="wishlist-btn" onclick="toggleWishlist(this)">♡</button>
+        <div class="mentor-card-top">
+          <div class="mentor-avatar" style="background:${color}">${initials}</div>
+          <div>
+            <div class="mentor-name">${m.name || "—"}</div>
+            <div class="mentor-title">${m.title || "—"}</div>
+            <div class="mentor-tags">${tags}</div>
+          </div>
+        </div>
+        <div class="mentor-card-body">
+          <div>
+            <div class="mentor-rating">
+              <span class="stars">${stars}</span>
+              <span class="rating-num">${m.rating || "5.0"}</span>
+              <span>(${m.reviewCount || 0})</span>
+            </div>
+            <div class="sessions-done">📅 ${sessions}</div>
+          </div>
+          <div class="mentor-price-row">
+            <div class="mentor-price">₹${m.price || "—"} <span>/ session</span></div>
+            <button class="btn-book" onclick="window.location='bookyourslot.html'">Book</button>
+          </div>
+        </div>
+      </div>`;
+  }
+</script>
+</body>
+</html>
