@@ -23,6 +23,655 @@
     .nav-links { display:flex;align-items:center;gap:28px;list-style:none; }
     .nav-links a { color:var(--muted2);text-decoration:none;font-size:0.875rem;font-weight:500;transition:color .2s; }
     .nav-links a:hover { color:var(--white); }
+    .btn-signin { background:var(--blue);color:white;border:none;padding:8px 20px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:0.875rem;font-weight:600;cursor:pointer;transition:background .2s;display:flex;align-items:center;gap:8px; }
+    .btn-signin:hover { background:var(--blue2); }
+
+    .hero { padding:80px 5% 70px;text-align:center;position:relative; }
+    .hero::before { content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:700px;height:400px;background:radial-gradient(ellipse,rgba(79,142,247,0.1) 0%,transparent 70%);pointer-events:none; }
+    .hero-badge { display:inline-flex;align-items:center;gap:6px;background:rgba(79,142,247,0.1);border:1px solid rgba(79,142,247,0.25);color:var(--blue);font-size:0.78rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:22px; }
+    .hero h1 { font-family:'Outfit',sans-serif;font-size:clamp(2rem,5vw,3.6rem);font-weight:800;color:var(--white);line-height:1.15;max-width:760px;margin:0 auto 18px;letter-spacing:-1.5px; }
+    .hero h1 em { font-style:normal;color:var(--blue); }
+    .hero p { color:var(--muted2);font-size:1rem;max-width:480px;margin:0 auto 36px; }
+    .search-bar { display:flex;max-width:540px;margin:0 auto 32px;background:var(--card2);border:1px solid var(--border2);border-radius:12px;overflow:hidden; }
+    .search-bar input { flex:1;border:none;outline:none;padding:15px 18px;font-family:'Space Grotesk',sans-serif;font-size:0.9rem;color:var(--text);background:transparent; }
+    .search-bar input::placeholder { color:var(--muted); }
+    .search-bar button { background:var(--blue);color:white;border:none;padding:0 24px;font-family:'Space Grotesk',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:background .2s; }
+    .search-bar button:hover { background:var(--blue2); }
+
+    .exam-logos-label { font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:14px; }
+    .exam-logos-grid { display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:700px;margin:0 auto; }
+    .exam-pill { display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--border2);border-radius:40px;padding:7px 14px 7px 10px;cursor:pointer;transition:all .2s;text-decoration:none; }
+    .exam-pill:hover { border-color:var(--blue);background:rgba(79,142,247,0.08); }
+    .exam-logo-circle { width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:800;letter-spacing:-0.3px;flex-shrink:0;border:1.5px solid rgba(255,255,255,0.15); }
+    .exam-pill-name { font-size:0.8rem;font-weight:600;color:var(--text);white-space:nowrap; }
+
+    .stats { display:flex;justify-content:center;gap:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2);flex-wrap:wrap; }
+    .stat-item { flex:1;min-width:140px;text-align:center;padding:22px 20px;border-right:1px solid var(--border); }
+    .stat-item:last-child { border-right:none; }
+    .stat-num { font-family:'Outfit',sans-serif;font-size:1.7rem;font-weight:800;color:var(--white); }
+    .stat-num span { color:var(--blue); }
+    .stat-label { font-size:0.78rem;color:var(--muted);margin-top:2px; }
+
+    section { padding:60px 5%; }
+    .section-header { display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:10px; }
+    .section-tag { font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);margin-bottom:6px; }
+    .section-title { font-family:'Outfit',sans-serif;font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:700;color:var(--white);letter-spacing:-0.5px; }
+    .view-all { color:var(--blue);font-size:0.85rem;font-weight:600;text-decoration:none;letter-spacing:0.02em;white-space:nowrap; }
+    .view-all:hover { text-decoration:underline; }
+
+    .cat-scroll-wrap { overflow-x:auto;padding-bottom:12px;margin:0 -5%;padding-left:5%;padding-right:5%;scrollbar-width:thin;scrollbar-color:var(--border2) transparent; }
+    .cat-grid { display:grid;grid-template-rows:1fr 1fr;grid-auto-flow:column;grid-auto-columns:200px;gap:12px;width:max-content; }
+    .cat-card { background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px 16px;cursor:pointer;transition:all .2s;text-decoration:none;color:var(--text);display:flex;flex-direction:column;justify-content:space-between;height:130px;position:relative;overflow:hidden; }
+    .cat-card:hover { border-color:var(--border2);background:var(--card2);transform:translateY(-2px); }
+    .cat-card.active-cat { background:var(--card2);border-color:rgba(79,142,247,0.35); }
+    .cat-name { font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;color:var(--white);line-height:1.2;max-width:110px; }
+    .cat-bottom { display:flex;align-items:flex-end;justify-content:space-between; }
+    .cat-badge { font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#4ade80;line-height:1; }
+    .cat-logo-circle { width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:800;letter-spacing:-0.3px;flex-shrink:0;border:1.5px solid rgba(255,255,255,0.15); }
+
+    .mentors-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px; }
+    .mentor-card { background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all .2s;cursor:pointer;position:relative; }
+    .mentor-card:hover { border-color:var(--border2);transform:translateY(-3px); }
+    .mentor-card-top { background:var(--card2);padding:20px 18px 16px;display:flex;align-items:flex-start;gap:12px; }
+    .mentor-avatar { width:48px;height:48px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:800;color:white;flex-shrink:0;border:2px solid var(--border2); }
+    .mentor-name { font-weight:700;font-size:0.92rem;color:var(--white);margin-bottom:3px; }
+    .mentor-title { font-size:0.75rem;color:var(--muted2);margin-bottom:7px; }
+    .mentor-tags { display:flex;gap:5px;flex-wrap:wrap; }
+    .tag { background:rgba(79,142,247,0.12);color:#93b4fa;font-size:0.67rem;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid rgba(79,142,247,0.2); }
+    .wishlist-btn { position:absolute;top:12px;right:12px;width:28px;height:28px;background:var(--bg3);border:1px solid var(--border2);border-radius:50%;color:var(--muted);font-size:0.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s; }
+    .wishlist-btn:hover { color:#f87171;border-color:rgba(248,113,113,0.4); }
+    .wishlist-btn.saved { color:#f87171;background:rgba(248,113,113,0.1);border-color:rgba(248,113,113,0.4); }
+    .mentor-card-body { padding:14px 18px; }
+    .mentor-rating { display:flex;align-items:center;gap:5px;font-size:0.78rem;color:var(--muted2);margin-bottom:12px; }
+    .stars { color:#fbbf24;font-size:0.78rem; }
+    .rating-num { font-weight:600;color:var(--white); }
+    .mentor-price-row { display:flex;align-items:center;justify-content:space-between; }
+    .mentor-price { font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;color:var(--white); }
+    .mentor-price span { font-family:'Space Grotesk',sans-serif;font-size:0.72rem;font-weight:400;color:var(--muted); }
+    .btn-book { background:var(--blue);color:white;border:none;padding:7px 14px;border-radius:7px;font-family:'Space Grotesk',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:background .2s; }
+    .btn-book:hover { background:var(--blue2); }
+
+    .how { background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border); }
+    .steps-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px; }
+    .step-card { background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px 22px; }
+    .step-num { font-family:'Outfit',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(79,142,247,0.15);line-height:1;margin-bottom:14px; }
+    .step-icon { font-size:1.5rem;margin-bottom:10px;display:block; }
+    .step-title { font-weight:700;font-size:0.95rem;color:var(--white);margin-bottom:7px; }
+    .step-desc { font-size:0.83rem;color:var(--muted2);line-height:1.6; }
+
+    .cta-banner { text-align:center;padding:70px 5%;border-top:1px solid var(--border); }
+    .cta-banner h2 { font-family:'Outfit',sans-serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;color:var(--white);letter-spacing:-0.5px;margin-bottom:10px; }
+    .cta-banner h2 em { font-style:normal;color:var(--blue); }
+    .cta-banner p { color:var(--muted2);font-size:0.92rem;margin-bottom:26px; }
+    .cta-btns { display:flex;gap:10px;justify-content:center;flex-wrap:wrap; }
+    .btn-primary { background:var(--blue);color:white;border:none;padding:12px 26px;border-radius:9px;font-family:'Space Grotesk',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:background .2s; }
+    .btn-primary:hover { background:var(--blue2); }
+    .btn-ghost { background:transparent;color:var(--muted2);border:1px solid var(--border2);padding:12px 26px;border-radius:9px;font-family:'Space Grotesk',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all .2s; }
+    .btn-ghost:hover { border-color:var(--white);color:var(--white); }
+
+    footer { background:var(--bg2);border-top:1px solid var(--border);padding:48px 5% 28px; }
+    .footer-top { display:flex;justify-content:space-between;flex-wrap:wrap;gap:32px;margin-bottom:40px; }
+    .footer-brand p { font-size:0.82rem;color:var(--muted);margin-top:12px;max-width:200px;line-height:1.6; }
+    .footer-col h4 { font-weight:600;font-size:0.82rem;color:var(--white);margin-bottom:14px; }
+    .footer-col a { display:block;color:var(--muted);text-decoration:none;font-size:0.82rem;margin-bottom:9px;transition:color .2s; }
+    .footer-col a:hover { color:var(--blue); }
+    .footer-bottom { border-top:1px solid var(--border);padding-top:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:0.76rem;color:var(--muted); }
+    .footer-bottom a { color:var(--muted);text-decoration:none; }
+    .footer-bottom a:hover { color:var(--blue); }
+
+    .modal-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;align-items:center;justify-content:center; }
+    .modal-overlay.open { display:flex; }
+    .modal { background:var(--card2);border:1px solid var(--border2);border-radius:20px;padding:36px 32px;max-width:380px;width:90%;text-align:center;position:relative; }
+    .modal-close { position:absolute;top:14px;right:16px;background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--muted); }
+    .modal-logo-wrap { display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px; }
+    .modal h3 { font-family:'Outfit',sans-serif;font-size:1.25rem;font-weight:700;color:var(--white);margin-bottom:6px; }
+    .modal p { font-size:0.85rem;color:var(--muted2);margin-bottom:24px; }
+    .google-btn { display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;border:1px solid var(--border2);border-radius:9px;background:var(--card);font-family:'Space Grotesk',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all .2s;color:var(--white);margin-bottom:16px; }
+    .google-btn:hover { background:var(--bg3); }
+    .google-btn svg { width:18px;height:18px; }
+    .modal-divider { font-size:0.75rem;color:var(--muted);margin:4px 0 14px;position:relative; }
+    .modal-divider::before,.modal-divider::after { content:'';position:absolute;top:50%;width:36%;height:1px;background:var(--border); }
+    .modal-divider::before { left:0; }
+    .modal-divider::after { right:0; }
+    .role-row { display:grid;grid-template-columns:1fr 1fr;gap:10px; }
+    .role-btn { padding:14px 8px;border:1px solid var(--border2);border-radius:10px;background:var(--card);font-family:'Space Grotesk',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all .2s;color:var(--muted2); }
+    .role-btn:hover { border-color:var(--blue);color:var(--blue); }
+    .role-btn .role-icon { font-size:1.3rem;display:block;margin-bottom:5px; }
+    .modal-terms { font-size:0.7rem;color:var(--muted);margin-top:14px; }
+    .modal-terms a { color:var(--blue); }
+
+    /* Inputs used in auth/profile dialogs */
+    .password-input { width: 100%; padding: 12px; border-radius: 9px; border: 1px solid var(--border2); background: var(--bg); color: var(--white); font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; margin-bottom: 12px; outline: none; }
+    .password-input:focus { border-color: var(--blue); }
+    .auth-message { font-size: 0.75rem; margin-top: 10px; min-height: 16px; font-weight: 600; text-align: center; }
+    
+    @media(max-width:640px){ .nav-links{display:none;} }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-mark">S</div>
+    <div class="logo-text">silli<span>fur</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="browse-mentors.html">Browse Mentors</a></li>
+    <li><a href="browse-mentors.html">Browse Mentors</a></li>
+    <li><a href="#">Become a Mentor</a></li>
+    <li><a href="#">How it works</a></li>
+    <li id="adminNavItem" style="display:none"><a href="admin.html" style="color:#f87171;font-weight:600;">⚙ Admin Panel</a></li>
+  </ul>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <a href="mentee-dashboard.html" id="dashboardBtn" style="display:none;background:var(--card2);border:1px solid var(--border2);color:var(--muted2);padding:7px 16px;border-radius:8px;font-size:0.875rem;font-weight:600;text-decoration:none;transition:all .2s;">Dashboard</a>
+    <button class="btn-signin" id="navSignInBtn" onclick="openModal()">Sign In</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">&#9733; India's Exam Mentor Marketplace</div>
+  <h1>Crack your exam with mentors<br>who've <em>been there</em></h1>
+  <p>Connect with toppers & verified experts for UPSC, JEE, NEET, CAT & more. Book a 1:1 session today.</p>
+  <div class="search-bar">
+    <input type="text" placeholder="Search by exam, subject, or mentor name…"/>
+    <button>Search</button>
+  </div>
+  <div class="exam-logos-label">Popular exams — click to explore mentors</div>
+  <div class="exam-logos-grid">
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#1a3a6c;color:#fff;">UPSC</div><span class="exam-pill-name">UPSC CSE</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#f97316;color:#fff;">JEE</div><span class="exam-pill-name">JEE Mains & Adv.</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#16a34a;color:#fff;">NEET</div><span class="exam-pill-name">NEET UG</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#7c3aed;color:#fff;">CAT</div><span class="exam-pill-name">CAT / MBA</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#0369a1;color:#fff;">GATE</div><span class="exam-pill-name">GATE</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#b91c1c;color:#fff;">CLAT</div><span class="exam-pill-name">CLAT / Law</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#0f766e;color:#fff;">IBPS</div><span class="exam-pill-name">IBPS / Bank PO</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#92400e;color:#fff;">SSC</div><span class="exam-pill-name">SSC CGL / CHSL</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#4f46e5;color:#fff;">CUET</div><span class="exam-pill-name">CUET UG/PG</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#0c4a6e;color:#fff;">NDA</div><span class="exam-pill-name">NDA / CDS</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#be185d;color:#fff;">NIFT</div><span class="exam-pill-name">NIFT / NID</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#065f46;color:#fff;">CA</div><span class="exam-pill-name">CA Foundation</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#713f12;color:#fff;">GRE</div><span class="exam-pill-name">GRE / GMAT</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#1e3a5f;color:#fff;">JEST</div><span class="exam-pill-name">JEST / JAM</span></a>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stat-item"><div class="stat-num">500<span>+</span></div><div class="stat-label">Verified Mentors</div></div>
+  <div class="stat-item"><div class="stat-num">12K<span>+</span></div><div class="stat-label">Sessions Completed</div></div>
+  <div class="stat-item"><div class="stat-num">4.8<span>★</span></div><div class="stat-label">Average Rating</div></div>
+  <div class="stat-item"><div class="stat-num">20<span>+</span></div><div class="stat-label">Exams Covered</div></div>
+</div>
+
+<section>
+  <div class="section-header">
+    <div><div class="section-tag">Browse by Exam</div><h2 class="section-title">Find your exam category</h2></div>
+    <a href="#" class="view-all">VIEW ALL</a>
+  </div>
+  <div class="cat-scroll-wrap">
+    <div class="cat-grid">
+      <a href="#" class="cat-card active-cat"><div class="cat-name">UPSC Civil Services</div><div class="cat-bottom"><div class="cat-badge">94 MENTORS</div><div class="cat-logo-circle" style="background:#1a3a6c;color:#fff;font-size:0.62rem;">UPSC</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">JEE Mains &amp; Advanced</div><div class="cat-bottom"><div class="cat-badge">128 MENTORS</div><div class="cat-logo-circle" style="background:#f97316;color:#fff;">JEE</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">NEET UG / PG</div><div class="cat-bottom"><div class="cat-badge">112 MENTORS</div><div class="cat-logo-circle" style="background:#16a34a;color:#fff;font-size:0.6rem;">NEET</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">CAT / MBA Entrance</div><div class="cat-bottom"><div class="cat-badge" style="color:#f87171">TRENDING</div><div class="cat-logo-circle" style="background:#7c3aed;color:#fff;">CAT</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">GATE &amp; PSU</div><div class="cat-bottom"><div class="cat-badge">76 MENTORS</div><div class="cat-logo-circle" style="background:#0369a1;color:#fff;font-size:0.6rem;">GATE</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">SSC CGL / CHSL</div><div class="cat-bottom"><div class="cat-badge">65 MENTORS</div><div class="cat-logo-circle" style="background:#92400e;color:#fff;">SSC</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">Bank PO &amp; IBPS</div><div class="cat-bottom"><div class="cat-badge" style="color:#f87171">NEW MENTORS</div><div class="cat-logo-circle" style="background:#0f766e;color:#fff;font-size:0.6rem;">IBPS</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">CLAT / AILET</div><div class="cat-bottom"><div class="cat-badge">43 MENTORS</div><div class="cat-logo-circle" style="background:#b91c1c;color:#fff;font-size:0.6rem;">CLAT</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">CUET UG / PG</div><div class="cat-bottom"><div class="cat-badge">52 MENTORS</div><div class="cat-logo-circle" style="background:#4f46e5;color:#fff;font-size:0.6rem;">CUET</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">NDA / CDS / AFCAT</div><div class="cat-bottom"><div class="cat-badge">38 MENTORS</div><div class="cat-logo-circle" style="background:#0c4a6e;color:#fff;">NDA</div></div></a>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="section-header">
+    <div><div class="section-tag">Top Mentors</div><h2 class="section-title">Most booked this week</h2></div>
+    <a href="#" class="view-all">VIEW ALL</a>
+  </div>
+  <div class="mentors-grid">
+    <div class="mentor-card">
+      <button class="wishlist-btn" onclick="toggleWishlist(this)">♡</button>
+      <div class="mentor-card-top"><div class="mentor-avatar" style="background:#1a3a6c">NM</div><div><div class="mentor-name">Neha Mehra</div><div class="mentor-title">IAS Officer · UPSC AIR 34</div><div class="mentor-tags"><span class="tag">UPSC</span><span class="tag">GS</span><span class="tag">Essay</span></div></div></div>
+      <div class="mentor-card-body"><div class="mentor-rating"><span class="stars">★★★★★</span><span class="rating-num">4.9</span><span>(211)</span></div><div class="mentor-price-row"><div class="mentor-price">₹799 <span>/ session</span></div><button class="btn-book" onclick="openModal()">Book</button></div></div>
+    </div>
+    <div class="mentor-card">
+      <button class="wishlist-btn" onclick="toggleWishlist(this)">♡</button>
+      <div class="mentor-card-top"><div class="mentor-avatar" style="background:#f97316">RK</div><div><div class="mentor-name">Rohit Kumar</div><div class="mentor-title">JEE Advanced AIR 42 · IIT Delhi</div><div class="mentor-tags"><span class="tag">Physics</span><span class="tag">Maths</span><span class="tag">JEE</span></div></div></div>
+      <div class="mentor-card-body"><div class="mentor-rating"><span class="stars">★★★★★</span><span class="rating-num">4.9</span><span>(184)</span></div><div class="mentor-price-row"><div class="mentor-price">₹999 <span>/ session</span></div><button class="btn-book" onclick="openModal()">Book</button></div></div>
+    </div>
+    <div class="mentor-card">
+      <button class="wishlist-btn" onclick="toggleWishlist(this)">♡</button>
+      <div class="mentor-card-top"><div class="mentor-avatar" style="background:#16a34a">AS</div><div><div class="mentor-name">Ananya Sharma</div><div class="mentor-title">NEET AIR 19 · MBBS AIIMS Delhi</div><div class="mentor-tags"><span class="tag">Biology</span><span class="tag">Chemistry</span><span class="tag">NEET</span></div></div></div>
+      <div class="mentor-card-body"><div class="mentor-rating"><span class="stars">★★★★★</span><span class="rating-num">5.0</span><span>(98)</span></div><div class="mentor-price-row"><div class="mentor-price">₹1,199 <span>/ session</span></div><button class="btn-book" onclick="openModal()">Book</button></div></div>
+    </div>
+    <div class="mentor-card">
+      <button class="wishlist-btn" onclick="toggleWishlist(this)">♡</button>
+      <div class="mentor-card-top"><div class="mentor-avatar" style="background:#7c3aed">VT</div><div><div class="mentor-name">Vikram Tiwari</div><div class="mentor-title">CAT 99.8%ile · IIM Ahmedabad</div><div class="mentor-tags"><span class="tag">VARC</span><span class="tag">DILR</span><span class="tag">Quant</span></div></div></div>
+      <div class="mentor-card-body"><div class="mentor-rating"><span class="stars">★★★★★</span><span class="rating-num">4.8</span><span>(132)</span></div><div class="mentor-price-row"><div class="mentor-price">₹1,499 <span>/ session</span></div><button class="btn-book" onclick="openModal()">Book</button></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="how">
+  <div class="section-header"><div><div class="section-tag">Simple Process</div><h2 class="section-title">How Sillifur works</h2></div></div>
+  <div class="steps-grid">
+    <div class="step-card"><div class="step-num">01</div><span class="step-icon">🔍</span><div class="step-title">Find your mentor</div><div class="step-desc">Browse by exam or describe your goal. Filter by price, rating, and availability.</div></div>
+    <div class="step-card"><div class="step-num">02</div><span class="step-icon">📅</span><div class="step-title">Pick a slot</div><div class="step-desc">Choose a 30 or 60 min session. Pick any date and time that works for you.</div></div>
+    <div class="step-card"><div class="step-num">03</div><span class="step-icon">💳</span><div class="step-title">Pay & confirm</div><div class="step-desc">Pay securely via UPI, card, or netbanking. Get a Google Meet link instantly.</div></div>
+    <div class="step-card"><div class="step-num">04</div><span class="step-icon">🚀</span><div class="step-title">Meet & grow</div><div class="step-desc">Join your session, get real guidance, and leave a review to help the community.</div></div>
+  </div>
+</section>
+
+<section class="cta-banner">
+  <h2>Are you a topper? <em>Become a mentor.</em></h2>
+  <p>Share your exam strategy, set your own price, and earn on your schedule.</p>
+  <div class="cta-btns">
+    <button class="btn-primary" onclick="openModal()">Apply as Mentor</button>
+    <button class="btn-ghost">Learn More</button>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="index.html" class="logo"><div class="logo-mark">S</div><div class="logo-text">silli<span>fur</span></div></a>
+      <p>India's exam mentor marketplace. Learn from toppers who've done it.</p>
+    </div>
+    <div class="footer-col"><h4>Platform</h4><a href="#">Browse Mentors</a><a href="#">Become a Mentor</a><a href="#">How it Works</a></div>
+    <div class="footer-col"><h4>Exams</h4><a href="#">UPSC CSE</a><a href="#">JEE / NEET</a><a href="#">CAT / GATE</a><a href="#">SSC / Bank PO</a></div>
+    <div class="footer-col"><h4>Company</h4><a href="#">About Us</a><a href="#">Blog</a><a href="#">Contact</a><a href="#">Open Source ↗</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Sillifur. All rights reserved.</span>
+    <div style="display:flex;gap:16px"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="modal" onclick="closeOnOverlay(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-logo-wrap"><div class="logo-mark">S</div><div class="logo-text">silli<span>fur</span></div></div>
+    <h3>Welcome back</h3>
+    <p>Sign in to book sessions, save mentors, and track your growth.</p>
+    <button class="google-btn" id="googleSignInBtn">
+      <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+      Continue with Google
+    </button>
+    <div class="modal-divider">I am a</div>
+    <div class="role-row">
+      <button class="role-btn" id="menteeBtn"><span class="role-icon">🎓</span>Mentee</button>
+      <button class="role-btn" id="mentorBtn"><span class="role-icon">🏆</span>Mentor</button>
+    </div>
+    <div class="modal-divider">or sign in with User ID</div>
+    <input type="text" id="login-userid-input" class="password-input" placeholder="User ID" autocomplete="username" />
+    <input type="password" id="login-password-input" class="password-input" placeholder="Password" autocomplete="current-password" />
+    <button id="userIdLoginBtn" class="btn-primary" style="width: 100%; margin-bottom: 10px;">Sign In with User ID</button>
+    <button id="forgotPasswordBtn" class="btn-ghost" style="width: 100%; padding: 10px 14px; margin-bottom: 10px; font-size: 0.82rem;">Forgot Password</button>
+    <p id="login-message" class="auth-message"></p>
+    <p class="modal-terms">By signing in you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+  </div>
+</div>
+
+<div class="modal-overlay" id="profileModal" onclick="closeProfileOverlay(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeProfileModal()">✕</button>
+    <h3>Your Profile</h3>
+    <p id="profileEmail" style="color:var(--muted2); font-size: 0.85rem; margin-bottom: 24px;"></p>
+
+    <div style="background:var(--card); border:1px solid var(--border2); padding:20px; border-radius:12px; margin-bottom:24px; text-align: left;">
+      <h4 style="color:var(--white); font-size: 0.95rem; margin-bottom: 6px;">Set Login Credentials</h4>
+      <p style="font-size:0.75rem; color:var(--muted); margin-bottom: 14px;">Create a User ID and password. We store this login in Firebase and you can use it for future sign-ins.</p>
+      <input type="text" id="new-userid-input" class="password-input" placeholder="Choose user ID (letters, numbers, _)" autocomplete="username" />
+      <input type="password" id="new-password-input" class="password-input" placeholder="Enter password (min 6 chars)" autocomplete="new-password" />
+      <input type="password" id="confirm-password-input" class="password-input" placeholder="Confirm password" autocomplete="new-password" />
+      <button id="set-credentials-btn" class="btn-primary" style="width: 100%;">Save User ID & Password</button>
+      <p id="credentials-message" class="auth-message"></p>
+    </div>
+
+    <button id="logoutBtn" class="btn-ghost" style="width: 100%;">Log Out</button>
+  </div>
+</div>
+
+<script>
+  window.forceCredentialSetup = false;
+  function openModal(){ document.getElementById('modal').classList.add('open'); }
+  function closeModal(){
+    document.getElementById('modal').classList.remove('open');
+    const loginMsg = document.getElementById('login-message');
+    if (loginMsg) loginMsg.innerText = '';
+  }
+  function closeOnOverlay(e){ if(e.target.id==='modal') closeModal(); }
+  function toggleWishlist(btn){
+    const saved = btn.classList.toggle('saved');
+    btn.textContent = saved ? '♥' : '♡';
+  }
+
+  // Logic for the new Profile Modal
+  function openProfileModal(){ document.getElementById('profileModal').classList.add('open'); }
+  function closeProfileModal(){ 
+    if (window.forceCredentialSetup) {
+      const credMsg = document.getElementById('credentials-message');
+      if (credMsg) {
+        credMsg.style.color = "#f87171";
+        credMsg.innerText = "Please create your User ID and password to continue.";
+      }
+      return;
+    }
+    document.getElementById('profileModal').classList.remove('open'); 
+    const credMsg = document.getElementById('credentials-message');
+    if (credMsg) credMsg.innerText = "";
+  }
+  function closeProfileOverlay(e){ if(e.target.id==='profileModal') closeProfileModal(); }
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getAuth,
+    signInWithPopup,
+    GoogleAuthProvider,
+    onAuthStateChanged,
+    signOut,
+    EmailAuthProvider,
+    linkWithCredential,
+    signInWithEmailAndPassword,
+    sendPasswordResetEmail
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    setDoc,
+    getDoc,
+    updateDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDEWvEXCo_W5i7OZ1wT4QuPED3ur2q5N7c",
+    authDomain: "sillifur-341e9.firebaseapp.com",
+    projectId: "sillifur-341e9",
+    storageBucket: "sillifur-341e9.appspot.com",
+    messagingSenderId: "848515376957",
+    appId: "1:848515376957:web:ac13cbb93fdcc9ba834754"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+  const USER_ALIAS_DOMAIN = "login.sillifur.app";
+
+  function showMessage(id, text, color) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.color = color;
+    el.innerText = text;
+  }
+
+  function normalizeUserId(raw) {
+    return (raw || "").trim().toLowerCase();
+  }
+
+  function isValidUserId(userId) {
+    return /^[a-z0-9_]{4,20}$/.test(userId);
+  }
+
+  async function ensureUserDoc(user, role) {
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      await setDoc(userRef, {
+        uid: user.uid,
+        name: user.displayName,
+        email: user.email,
+        photo: user.photoURL,
+        role: role,
+        createdAt: new Date().toISOString()
+      });
+      return;
+    }
+
+    if (!userSnap.data().role && role) {
+      await updateDoc(userRef, { role: role });
+    }
+  }
+
+  async function userNeedsCredentialSetup(user) {
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+    if (!userSnap.exists()) return true;
+
+    const login = userSnap.data().login;
+    return !(login && login.userId && login.emailAlias && login.hasPassword);
+  }
+
+  // ▼ Add your admin email here — must match what's in admin.html
+  const ADMIN_EMAIL = "your-admin@gmail.com";
+
+  function updateNavbar(user) {
+    const btn = document.getElementById("navSignInBtn");
+    const dashBtn = document.getElementById("dashboardBtn");
+    const adminItem = document.getElementById("adminNavItem");
+
+    // Update sign-in button to show user photo + name
+    btn.innerHTML = `<img src="${user.photoURL || ""}" style="width:26px;height:26px;border-radius:50%;"> ${user.displayName ? user.displayName.split(" ")[0] : "Profile"}`;
+    btn.onclick = () => {
+      document.getElementById("profileEmail").innerText = user.email || "";
+      openProfileModal();
+    };
+
+    // Show Dashboard button for all logged-in users
+    dashBtn.style.display = "flex";
+
+    // Show Admin Panel link only for admin email
+    if (user.email === ADMIN_EMAIL) {
+      adminItem.style.display = "list-item";
+      dashBtn.href = "admin.html";
+      dashBtn.textContent = "Admin Panel";
+      dashBtn.style.color = "#f87171";
+      dashBtn.style.borderColor = "rgba(248,113,113,0.3)";
+    } else {
+      adminItem.style.display = "none";
+      dashBtn.href = "mentee-dashboard.html";
+      dashBtn.textContent = "Dashboard";
+    }
+  }
+
+  async function signInWithGoogle(role) {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      await ensureUserDoc(user, role);
+      closeModal();
+      updateNavbar(user);
+
+      if (await userNeedsCredentialSetup(user)) {
+        window.forceCredentialSetup = true;
+        document.getElementById("profileEmail").innerText = user.email || "";
+        setTimeout(() => openProfileModal(), 250);
+      } else {
+        window.forceCredentialSetup = false;
+      }
+    } catch (err) {
+      console.error("Sign-in error:", err.message);
+      showMessage("login-message", "Google sign-in failed. Please try again.", "#f87171");
+    }
+  }
+
+  async function signInWithUserId() {
+    const userId = normalizeUserId(document.getElementById("login-userid-input").value);
+    const password = document.getElementById("login-password-input").value;
+
+    if (!userId || !password) {
+      showMessage("login-message", "Enter both User ID and password.", "#f87171");
+      return;
+    }
+
+    try {
+      const handleRef = doc(db, "userHandles", userId);
+      const handleSnap = await getDoc(handleRef);
+
+      if (!handleSnap.exists()) {
+        showMessage("login-message", "User ID not found. Try Google sign-in first.", "#f87171");
+        return;
+      }
+
+      const emailAlias = handleSnap.data().emailAlias;
+      await signInWithEmailAndPassword(auth, emailAlias, password);
+
+      showMessage("login-message", "Signed in successfully.", "#4ade80");
+      document.getElementById("login-userid-input").value = "";
+      document.getElementById("login-password-input").value = "";
+      closeModal();
+    } catch (err) {
+      console.error("User ID sign-in error:", err);
+      showMessage("login-message", "Invalid User ID or password.", "#f87171");
+    }
+  }
+
+  async function saveUserCredentials() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const userId = normalizeUserId(document.getElementById("new-userid-input").value);
+    const password = document.getElementById("new-password-input").value;
+    const confirmPassword = document.getElementById("confirm-password-input").value;
+    const messageId = "credentials-message";
+
+    if (!isValidUserId(userId)) {
+      showMessage(messageId, "User ID must be 4-20 chars: letters, numbers, underscore.", "#f87171");
+      return;
+    }
+
+    if (password.length < 6) {
+      showMessage(messageId, "Password must be at least 6 characters.", "#f87171");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      showMessage(messageId, "Passwords do not match.", "#f87171");
+      return;
+    }
+
+    try {
+      const handleRef = doc(db, "userHandles", userId);
+      const handleSnap = await getDoc(handleRef);
+      if (handleSnap.exists() && handleSnap.data().uid !== user.uid) {
+        showMessage(messageId, "This User ID is already taken.", "#f87171");
+        return;
+      }
+
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+      const existingLoginEmail = userSnap.exists() ? userSnap.data()?.login?.emailAlias : null;
+      const hasPasswordProvider = user.providerData.some(p => p.providerId === "password");
+      const authEmail = existingLoginEmail || user.email || `${userId}@${USER_ALIAS_DOMAIN}`;
+
+      if (!hasPasswordProvider) {
+        const credential = EmailAuthProvider.credential(authEmail, password);
+        await linkWithCredential(user, credential);
+      }
+
+      await setDoc(handleRef, {
+        uid: user.uid,
+        emailAlias: authEmail,
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+
+      await setDoc(userRef, {
+        login: {
+          userId: userId,
+          emailAlias: authEmail,
+          hasPassword: true,
+          updatedAt: new Date().toISOString()
+        }
+      }, { merge: true });
+
+      showMessage(messageId, "Credentials saved. You can now log in with User ID + password.", "#4ade80");
+      document.getElementById("new-password-input").value = "";
+      document.getElementById("confirm-password-input").value = "";
+      window.forceCredentialSetup = false;
+      setTimeout(() => closeProfileModal(), 300);
+    } catch (error) {
+      console.error("Credential setup error:", error);
+
+      if (error.code === "auth/requires-recent-login") {
+        showMessage(messageId, "Please log out and sign in again, then set credentials.", "#f87171");
+      } else if (error.code === "auth/email-already-in-use") {
+        showMessage(messageId, "That login mapping is already used. Try a different User ID.", "#f87171");
+      } else {
+        showMessage(messageId, `Failed to save credentials: ${error.message}`, "#f87171");
+      }
+    }
+  }
+
+  async function forgotPasswordWithUserId() {
+    const userId = normalizeUserId(document.getElementById("login-userid-input").value);
+    if (!userId) {
+      showMessage("login-message", "Enter your User ID first, then click Forgot Password.", "#f87171");
+      return;
+    }
+
+    try {
+      const handleRef = doc(db, "userHandles", userId);
+      const handleSnap = await getDoc(handleRef);
+      if (!handleSnap.exists()) {
+        showMessage("login-message", "User ID not found.", "#f87171");
+        return;
+      }
+
+      const emailAlias = handleSnap.data().emailAlias;
+      await sendPasswordResetEmail(auth, emailAlias);
+      showMessage("login-message", "Password reset link sent to your registered email.", "#4ade80");
+    } catch (error) {
+      console.error("Forgot password error:", error);
+      showMessage("login-message", "Unable to send reset link right now. Try again.", "#f87171");
+    }
+  }
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) {
+      window.forceCredentialSetup = false;
+      return;
+    }
+    updateNavbar(user);
+    if (await userNeedsCredentialSetup(user)) {
+      window.forceCredentialSetup = true;
+      document.getElementById("profileEmail").innerText = user.email || "";
+      openProfileModal();
+    } else {
+      window.forceCredentialSetup = false;
+    }
+  });
+
+  document.getElementById("googleSignInBtn").onclick = () => signInWithGoogle("mentee");
+  document.getElementById("menteeBtn").onclick = () => signInWithGoogle("mentee");
+  document.getElementById("mentorBtn").onclick = () => signInWithGoogle("mentor");
+  document.getElementById("userIdLoginBtn").onclick = signInWithUserId;
+  document.getElementById("forgotPasswordBtn").onclick = forgotPasswordWithUserId;
+  document.getElementById("set-credentials-btn").onclick = saveUserCredentials;
+  document.getElementById("logoutBtn").onclick = () => signOut(auth).then(() => location.reload());
+
+</script>
+
+</body>
+</html>
+{
+      --bg:#0b0d11;--bg2:#12151c;--bg3:#1a1e2a;--card:#181c27;--card2:#1f2335;
+      --blue:#4f8ef7;--blue2:#3a76e8;--green:#22d3a0;--white:#ffffff;
+      --text:#e8eaf0;--muted:#6b7280;--muted2:#9ca3af;
+      --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--radius:14px;
+    }
+    body { font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);line-height:1.6; }
+    nav { background:var(--bg2);border-bottom:1px solid var(--border);padding:0 5%;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100; }
+    .logo { display:flex;align-items:center;gap:9px;text-decoration:none; }
+    .logo-mark { width:34px;height:34px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-weight:800;font-size:1rem;color:white;letter-spacing:-1px; }
+    .logo-text { font-family:'Outfit',sans-serif;font-weight:700;font-size:1.2rem;color:var(--white);letter-spacing:-0.3px; }
+    .logo-text span { color:var(--blue); }
+    .nav-links { display:flex;align-items:center;gap:28px;list-style:none; }
+    .nav-links a { color:var(--muted2);text-decoration:none;font-size:0.875rem;font-weight:500;transition:color .2s; }
+    .nav-links a:hover { color:var(--white); }
     .nav-right { display:flex;align-items:center;gap:8px; }
     .btn-signin { background:var(--blue);color:white;border:none;padding:8px 20px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:0.875rem;font-weight:600;cursor:pointer;transition:background .2s;display:flex;align-items:center;gap:8px; }
     .btn-signin:hover { background:var(--blue2); }
