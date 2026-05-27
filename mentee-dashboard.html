@@ -638,6 +638,194 @@
   }
   updateCountdown();
   setInterval(updateCountdown, 1000);
+
+  // ── Check for pending post-session review ──
+  // bookyourslot.html sets sessionStorage('silli_pending_review') when a session ends
+  (function checkPendingReview() {
+    try {
+      const pending = sessionStorage.getItem('silli_pending_review');
+      if (!pending) return;
+      const data = JSON.parse(pending);
+      setTimeout(() => openReviewModal(data), 1200);
+    } catch(e) {}
+  })();
+
+  // ── Sidebar toggle functions ──
+  function openSidebar() {
+    document.querySelector('.sidebar').classList.add('open');
+    document.getElementById('sidebarOverlay').classList.add('visible');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSidebar() {
+    document.querySelector('.sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('visible');
+    document.body.style.overflow = '';
+  }
+  document.querySelectorAll('.sidebar-nav a, .sidebar-bottom a').forEach(a => {
+    a.addEventListener('click', () => { if(window.innerWidth <= 900) closeSidebar(); });
+  });
 </script>
+
+<!-- ═══════════ POST-SESSION REVIEW MODAL (embedded) ═══════════ -->
+<style>
+  .review-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.72);backdrop-filter:blur(4px);z-index:300;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .25s;}
+  .review-backdrop.open{display:flex;opacity:1;}
+  .review-modal{background:var(--card2);border:1px solid var(--border2);border-radius:20px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;position:relative;transform:translateY(24px) scale(0.97);opacity:0;transition:transform .3s cubic-bezier(.34,1.4,.64,1),opacity .25s;}
+  .review-backdrop.open .review-modal{transform:translateY(0) scale(1);opacity:1;}
+  .rm-header{padding:22px 22px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+  .rm-close{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted2);font-size:0.95rem;flex-shrink:0;transition:all .2s;}
+  .rm-close:hover{color:var(--white);}
+  .rm-recap{display:flex;align-items:center;gap:11px;}
+  .rm-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:0.95rem;font-weight:800;color:white;flex-shrink:0;border:2px solid var(--border2);}
+  .rm-name{font-family:'Outfit',sans-serif;font-weight:700;font-size:0.95rem;color:var(--white);margin-bottom:2px;}
+  .rm-detail{font-size:0.72rem;color:var(--muted2);}
+  .rm-chip{display:inline-flex;align-items:center;background:rgba(79,142,247,0.1);color:#93b4fa;font-size:0.63rem;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid rgba(79,142,247,0.2);margin-top:5px;}
+  .rm-divider{height:1px;background:var(--border);margin:18px 22px 0;}
+  .rm-body{padding:18px 22px 22px;}
+  .rm-section-label{font-size:0.63rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:9px;}
+  .rm-stars{display:flex;gap:6px;margin-bottom:5px;}
+  .rm-star{font-size:1.9rem;cursor:pointer;color:var(--border2);transition:color .12s,transform .12s;user-select:none;line-height:1;}
+  .rm-star:hover,.rm-star.active{color:#fbbf24;}
+  .rm-star:hover{transform:scale(1.15);}
+  .rm-star-label{font-family:'Outfit',sans-serif;font-size:0.82rem;font-weight:700;color:var(--white);min-height:18px;margin-bottom:18px;}
+  .rm-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;}
+  .rm-tag{background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:5px 12px;font-size:0.73rem;font-weight:600;color:var(--muted2);cursor:pointer;transition:all .16s;}
+  .rm-tag:hover{color:var(--white);}
+  .rm-tag.sel{background:rgba(79,142,247,0.12);border-color:rgba(79,142,247,0.5);color:#93b4fa;}
+  .rm-textarea{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:9px;padding:11px 13px;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:0.83rem;line-height:1.6;outline:none;resize:vertical;min-height:80px;transition:border-color .2s;margin-bottom:4px;}
+  .rm-textarea:focus{border-color:var(--blue);}
+  .rm-textarea::placeholder{color:var(--muted);}
+  .rm-char{text-align:right;font-size:0.68rem;color:var(--muted);margin-bottom:16px;}
+  .rm-recommend{background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:13px 15px;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:10px;}
+  .rm-rec-label{font-size:0.83rem;font-weight:600;color:var(--white);}
+  .rm-rec-sub{font-size:0.7rem;color:var(--muted);margin-top:1px;}
+  .rm-toggle{width:42px;height:23px;background:var(--border2);border-radius:12px;position:relative;cursor:pointer;border:none;transition:background .2s;flex-shrink:0;}
+  .rm-toggle.on{background:var(--green);}
+  .rm-toggle::after{content:'';position:absolute;width:17px;height:17px;background:white;border-radius:50%;top:3px;left:3px;transition:transform .2s;}
+  .rm-toggle.on::after{transform:translateX(19px);}
+  .rm-toggle-lbl{font-size:0.75rem;font-weight:700;color:var(--muted2);min-width:22px;}
+  .rm-submit{width:100%;background:var(--blue);color:white;border:none;padding:12px;border-radius:9px;font-family:'Space Grotesk',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:7px;}
+  .rm-submit:hover{background:var(--blue2);}
+  .rm-submit:disabled{background:var(--bg3);color:var(--muted);border:1px solid var(--border2);cursor:not-allowed;}
+  .rm-skip{width:100%;background:transparent;border:none;color:var(--muted);font-family:'Space Grotesk',sans-serif;font-size:0.78rem;cursor:pointer;padding:9px;margin-top:5px;transition:color .2s;}
+  .rm-skip:hover{color:var(--muted2);}
+  .rm-success{display:none;text-align:center;padding:36px 22px;}
+  .rm-success-icon{width:60px;height:60px;background:rgba(34,211,160,0.1);border:2px solid rgba(34,211,160,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.7rem;margin:0 auto 14px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
+  @keyframes popIn{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}
+  .rm-success-title{font-family:'Outfit',sans-serif;font-size:1.2rem;font-weight:800;color:var(--white);margin-bottom:5px;}
+  .rm-success-sub{font-size:0.81rem;color:var(--muted2);line-height:1.6;margin-bottom:20px;}
+  .rm-done{background:var(--green);color:#0b1a14;border:none;padding:11px 28px;border-radius:9px;font-family:'Space Grotesk',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;}
+</style>
+
+<div class="review-backdrop" id="reviewBackdrop">
+  <div class="review-modal">
+    <div id="rmFormView">
+      <div class="rm-header">
+        <div class="rm-recap">
+          <div class="rm-avatar" id="rmAvatar">NM</div>
+          <div>
+            <div class="rm-name" id="rmMentorName">Neha Mehra</div>
+            <div class="rm-detail" id="rmDetail">IAS AIR 34 · 60 min</div>
+            <div class="rm-chip" id="rmTopic">📝 Essay Strategy</div>
+          </div>
+        </div>
+        <button class="rm-close" onclick="dismissReview()">✕</button>
+      </div>
+      <div class="rm-divider"></div>
+      <div class="rm-body">
+        <div class="rm-section-label">How was the session?</div>
+        <div class="rm-stars">
+          <span class="rm-star" data-v="1" onclick="rmSetRating(1)" onmouseenter="rmHover(1)" onmouseleave="rmReset()">★</span>
+          <span class="rm-star" data-v="2" onclick="rmSetRating(2)" onmouseenter="rmHover(2)" onmouseleave="rmReset()">★</span>
+          <span class="rm-star" data-v="3" onclick="rmSetRating(3)" onmouseenter="rmHover(3)" onmouseleave="rmReset()">★</span>
+          <span class="rm-star" data-v="4" onclick="rmSetRating(4)" onmouseenter="rmHover(4)" onmouseleave="rmReset()">★</span>
+          <span class="rm-star" data-v="5" onclick="rmSetRating(5)" onmouseenter="rmHover(5)" onmouseleave="rmReset()">★</span>
+        </div>
+        <div class="rm-star-label" id="rmStarLabel">Tap to rate</div>
+        <div id="rmExtras" style="display:none">
+          <div class="rm-section-label">What stood out?</div>
+          <div class="rm-tags">
+            <button class="rm-tag" onclick="this.classList.toggle('sel')">💡 Very insightful</button>
+            <button class="rm-tag" onclick="this.classList.toggle('sel')">🎯 Focused on my gaps</button>
+            <button class="rm-tag" onclick="this.classList.toggle('sel')">📚 Deep knowledge</button>
+            <button class="rm-tag" onclick="this.classList.toggle('sel')">⚡ Engaging</button>
+            <button class="rm-tag" onclick="this.classList.toggle('sel')">🕐 Punctual</button>
+            <button class="rm-tag" onclick="this.classList.toggle('sel')">🔄 Would rebook</button>
+          </div>
+          <div class="rm-section-label">Add a note <span style="color:var(--muted);font-size:0.6rem;text-transform:none;letter-spacing:0">(optional)</span></div>
+          <textarea class="rm-textarea" id="rmText" placeholder="What did you learn? What could improve?" maxlength="400" oninput="document.getElementById('rmChar').textContent=this.value.length"></textarea>
+          <div class="rm-char"><span id="rmChar">0</span> / 400</div>
+          <div class="rm-recommend">
+            <div><div class="rm-rec-label">Would you recommend this mentor?</div><div class="rm-rec-sub">Helps other students find great guides</div></div>
+            <div style="display:flex;align-items:center;gap:7px">
+              <button class="rm-toggle on" id="rmToggle" onclick="this.classList.toggle('on');document.getElementById('rmToggleLbl').textContent=this.classList.contains('on')?'Yes':'No'"></button>
+              <span class="rm-toggle-lbl" id="rmToggleLbl">Yes</span>
+            </div>
+          </div>
+        </div>
+        <button class="rm-submit" id="rmSubmitBtn" onclick="rmSubmit()" disabled>★ Submit Review</button>
+        <button class="rm-skip" onclick="dismissReview()">Skip for now</button>
+      </div>
+    </div>
+    <div id="rmSuccess" class="rm-success">
+      <div class="rm-success-icon">🎉</div>
+      <div class="rm-success-title">Review submitted!</div>
+      <div class="rm-success-sub">Thanks — your feedback helps <strong id="rmSuccessName" style="color:var(--white)">your mentor</strong> improve and helps other students find the right guide.</div>
+      <button class="rm-done" onclick="dismissReview()">Done</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const RM_LABELS = ['','Not helpful','Below average','Good session','Really helpful','Exceptional! 🌟'];
+  let rmRating = 0;
+
+  function openReviewModal(data) {
+    document.getElementById('rmAvatar').textContent       = data.initials  || '??';
+    document.getElementById('rmAvatar').style.background = data.avatarBg  || 'var(--blue)';
+    document.getElementById('rmMentorName').textContent   = data.mentor    || 'Your Mentor';
+    document.getElementById('rmDetail').textContent       = (data.credential||'') + ' · ' + (data.duration||'60 min');
+    document.getElementById('rmTopic').textContent        = '📝 ' + (data.topic||'Session');
+    document.getElementById('rmSuccessName').textContent  = (data.mentor||'your mentor').split(' ')[0];
+    rmRating = 0;
+    document.querySelectorAll('.rm-star').forEach(s=>s.classList.remove('active'));
+    document.getElementById('rmStarLabel').textContent = 'Tap to rate';
+    document.getElementById('rmSubmitBtn').disabled = true;
+    document.getElementById('rmExtras').style.display = 'none';
+    if(document.getElementById('rmText')) document.getElementById('rmText').value='';
+    document.getElementById('rmChar').textContent='0';
+    document.getElementById('rmFormView').style.display='block';
+    document.getElementById('rmSuccess').style.display='none';
+    document.getElementById('rmToggle').classList.add('on');
+    document.getElementById('rmToggleLbl').textContent='Yes';
+    const bd = document.getElementById('reviewBackdrop');
+    bd.style.display='flex'; requestAnimationFrame(()=>bd.classList.add('open'));
+    document.body.style.overflow='hidden';
+  }
+
+  function dismissReview() {
+    const bd = document.getElementById('reviewBackdrop');
+    bd.classList.remove('open');
+    setTimeout(()=>{ bd.style.display='none'; document.body.style.overflow=''; },280);
+    try { sessionStorage.removeItem('silli_pending_review'); } catch(e){}
+  }
+
+  function rmHover(v){ document.querySelectorAll('.rm-star').forEach(s=>{ s.style.color=parseInt(s.dataset.v)<=v?'#fbbf24':''; }); }
+  function rmReset(){ document.querySelectorAll('.rm-star').forEach(s=>{ s.style.color=''; s.classList.toggle('active',parseInt(s.dataset.v)<=rmRating); }); }
+  function rmSetRating(v){
+    rmRating=v;
+    document.querySelectorAll('.rm-star').forEach(s=>s.classList.toggle('active',parseInt(s.dataset.v)<=v));
+    document.getElementById('rmStarLabel').textContent=RM_LABELS[v];
+    document.getElementById('rmSubmitBtn').disabled=false;
+    const ext=document.getElementById('rmExtras');
+    if(ext.style.display==='none'){ ext.style.display='block'; ext.style.opacity='0'; ext.style.transform='translateY(8px)'; requestAnimationFrame(()=>{ ext.style.transition='opacity .25s,transform .25s'; ext.style.opacity='1'; ext.style.transform='translateY(0)'; }); }
+  }
+  function rmSubmit(){
+    document.getElementById('rmFormView').style.display='none';
+    document.getElementById('rmSuccess').style.display='block';
+    try { sessionStorage.removeItem('silli_pending_review'); } catch(e){}
+  }
+</script>
+
 </body>
 </html>
