@@ -1,123 +1,339 @@
-<!-- NAV -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sillifur — Find Your Mentor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0b0d11;--bg2:#12151c;--bg3:#1a1e2a;--card:#181c27;--card2:#1f2335;
+      --blue:#4f8ef7;--blue2:#3a76e8;--green:#22d3a0;--white:#ffffff;
+      --text:#e8eaf0;--muted:#6b7280;--muted2:#9ca3af;
+      --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--radius:14px;
+    }
+    body { font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);line-height:1.6; }
+    nav { background:var(--bg2);border-bottom:1px solid var(--border);padding:0 5%;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100; }
+    .logo { display:flex;align-items:center;gap:9px;text-decoration:none; }
+    .logo-mark { width:34px;height:34px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-weight:800;font-size:1rem;color:white;letter-spacing:-1px; }
+    .logo-text { font-family:'Outfit',sans-serif;font-weight:700;font-size:1.2rem;color:var(--white);letter-spacing:-0.3px; }
+    .logo-text span { color:var(--blue); }
+    .nav-links { display:flex;align-items:center;gap:28px;list-style:none; }
+    .nav-links a { color:var(--muted2);text-decoration:none;font-size:0.875rem;font-weight:500;transition:color .2s; }
+    .nav-links a:hover { color:var(--white); }
+    .btn-signin { background:var(--blue);color:white;border:none;padding:8px 20px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:0.875rem;font-weight:600;cursor:pointer;transition:background .2s;display:flex;align-items:center;gap:8px; }
+    .btn-signin:hover { background:var(--blue2); }
+
+    .hero { padding:80px 5% 70px;text-align:center;position:relative; }
+    .hero::before { content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:700px;height:400px;background:radial-gradient(ellipse,rgba(79,142,247,0.1) 0%,transparent 70%);pointer-events:none; }
+    .hero-badge { display:inline-flex;align-items:center;gap:6px;background:rgba(79,142,247,0.1);border:1px solid rgba(79,142,247,0.25);color:var(--blue);font-size:0.78rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:22px; }
+    .hero h1 { font-family:'Outfit',sans-serif;font-size:clamp(2rem,5vw,3.6rem);font-weight:800;color:var(--white);line-height:1.15;max-width:760px;margin:0 auto 18px;letter-spacing:-1.5px; }
+    .hero h1 em { font-style:normal;color:var(--blue); }
+    .hero p { color:var(--muted2);font-size:1rem;max-width:480px;margin:0 auto 36px; }
+    .search-bar { display:flex;max-width:540px;margin:0 auto 32px;background:var(--card2);border:1px solid var(--border2);border-radius:12px;overflow:hidden; }
+    .search-bar input { flex:1;border:none;outline:none;padding:15px 18px;font-family:'Space Grotesk',sans-serif;font-size:0.9rem;color:var(--text);background:transparent; }
+    .search-bar input::placeholder { color:var(--muted); }
+    .search-bar button { background:var(--blue);color:white;border:none;padding:0 24px;font-family:'Space Grotesk',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:background .2s; }
+    .search-bar button:hover { background:var(--blue2); }
+
+    .exam-logos-label { font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:14px; }
+    .exam-logos-grid { display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:700px;margin:0 auto; }
+    .exam-pill { display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--border2);border-radius:40px;padding:7px 14px 7px 10px;cursor:pointer;transition:all .2s;text-decoration:none; }
+    .exam-pill:hover { border-color:var(--blue);background:rgba(79,142,247,0.08); }
+    .exam-logo-circle { width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:800;letter-spacing:-0.3px;flex-shrink:0;border:1.5px solid rgba(255,255,255,0.15); }
+    .exam-pill-name { font-size:0.8rem;font-weight:600;color:var(--text);white-space:nowrap; }
+
+    .stats { display:flex;justify-content:center;gap:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2);flex-wrap:wrap; }
+    .stat-item { flex:1;min-width:140px;text-align:center;padding:22px 20px;border-right:1px solid var(--border); }
+    .stat-item:last-child { border-right:none; }
+    .stat-num { font-family:'Outfit',sans-serif;font-size:1.7rem;font-weight:800;color:var(--white); }
+    .stat-num span { color:var(--blue); }
+    .stat-label { font-size:0.78rem;color:var(--muted);margin-top:2px; }
+
+    section { padding:60px 5%; }
+    .section-header { display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:10px; }
+    .section-tag { font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);margin-bottom:6px; }
+    .section-title { font-family:'Outfit',sans-serif;font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:700;color:var(--white);letter-spacing:-0.5px; }
+    .view-all { color:var(--blue);font-size:0.85rem;font-weight:600;text-decoration:none;letter-spacing:0.02em;white-space:nowrap; }
+    .view-all:hover { text-decoration:underline; }
+
+    .cat-scroll-wrap { overflow-x:auto;padding-bottom:12px;margin:0 -5%;padding-left:5%;padding-right:5%;scrollbar-width:thin;scrollbar-color:var(--border2) transparent; }
+    .cat-grid { display:grid;grid-template-rows:1fr 1fr;grid-auto-flow:column;grid-auto-columns:200px;gap:12px;width:max-content; }
+    .cat-card { background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px 16px;cursor:pointer;transition:all .2s;text-decoration:none;color:var(--text);display:flex;flex-direction:column;justify-content:space-between;height:130px;position:relative;overflow:hidden; }
+    .cat-card:hover { border-color:var(--border2);background:var(--card2);transform:translateY(-2px); }
+    .cat-card.active-cat { background:var(--card2);border-color:rgba(79,142,247,0.35); }
+    .cat-name { font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;color:var(--white);line-height:1.2;max-width:110px; }
+    .cat-bottom { display:flex;align-items:flex-end;justify-content:space-between; }
+    .cat-badge { font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#4ade80;line-height:1; }
+    .cat-logo-circle { width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:800;letter-spacing:-0.3px;flex-shrink:0;border:1.5px solid rgba(255,255,255,0.15); }
+
+    .mentors-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px; }
+    .mentor-card { background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all .2s;cursor:pointer;position:relative; }
+    .mentor-card:hover { border-color:var(--border2);transform:translateY(-3px); }
+    .mentor-card-top { background:var(--card2);padding:20px 18px 16px;display:flex;align-items:flex-start;gap:12px; }
+    .mentor-avatar { width:48px;height:48px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:800;color:white;flex-shrink:0;border:2px solid var(--border2); }
+    .mentor-name { font-weight:700;font-size:0.92rem;color:var(--white);margin-bottom:3px; }
+    .mentor-title { font-size:0.75rem;color:var(--muted2);margin-bottom:7px; }
+    .mentor-tags { display:flex;gap:5px;flex-wrap:wrap; }
+    .tag { background:rgba(79,142,247,0.12);color:#93b4fa;font-size:0.67rem;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid rgba(79,142,247,0.2); }
+    .wishlist-btn { position:absolute;top:12px;right:12px;width:28px;height:28px;background:var(--bg3);border:1px solid var(--border2);border-radius:50%;color:var(--muted);font-size:0.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s; }
+    .wishlist-btn:hover { color:#f87171;border-color:rgba(248,113,113,0.4); }
+    .wishlist-btn.saved { color:#f87171;background:rgba(248,113,113,0.1);border-color:rgba(248,113,113,0.4); }
+    .mentor-card-body { padding:14px 18px; }
+    .mentor-rating { display:flex;align-items:center;gap:5px;font-size:0.78rem;color:var(--muted2);margin-bottom:12px; }
+    .stars { color:#fbbf24;font-size:0.78rem; }
+    .rating-num { font-weight:600;color:var(--white); }
+    .mentor-price-row { display:flex;align-items:center;justify-content:space-between; }
+    .mentor-price { font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;color:var(--white); }
+    .mentor-price span { font-family:'Space Grotesk',sans-serif;font-size:0.72rem;font-weight:400;color:var(--muted); }
+    .btn-book { background:var(--blue);color:white;border:none;padding:7px 14px;border-radius:7px;font-family:'Space Grotesk',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:background .2s; }
+    .btn-book:hover { background:var(--blue2); }
+
+    .how { background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border); }
+    .steps-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px; }
+    .step-card { background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px 22px; }
+    .step-num { font-family:'Outfit',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(79,142,247,0.15);line-height:1;margin-bottom:14px; }
+    .step-icon { font-size:1.5rem;margin-bottom:10px;display:block; }
+    .step-title { font-weight:700;font-size:0.95rem;color:var(--white);margin-bottom:7px; }
+    .step-desc { font-size:0.83rem;color:var(--muted2);line-height:1.6; }
+
+    .cta-banner { text-align:center;padding:70px 5%;border-top:1px solid var(--border); }
+    .cta-banner h2 { font-family:'Outfit',sans-serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;color:var(--white);letter-spacing:-0.5px;margin-bottom:10px; }
+    .cta-banner h2 em { font-style:normal;color:var(--blue); }
+    .cta-banner p { color:var(--muted2);font-size:0.92rem;margin-bottom:26px; }
+    .cta-btns { display:flex;gap:10px;justify-content:center;flex-wrap:wrap; }
+    .btn-primary { background:var(--blue);color:white;border:none;padding:12px 26px;border-radius:9px;font-family:'Space Grotesk',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:background .2s; }
+    .btn-primary:hover { background:var(--blue2); }
+    .btn-ghost { background:transparent;color:var(--muted2);border:1px solid var(--border2);padding:12px 26px;border-radius:9px;font-family:'Space Grotesk',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all .2s; }
+    .btn-ghost:hover { border-color:var(--white);color:var(--white); }
+
+    footer { background:var(--bg2);border-top:1px solid var(--border);padding:48px 5% 28px; }
+    .footer-top { display:flex;justify-content:space-between;flex-wrap:wrap;gap:32px;margin-bottom:40px; }
+    .footer-brand p { font-size:0.82rem;color:var(--muted);margin-top:12px;max-width:200px;line-height:1.6; }
+    .footer-col h4 { font-weight:600;font-size:0.82rem;color:var(--white);margin-bottom:14px; }
+    .footer-col a { display:block;color:var(--muted);text-decoration:none;font-size:0.82rem;margin-bottom:9px;transition:color .2s; }
+    .footer-col a:hover { color:var(--blue); }
+    .footer-bottom { border-top:1px solid var(--border);padding-top:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:0.76rem;color:var(--muted); }
+    .footer-bottom a { color:var(--muted);text-decoration:none; }
+    .footer-bottom a:hover { color:var(--blue); }
+
+    .modal-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;align-items:center;justify-content:center; }
+    .modal-overlay.open { display:flex; }
+    .modal { background:var(--card2);border:1px solid var(--border2);border-radius:20px;padding:36px 32px;max-width:380px;width:90%;text-align:center;position:relative; }
+    .modal-close { position:absolute;top:14px;right:16px;background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--muted); }
+    .modal-logo-wrap { display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px; }
+    .modal h3 { font-family:'Outfit',sans-serif;font-size:1.25rem;font-weight:700;color:var(--white);margin-bottom:6px; }
+    .modal p { font-size:0.85rem;color:var(--muted2);margin-bottom:24px; }
+    .google-btn { display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;border:1px solid var(--border2);border-radius:9px;background:var(--card);font-family:'Space Grotesk',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all .2s;color:var(--white);margin-bottom:16px; }
+    .google-btn:hover { background:var(--bg3); }
+    .google-btn svg { width:18px;height:18px; }
+    .modal-divider { font-size:0.75rem;color:var(--muted);margin:4px 0 14px;position:relative; }
+    .modal-divider::before,.modal-divider::after { content:'';position:absolute;top:50%;width:36%;height:1px;background:var(--border); }
+    .modal-divider::before { left:0; }
+    .modal-divider::after { right:0; }
+    .role-row { display:grid;grid-template-columns:1fr 1fr;gap:10px; }
+    .role-btn { padding:14px 8px;border:1px solid var(--border2);border-radius:10px;background:var(--card);font-family:'Space Grotesk',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all .2s;color:var(--muted2); }
+    .role-btn:hover { border-color:var(--blue);color:var(--blue); }
+    .role-btn .role-icon { font-size:1.3rem;display:block;margin-bottom:5px; }
+    .modal-terms { font-size:0.7rem;color:var(--muted);margin-top:14px; }
+    .modal-terms a { color:var(--blue); }
+
+    /* Inputs used in auth/profile dialogs */
+    .password-input { width: 100%; padding: 12px; border-radius: 9px; border: 1px solid var(--border2); background: var(--bg); color: var(--white); font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; margin-bottom: 12px; outline: none; }
+    .password-input:focus { border-color: var(--blue); }
+    .auth-message { font-size: 0.75rem; margin-top: 10px; min-height: 16px; font-weight: 600; text-align: center; }
+    
+    @media(max-width:640px){ .nav-links{display:none;} }
+  </style>
+</head>
+<body>
+
 <nav>
   <a href="index.html" class="logo">
     <div class="logo-mark">S</div>
     <div class="logo-text">silli<span>fur</span></div>
   </a>
   <ul class="nav-links">
-    <li><a href="browse-mentors.html" class="auth-required" data-auth-message="Please sign in to browse mentors.">Browse Mentors</a></li>
-    <li><a href="#" onclick="requireAuthThen('mentor-register.html', 'Please sign in before applying as a mentor.'); return false;">Become a Mentor</a></li>
-    <li><a href="how-it-works.html">How it works</a></li>
+    <li><a href="browse-mentors.html">Browse Mentors</a></li>
+    <li><a href="browse-mentors.html">Browse Mentors</a></li>
+    <li><a href="#">Become a Mentor</a></li>
+    <li><a href="#">How it works</a></li>
+    <li id="adminNavItem" style="display:none"><a href="admin.html" style="color:#f87171;font-weight:600;">⚙ Admin Panel</a></li>
   </ul>
-  <button class="btn-signin" id="navSignInBtn" onclick="openModal()">Sign In</button>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <a href="mentee-dashboard.html" id="dashboardBtn" style="display:none;background:var(--card2);border:1px solid var(--border2);color:var(--muted2);padding:7px 16px;border-radius:8px;font-size:0.875rem;font-weight:600;text-decoration:none;transition:all .2s;">Dashboard</a>
+    <button class="btn-signin" id="navSignInBtn" onclick="openModal()">Sign In</button>
+  </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
   <div class="hero-badge">&#9733; India's Exam Mentor Marketplace</div>
   <h1>Crack your exam with mentors<br>who've <em>been there</em></h1>
   <p>Connect with toppers & verified experts for UPSC, JEE, NEET, CAT & more. Book a 1:1 session today.</p>
-  <a href="book-your-slot.html" class="book-slot-cta auth-required" data-auth-message="Please sign in to book a session.">📅 Book Your Slot</a>
   <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Search by exam, subject, or mentor name…"/>
-    <button onclick="handleSearch()">Search</button>
+    <input type="text" placeholder="Search by exam, subject, or mentor name…"/>
+    <button>Search</button>
   </div>
   <div class="exam-logos-label">Popular exams — click to explore mentors</div>
   <div class="exam-logos-grid">
-    <a href="browse-mentors.html?exam=UPSC" class="exam-pill auth-required"><div class="exam-logo-circle" style="background:#1a3a6c;color:#fff;">UPSC</div><span class="exam-pill-name">UPSC CSE</span></a>
-    <a href="browse-mentors.html?exam=JEE" class="exam-pill auth-required"><div class="exam-logo-circle" style="background:#f97316;color:#fff;">JEE</div><span class="exam-pill-name">JEE Mains & Adv.</span></a>
-    <a href="browse-mentors.html?exam=NEET" class="exam-pill auth-required"><div class="exam-logo-circle" style="background:#16a34a;color:#fff;">NEET</div><span class="exam-pill-name">NEET UG</span></a>
-    <a href="browse-mentors.html?exam=CAT" class="exam-pill auth-required"><div class="exam-logo-circle" style="background:#7c3aed;color:#fff;">CAT</div><span class="exam-pill-name">CAT / MBA</span></a>
-    <a href="browse-mentors.html?exam=GATE" class="exam-pill auth-required"><div class="exam-logo-circle" style="background:#0369a1;color:#fff;">GATE</div><span class="exam-pill-name">GATE</span></a>
-    <a href="browse-mentors.html?exam=CLAT" class="exam-pill auth-required"><div class="exam-logo-circle" style="background:#b91c1c;color:#fff;">CLAT</div><span class="exam-pill-name">CLAT / Law</span></a>
-    <a href="browse-mentors.html?exam=IBPS" class="exam-pill auth-required"><div class="exam-logo-circle" style="background:#0f766e;color:#fff;">IBPS</div><span class="exam-pill-name">IBPS / Bank PO</span></a>
-    <a href="browse-mentors.html?exam=SSC" class="exam-pill auth-required"><div class="exam-logo-circle" style="background:#92400e;color:#fff;">SSC</div><span class="exam-pill-name">SSC CGL / CHSL</span></a>
-    <a href="browse-mentors.html?exam=CUET" class="exam-pill auth-required"><div class="exam-logo-circle" style="background:#4f46e5;color:#fff;">CUET</div><span class="exam-pill-name">CUET UG/PG</span></a>
-    <a href="browse-mentors.html?exam=NDA" class="exam-pill auth-required"><div class="exam-logo-circle" style="background:#0c4a6e;color:#fff;">NDA</div><span class="exam-pill-name">NDA / CDS</span></a>
-    <a href="browse-mentors.html?exam=NIFT" class="exam-pill auth-required"><div class="exam-logo-circle" style="background:#be185d;color:#fff;">NIFT</div><span class="exam-pill-name">NIFT / NID</span></a>
-    <a href="browse-mentors.html?exam=CA" class="exam-pill auth-required"><div class="exam-logo-circle" style="background:#065f46;color:#fff;">CA</div><span class="exam-pill-name">CA Foundation</span></a>
-    <a href="browse-mentors.html?exam=GRE" class="exam-pill auth-required"><div class="exam-logo-circle" style="background:#713f12;color:#fff;">GRE</div><span class="exam-pill-name">GRE / GMAT</span></a>
-    <a href="browse-mentors.html?exam=JEST" class="exam-pill auth-required"><div class="exam-logo-circle" style="background:#1e3a5f;color:#fff;">JEST</div><span class="exam-pill-name">JEST / JAM</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#1a3a6c;color:#fff;">UPSC</div><span class="exam-pill-name">UPSC CSE</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#f97316;color:#fff;">JEE</div><span class="exam-pill-name">JEE Mains & Adv.</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#16a34a;color:#fff;">NEET</div><span class="exam-pill-name">NEET UG</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#7c3aed;color:#fff;">CAT</div><span class="exam-pill-name">CAT / MBA</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#0369a1;color:#fff;">GATE</div><span class="exam-pill-name">GATE</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#b91c1c;color:#fff;">CLAT</div><span class="exam-pill-name">CLAT / Law</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#0f766e;color:#fff;">IBPS</div><span class="exam-pill-name">IBPS / Bank PO</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#92400e;color:#fff;">SSC</div><span class="exam-pill-name">SSC CGL / CHSL</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#4f46e5;color:#fff;">CUET</div><span class="exam-pill-name">CUET UG/PG</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#0c4a6e;color:#fff;">NDA</div><span class="exam-pill-name">NDA / CDS</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#be185d;color:#fff;">NIFT</div><span class="exam-pill-name">NIFT / NID</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#065f46;color:#fff;">CA</div><span class="exam-pill-name">CA Foundation</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#713f12;color:#fff;">GRE</div><span class="exam-pill-name">GRE / GMAT</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#1e3a5f;color:#fff;">JEST</div><span class="exam-pill-name">JEST / JAM</span></a>
   </div>
 </section>
 
-<!-- CATEGORIES -->
+<div class="stats">
+  <div class="stat-item"><div class="stat-num">500<span>+</span></div><div class="stat-label">Verified Mentors</div></div>
+  <div class="stat-item"><div class="stat-num">12K<span>+</span></div><div class="stat-label">Sessions Completed</div></div>
+  <div class="stat-item"><div class="stat-num">4.8<span>★</span></div><div class="stat-label">Average Rating</div></div>
+  <div class="stat-item"><div class="stat-num">20<span>+</span></div><div class="stat-label">Exams Covered</div></div>
+</div>
+
 <section>
   <div class="section-header">
     <div><div class="section-tag">Browse by Exam</div><h2 class="section-title">Find your exam category</h2></div>
-    <a href="browse-mentors.html" class="view-all auth-required">VIEW ALL</a>
+    <a href="#" class="view-all">VIEW ALL</a>
   </div>
   <div class="cat-scroll-wrap">
     <div class="cat-grid">
-      <a href="browse-mentors.html?exam=UPSC" class="cat-card active-cat auth-required"><div class="cat-name">UPSC Civil Services</div><div class="cat-bottom"><div class="cat-badge">94 MENTORS</div><div class="cat-logo-circle" style="background:#1a3a6c;color:#fff;font-size:0.62rem;">UPSC</div></div></a>
-      <a href="browse-mentors.html?exam=JEE" class="cat-card auth-required"><div class="cat-name">JEE Mains &amp; Advanced</div><div class="cat-bottom"><div class="cat-badge">128 MENTORS</div><div class="cat-logo-circle" style="background:#f97316;color:#fff;">JEE</div></div></a>
-      <a href="browse-mentors.html?exam=NEET" class="cat-card auth-required"><div class="cat-name">NEET UG / PG</div><div class="cat-bottom"><div class="cat-badge">112 MENTORS</div><div class="cat-logo-circle" style="background:#16a34a;color:#fff;font-size:0.6rem;">NEET</div></div></a>
-      <a href="browse-mentors.html?exam=CAT" class="cat-card auth-required"><div class="cat-name">CAT / MBA Entrance</div><div class="cat-bottom"><div class="cat-badge" style="color:#f87171">TRENDING</div><div class="cat-logo-circle" style="background:#7c3aed;color:#fff;">CAT</div></div></a>
-      <a href="browse-mentors.html?exam=GATE" class="cat-card auth-required"><div class="cat-name">GATE &amp; PSU</div><div class="cat-bottom"><div class="cat-badge">76 MENTORS</div><div class="cat-logo-circle" style="background:#0369a1;color:#fff;font-size:0.6rem;">GATE</div></div></a>
-      <a href="browse-mentors.html?exam=SSC" class="cat-card auth-required"><div class="cat-name">SSC CGL / CHSL</div><div class="cat-bottom"><div class="cat-badge">65 MENTORS</div><div class="cat-logo-circle" style="background:#92400e;color:#fff;">SSC</div></div></a>
-      <a href="browse-mentors.html?exam=IBPS" class="cat-card auth-required"><div class="cat-name">Bank PO &amp; IBPS</div><div class="cat-bottom"><div class="cat-badge" style="color:#f87171">NEW MENTORS</div><div class="cat-logo-circle" style="background:#0f766e;color:#fff;font-size:0.6rem;">IBPS</div></div></a>
-      <a href="browse-mentors.html?exam=CLAT" class="cat-card auth-required"><div class="cat-name">CLAT / AILET</div><div class="cat-bottom"><div class="cat-badge">43 MENTORS</div><div class="cat-logo-circle" style="background:#b91c1c;color:#fff;font-size:0.6rem;">CLAT</div></div></a>
-      <a href="browse-mentors.html?exam=CUET" class="cat-card auth-required"><div class="cat-name">CUET UG / PG</div><div class="cat-bottom"><div class="cat-badge">52 MENTORS</div><div class="cat-logo-circle" style="background:#4f46e5;color:#fff;font-size:0.6rem;">CUET</div></div></a>
-      <a href="browse-mentors.html?exam=NDA" class="cat-card auth-required"><div class="cat-name">NDA / CDS / AFCAT</div><div class="cat-bottom"><div class="cat-badge">38 MENTORS</div><div class="cat-logo-circle" style="background:#0c4a6e;color:#fff;">NDA</div></div></a>
+      <a href="#" class="cat-card active-cat"><div class="cat-name">UPSC Civil Services</div><div class="cat-bottom"><div class="cat-badge">94 MENTORS</div><div class="cat-logo-circle" style="background:#1a3a6c;color:#fff;font-size:0.62rem;">UPSC</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">JEE Mains &amp; Advanced</div><div class="cat-bottom"><div class="cat-badge">128 MENTORS</div><div class="cat-logo-circle" style="background:#f97316;color:#fff;">JEE</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">NEET UG / PG</div><div class="cat-bottom"><div class="cat-badge">112 MENTORS</div><div class="cat-logo-circle" style="background:#16a34a;color:#fff;font-size:0.6rem;">NEET</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">CAT / MBA Entrance</div><div class="cat-bottom"><div class="cat-badge" style="color:#f87171">TRENDING</div><div class="cat-logo-circle" style="background:#7c3aed;color:#fff;">CAT</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">GATE &amp; PSU</div><div class="cat-bottom"><div class="cat-badge">76 MENTORS</div><div class="cat-logo-circle" style="background:#0369a1;color:#fff;font-size:0.6rem;">GATE</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">SSC CGL / CHSL</div><div class="cat-bottom"><div class="cat-badge">65 MENTORS</div><div class="cat-logo-circle" style="background:#92400e;color:#fff;">SSC</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">Bank PO &amp; IBPS</div><div class="cat-bottom"><div class="cat-badge" style="color:#f87171">NEW MENTORS</div><div class="cat-logo-circle" style="background:#0f766e;color:#fff;font-size:0.6rem;">IBPS</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">CLAT / AILET</div><div class="cat-bottom"><div class="cat-badge">43 MENTORS</div><div class="cat-logo-circle" style="background:#b91c1c;color:#fff;font-size:0.6rem;">CLAT</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">CUET UG / PG</div><div class="cat-bottom"><div class="cat-badge">52 MENTORS</div><div class="cat-logo-circle" style="background:#4f46e5;color:#fff;font-size:0.6rem;">CUET</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">NDA / CDS / AFCAT</div><div class="cat-bottom"><div class="cat-badge">38 MENTORS</div><div class="cat-logo-circle" style="background:#0c4a6e;color:#fff;">NDA</div></div></a>
     </div>
   </div>
 </section>
 
-<!-- TOP MENTORS -->
 <section style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
   <div class="section-header">
     <div><div class="section-tag">Top Mentors</div><h2 class="section-title">Most booked this week</h2></div>
-    <a href="browse-mentors.html" class="view-all auth-required">VIEW ALL</a>
+    <a href="#" class="view-all">VIEW ALL</a>
   </div>
   <div class="mentors-grid">
     <div class="mentor-card">
-      <button class="wishlist-btn" onclick="toggleWishlist(this,'neha-mehra')" data-id="neha-mehra">♡</button>
+      <button class="wishlist-btn" onclick="toggleWishlist(this)">♡</button>
       <div class="mentor-card-top"><div class="mentor-avatar" style="background:#1a3a6c">NM</div><div><div class="mentor-name">Neha Mehra</div><div class="mentor-title">IAS Officer · UPSC AIR 34</div><div class="mentor-tags"><span class="tag">UPSC</span><span class="tag">GS</span><span class="tag">Essay</span></div></div></div>
-      <div class="mentor-card-body"><div class="mentor-rating"><span class="stars">★★★★★</span><span class="rating-num">4.9</span><span>(211)</span></div><div class="mentor-price-row"><div class="mentor-price">₹799 <span>/ session</span></div><button class="btn-book" onclick="requireAuthThen('book-your-slot.html', 'Please sign in to book a session.')">Book</button></div></div>
+      <div class="mentor-card-body"><div class="mentor-rating"><span class="stars">★★★★★</span><span class="rating-num">4.9</span><span>(211)</span></div><div class="mentor-price-row"><div class="mentor-price">₹799 <span>/ session</span></div><button class="btn-book" onclick="openModal()">Book</button></div></div>
     </div>
     <div class="mentor-card">
-      <button class="wishlist-btn" onclick="toggleWishlist(this,'rohit-kumar')" data-id="rohit-kumar">♡</button>
+      <button class="wishlist-btn" onclick="toggleWishlist(this)">♡</button>
       <div class="mentor-card-top"><div class="mentor-avatar" style="background:#f97316">RK</div><div><div class="mentor-name">Rohit Kumar</div><div class="mentor-title">JEE Advanced AIR 42 · IIT Delhi</div><div class="mentor-tags"><span class="tag">Physics</span><span class="tag">Maths</span><span class="tag">JEE</span></div></div></div>
-      <div class="mentor-card-body"><div class="mentor-rating"><span class="stars">★★★★★</span><span class="rating-num">4.9</span><span>(184)</span></div><div class="mentor-price-row"><div class="mentor-price">₹999 <span>/ session</span></div><button class="btn-book" onclick="requireAuthThen('book-your-slot.html', 'Please sign in to book a session.')">Book</button></div></div>
+      <div class="mentor-card-body"><div class="mentor-rating"><span class="stars">★★★★★</span><span class="rating-num">4.9</span><span>(184)</span></div><div class="mentor-price-row"><div class="mentor-price">₹999 <span>/ session</span></div><button class="btn-book" onclick="openModal()">Book</button></div></div>
     </div>
     <div class="mentor-card">
-      <button class="wishlist-btn" onclick="toggleWishlist(this,'ananya-sharma')" data-id="ananya-sharma">♡</button>
+      <button class="wishlist-btn" onclick="toggleWishlist(this)">♡</button>
       <div class="mentor-card-top"><div class="mentor-avatar" style="background:#16a34a">AS</div><div><div class="mentor-name">Ananya Sharma</div><div class="mentor-title">NEET AIR 19 · MBBS AIIMS Delhi</div><div class="mentor-tags"><span class="tag">Biology</span><span class="tag">Chemistry</span><span class="tag">NEET</span></div></div></div>
-      <div class="mentor-card-body"><div class="mentor-rating"><span class="stars">★★★★★</span><span class="rating-num">5.0</span><span>(98)</span></div><div class="mentor-price-row"><div class="mentor-price">₹1,199 <span>/ session</span></div><button class="btn-book" onclick="requireAuthThen('book-your-slot.html', 'Please sign in to book a session.')">Book</button></div></div>
+      <div class="mentor-card-body"><div class="mentor-rating"><span class="stars">★★★★★</span><span class="rating-num">5.0</span><span>(98)</span></div><div class="mentor-price-row"><div class="mentor-price">₹1,199 <span>/ session</span></div><button class="btn-book" onclick="openModal()">Book</button></div></div>
     </div>
     <div class="mentor-card">
-      <button class="wishlist-btn" onclick="toggleWishlist(this,'vikram-tiwari')" data-id="vikram-tiwari">♡</button>
+      <button class="wishlist-btn" onclick="toggleWishlist(this)">♡</button>
       <div class="mentor-card-top"><div class="mentor-avatar" style="background:#7c3aed">VT</div><div><div class="mentor-name">Vikram Tiwari</div><div class="mentor-title">CAT 99.8%ile · IIM Ahmedabad</div><div class="mentor-tags"><span class="tag">VARC</span><span class="tag">DILR</span><span class="tag">Quant</span></div></div></div>
-      <div class="mentor-card-body"><div class="mentor-rating"><span class="stars">★★★★★</span><span class="rating-num">4.8</span><span>(132)</span></div><div class="mentor-price-row"><div class="mentor-price">₹1,499 <span>/ session</span></div><button class="btn-book" onclick="requireAuthThen('book-your-slot.html', 'Please sign in to book a session.')">Book</button></div></div>
+      <div class="mentor-card-body"><div class="mentor-rating"><span class="stars">★★★★★</span><span class="rating-num">4.8</span><span>(132)</span></div><div class="mentor-price-row"><div class="mentor-price">₹1,499 <span>/ session</span></div><button class="btn-book" onclick="openModal()">Book</button></div></div>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
+<section class="how">
+  <div class="section-header"><div><div class="section-tag">Simple Process</div><h2 class="section-title">How Sillifur works</h2></div></div>
+  <div class="steps-grid">
+    <div class="step-card"><div class="step-num">01</div><span class="step-icon">🔍</span><div class="step-title">Find your mentor</div><div class="step-desc">Browse by exam or describe your goal. Filter by price, rating, and availability.</div></div>
+    <div class="step-card"><div class="step-num">02</div><span class="step-icon">📅</span><div class="step-title">Pick a slot</div><div class="step-desc">Choose a 30 or 60 min session. Pick any date and time that works for you.</div></div>
+    <div class="step-card"><div class="step-num">03</div><span class="step-icon">💳</span><div class="step-title">Pay & confirm</div><div class="step-desc">Pay securely via UPI, card, or netbanking. Get a Google Meet link instantly.</div></div>
+    <div class="step-card"><div class="step-num">04</div><span class="step-icon">🚀</span><div class="step-title">Meet & grow</div><div class="step-desc">Join your session, get real guidance, and leave a review to help the community.</div></div>
+  </div>
+</section>
+
+<section class="cta-banner">
+  <h2>Are you a topper? <em>Become a mentor.</em></h2>
+  <p>Share your exam strategy, set your own price, and earn on your schedule.</p>
+  <div class="cta-btns">
+    <button class="btn-primary" onclick="openModal()">Apply as Mentor</button>
+    <button class="btn-ghost">Learn More</button>
+  </div>
+</section>
+
 <footer>
   <div class="footer-top">
     <div class="footer-brand">
       <a href="index.html" class="logo"><div class="logo-mark">S</div><div class="logo-text">silli<span>fur</span></div></a>
       <p>India's exam mentor marketplace. Learn from toppers who've done it.</p>
     </div>
-    <div class="footer-col"><h4>Platform</h4><a href="browse-mentors.html" class="auth-required">Browse Mentors</a><a href="#" onclick="requireAuthThen('mentor-register.html', 'Please sign in before applying as a mentor.'); return false;">Become a Mentor</a><a href="how-it-works.html">How it Works</a></div>
-    <div class="footer-col"><h4>Exams</h4><a href="browse-mentors.html?exam=UPSC" class="auth-required">UPSC CSE</a><a href="browse-mentors.html?exam=JEE" class="auth-required">JEE / NEET</a><a href="browse-mentors.html?exam=CAT" class="auth-required">CAT / GATE</a><a href="browse-mentors.html?exam=SSC" class="auth-required">SSC / Bank PO</a></div>
-    <div class="footer-col"><h4>Company</h4><a href="about.html">About Us</a><a href="blog.html">Blog</a><a href="contact.html">Contact</a></div>
+    <div class="footer-col"><h4>Platform</h4><a href="#">Browse Mentors</a><a href="#">Become a Mentor</a><a href="#">How it Works</a></div>
+    <div class="footer-col"><h4>Exams</h4><a href="#">UPSC CSE</a><a href="#">JEE / NEET</a><a href="#">CAT / GATE</a><a href="#">SSC / Bank PO</a></div>
+    <div class="footer-col"><h4>Company</h4><a href="#">About Us</a><a href="#">Blog</a><a href="#">Contact</a><a href="#">Open Source ↗</a></div>
   </div>
   <div class="footer-bottom">
     <span>© 2025 Sillifur. All rights reserved.</span>
-    <div style="display:flex;gap:16px"><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div>
+    <div style="display:flex;gap:16px"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
   </div>
 </footer>
 
-<!-- MODAL TERMS LINK -->
-<p class="modal-terms">By signing in you agree to our <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.</p>
+<div class="modal-overlay" id="modal" onclick="closeOnOverlay(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-logo-wrap"><div class="logo-mark">S</div><div class="logo-text">silli<span>fur</span></div></div>
+    <h3>Welcome back</h3>
+    <p>Sign in to book sessions, save mentors, and track your growth.</p>
+    <button class="google-btn" id="googleSignInBtn">
+      <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+      Continue with Google
+    </button>
+    <div class="modal-divider">I am a</div>
+    <div class="role-row">
+      <button class="role-btn" id="menteeBtn"><span class="role-icon">🎓</span>Mentee</button>
+      <button class="role-btn" id="mentorBtn"><span class="role-icon">🏆</span>Mentor</button>
+    </div>
+    <div class="modal-divider">or sign in with User ID</div>
+    <input type="text" id="login-userid-input" class="password-input" placeholder="User ID" autocomplete="username" />
+    <input type="password" id="login-password-input" class="password-input" placeholder="Password" autocomplete="current-password" />
+    <button id="userIdLoginBtn" class="btn-primary" style="width: 100%; margin-bottom: 10px;">Sign In with User ID</button>
+    <button id="forgotPasswordBtn" class="btn-ghost" style="width: 100%; padding: 10px 14px; margin-bottom: 10px; font-size: 0.82rem;">Forgot Password</button>
+    <p id="login-message" class="auth-message"></p>
+    <p class="modal-terms">By signing in you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+  </div>
+</div>
 
-<!-- PLAIN SCRIPT -->
+<div class="modal-overlay" id="profileModal" onclick="closeProfileOverlay(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeProfileModal()">✕</button>
+    <h3>Your Profile</h3>
+    <p id="profileEmail" style="color:var(--muted2); font-size: 0.85rem; margin-bottom: 24px;"></p>
+
+    <div style="background:var(--card); border:1px solid var(--border2); padding:20px; border-radius:12px; margin-bottom:24px; text-align: left;">
+      <h4 style="color:var(--white); font-size: 0.95rem; margin-bottom: 6px;">Set Login Credentials</h4>
+      <p style="font-size:0.75rem; color:var(--muted); margin-bottom: 14px;">Create a User ID and password. We store this login in Firebase and you can use it for future sign-ins.</p>
+      <input type="text" id="new-userid-input" class="password-input" placeholder="Choose user ID (letters, numbers, _)" autocomplete="username" />
+      <input type="password" id="new-password-input" class="password-input" placeholder="Enter password (min 6 chars)" autocomplete="new-password" />
+      <input type="password" id="confirm-password-input" class="password-input" placeholder="Confirm password" autocomplete="new-password" />
+      <button id="set-credentials-btn" class="btn-primary" style="width: 100%;">Save User ID & Password</button>
+      <p id="credentials-message" class="auth-message"></p>
+    </div>
+
+    <button id="logoutBtn" class="btn-ghost" style="width: 100%;">Log Out</button>
+  </div>
+</div>
+
 <script>
   window.forceCredentialSetup = false;
-  window._currentUser = null;
-
   function openModal(){ document.getElementById('modal').classList.add('open'); }
   function closeModal(){
     document.getElementById('modal').classList.remove('open');
@@ -125,107 +341,297 @@
     if (loginMsg) loginMsg.innerText = '';
   }
   function closeOnOverlay(e){ if(e.target.id==='modal') closeModal(); }
-
-  function showAuthPrompt(message) {
-    openModal();
-    const loginMsg = document.getElementById('login-message');
-    if (loginMsg && message) {
-      loginMsg.style.color = '#f97316';
-      loginMsg.innerText = message;
-    }
+  function toggleWishlist(btn){
+    const saved = btn.classList.toggle('saved');
+    btn.textContent = saved ? '♥' : '♡';
   }
 
-  function requireAuthThen(url, message) {
-    if (window._currentUser) {
-      window.location.href = url;
-      return;
-    }
-    showAuthPrompt(message || 'Please sign in to continue.');
-  }
-
-  function bindAuthRequiredLinks() {
-    document.querySelectorAll('a.auth-required').forEach(anchor => {
-      anchor.addEventListener('click', evt => {
-        const href = anchor.getAttribute('href');
-        if (!href || href === '#') return;
-        evt.preventDefault();
-        requireAuthThen(href, anchor.dataset.authMessage || 'Please sign in to continue.');
-      });
-    });
-  }
-
-  function handleSearch() {
-    const searchInput = document.getElementById('searchInput');
-    const query = searchInput ? searchInput.value.trim() : '';
-    const target = query
-      ? `browse-mentors.html?q=${encodeURIComponent(query)}`
-      : 'browse-mentors.html';
-    requireAuthThen(target, 'Please sign in to search mentors.');
-  }
-
-  function toggleWishlist(btn, mentorId){
-    if (!window._currentUser) {
-      showAuthPrompt('Please sign in to save mentors to wishlist.');
-      return;
-    }
-
-    const key = mentorId || btn.dataset.id;
-    if (!key) return;
-
-    const savedList = JSON.parse(localStorage.getItem('silli_wishlist') || '[]');
-    const idx = savedList.indexOf(key);
-    if (idx === -1) {
-      savedList.push(key);
-      btn.classList.add('saved');
-      btn.textContent = '♥';
-    } else {
-      savedList.splice(idx, 1);
-      btn.classList.remove('saved');
-      btn.textContent = '♡';
-    }
-    localStorage.setItem('silli_wishlist', JSON.stringify(savedList));
-  }
-
-  function restoreWishlist() {
-    const savedList = JSON.parse(localStorage.getItem('silli_wishlist') || '[]');
-    document.querySelectorAll('.wishlist-btn[data-id]').forEach(btn => {
-      if (savedList.includes(btn.dataset.id)) {
-        btn.classList.add('saved');
-        btn.textContent = '♥';
-      } else {
-        btn.classList.remove('saved');
-        btn.textContent = '♡';
+  // Logic for the new Profile Modal
+  function openProfileModal(){ document.getElementById('profileModal').classList.add('open'); }
+  function closeProfileModal(){ 
+    if (window.forceCredentialSetup) {
+      const credMsg = document.getElementById('credentials-message');
+      if (credMsg) {
+        credMsg.style.color = "#f87171";
+        credMsg.innerText = "Please create your User ID and password to continue.";
       }
-    });
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    bindAuthRequiredLinks();
-    restoreWishlist();
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-      searchInput.addEventListener('keydown', evt => {
-        if (evt.key === 'Enter') handleSearch();
-      });
+      return;
     }
-  });
+    document.getElementById('profileModal').classList.remove('open'); 
+    const credMsg = document.getElementById('credentials-message');
+    if (credMsg) credMsg.innerText = "";
+  }
+  function closeProfileOverlay(e){ if(e.target.id==='profileModal') closeProfileModal(); }
 </script>
 
-<!-- FIREBASE MODULE CHANGES -->
 <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getAuth,
+    signInWithPopup,
+    GoogleAuthProvider,
+    onAuthStateChanged,
+    signOut,
+    EmailAuthProvider,
+    linkWithCredential,
+    signInWithEmailAndPassword,
+    sendPasswordResetEmail
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    setDoc,
+    getDoc,
+    updateDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDEWvEXCo_W5i7OZ1wT4QuPED3ur2q5N7c",
+    authDomain: "sillifur-341e9.firebaseapp.com",
+    projectId: "sillifur-341e9",
+    storageBucket: "sillifur-341e9.appspot.com",
+    messagingSenderId: "848515376957",
+    appId: "1:848515376957:web:ac13cbb93fdcc9ba834754"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+  const USER_ALIAS_DOMAIN = "login.sillifur.app";
+
+  function showMessage(id, text, color) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.color = color;
+    el.innerText = text;
+  }
+
+  function normalizeUserId(raw) {
+    return (raw || "").trim().toLowerCase();
+  }
+
+  function isValidUserId(userId) {
+    return /^[a-z0-9_]{4,20}$/.test(userId);
+  }
+
+  async function ensureUserDoc(user, role) {
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      await setDoc(userRef, {
+        uid: user.uid,
+        name: user.displayName,
+        email: user.email,
+        photo: user.photoURL,
+        role: role,
+        createdAt: new Date().toISOString()
+      });
+      return;
+    }
+
+    if (!userSnap.data().role && role) {
+      await updateDoc(userRef, { role: role });
+    }
+  }
+
+  async function userNeedsCredentialSetup(user) {
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+    if (!userSnap.exists()) return true;
+
+    const login = userSnap.data().login;
+    return !(login && login.userId && login.emailAlias && login.hasPassword);
+  }
+
+  // ▼ Add your admin email here — must match what's in admin.html
+  const ADMIN_EMAIL = "keerthanreddykandadi@gmail.com";
+
   function updateNavbar(user) {
-    window._currentUser = user;
     const btn = document.getElementById("navSignInBtn");
+    const dashBtn = document.getElementById("dashboardBtn");
+    const adminItem = document.getElementById("adminNavItem");
+
+    // Update sign-in button to show user photo + name
     btn.innerHTML = `<img src="${user.photoURL || ""}" style="width:26px;height:26px;border-radius:50%;"> ${user.displayName ? user.displayName.split(" ")[0] : "Profile"}`;
     btn.onclick = () => {
       document.getElementById("profileEmail").innerText = user.email || "";
       openProfileModal();
     };
+
+    // Show Dashboard button for all logged-in users
+    dashBtn.style.display = "flex";
+
+    // Show Admin Panel link only for admin email
+    if (user.email === ADMIN_EMAIL) {
+      adminItem.style.display = "list-item";
+      dashBtn.href = "admin.html";
+      dashBtn.textContent = "Admin Panel";
+      dashBtn.style.color = "#f87171";
+      dashBtn.style.borderColor = "rgba(248,113,113,0.3)";
+    } else {
+      adminItem.style.display = "none";
+      dashBtn.href = "mentee-dashboard.html";
+      dashBtn.textContent = "Dashboard";
+    }
+  }
+
+  async function signInWithGoogle(role) {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      await ensureUserDoc(user, role);
+      closeModal();
+      updateNavbar(user);
+
+      if (await userNeedsCredentialSetup(user)) {
+        window.forceCredentialSetup = true;
+        document.getElementById("profileEmail").innerText = user.email || "";
+        setTimeout(() => openProfileModal(), 250);
+      } else {
+        window.forceCredentialSetup = false;
+      }
+    } catch (err) {
+      console.error("Sign-in error:", err.message);
+      showMessage("login-message", "Google sign-in failed. Please try again.", "#f87171");
+    }
+  }
+
+  async function signInWithUserId() {
+    const userId = normalizeUserId(document.getElementById("login-userid-input").value);
+    const password = document.getElementById("login-password-input").value;
+
+    if (!userId || !password) {
+      showMessage("login-message", "Enter both User ID and password.", "#f87171");
+      return;
+    }
+
+    try {
+      const handleRef = doc(db, "userHandles", userId);
+      const handleSnap = await getDoc(handleRef);
+
+      if (!handleSnap.exists()) {
+        showMessage("login-message", "User ID not found. Try Google sign-in first.", "#f87171");
+        return;
+      }
+
+      const emailAlias = handleSnap.data().emailAlias;
+      await signInWithEmailAndPassword(auth, emailAlias, password);
+
+      showMessage("login-message", "Signed in successfully.", "#4ade80");
+      document.getElementById("login-userid-input").value = "";
+      document.getElementById("login-password-input").value = "";
+      closeModal();
+    } catch (err) {
+      console.error("User ID sign-in error:", err);
+      showMessage("login-message", "Invalid User ID or password.", "#f87171");
+    }
+  }
+
+  async function saveUserCredentials() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const userId = normalizeUserId(document.getElementById("new-userid-input").value);
+    const password = document.getElementById("new-password-input").value;
+    const confirmPassword = document.getElementById("confirm-password-input").value;
+    const messageId = "credentials-message";
+
+    if (!isValidUserId(userId)) {
+      showMessage(messageId, "User ID must be 4-20 chars: letters, numbers, underscore.", "#f87171");
+      return;
+    }
+
+    if (password.length < 6) {
+      showMessage(messageId, "Password must be at least 6 characters.", "#f87171");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      showMessage(messageId, "Passwords do not match.", "#f87171");
+      return;
+    }
+
+    try {
+      const handleRef = doc(db, "userHandles", userId);
+      const handleSnap = await getDoc(handleRef);
+      if (handleSnap.exists() && handleSnap.data().uid !== user.uid) {
+        showMessage(messageId, "This User ID is already taken.", "#f87171");
+        return;
+      }
+
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+      const existingLoginEmail = userSnap.exists() ? userSnap.data()?.login?.emailAlias : null;
+      const hasPasswordProvider = user.providerData.some(p => p.providerId === "password");
+      const authEmail = existingLoginEmail || user.email || `${userId}@${USER_ALIAS_DOMAIN}`;
+
+      if (!hasPasswordProvider) {
+        const credential = EmailAuthProvider.credential(authEmail, password);
+        await linkWithCredential(user, credential);
+      }
+
+      await setDoc(handleRef, {
+        uid: user.uid,
+        emailAlias: authEmail,
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+
+      await setDoc(userRef, {
+        login: {
+          userId: userId,
+          emailAlias: authEmail,
+          hasPassword: true,
+          updatedAt: new Date().toISOString()
+        }
+      }, { merge: true });
+
+      showMessage(messageId, "Credentials saved. You can now log in with User ID + password.", "#4ade80");
+      document.getElementById("new-password-input").value = "";
+      document.getElementById("confirm-password-input").value = "";
+      window.forceCredentialSetup = false;
+      setTimeout(() => closeProfileModal(), 300);
+    } catch (error) {
+      console.error("Credential setup error:", error);
+
+      if (error.code === "auth/requires-recent-login") {
+        showMessage(messageId, "Please log out and sign in again, then set credentials.", "#f87171");
+      } else if (error.code === "auth/email-already-in-use") {
+        showMessage(messageId, "That login mapping is already used. Try a different User ID.", "#f87171");
+      } else {
+        showMessage(messageId, `Failed to save credentials: ${error.message}`, "#f87171");
+      }
+    }
+  }
+
+  async function forgotPasswordWithUserId() {
+    const userId = normalizeUserId(document.getElementById("login-userid-input").value);
+    if (!userId) {
+      showMessage("login-message", "Enter your User ID first, then click Forgot Password.", "#f87171");
+      return;
+    }
+
+    try {
+      const handleRef = doc(db, "userHandles", userId);
+      const handleSnap = await getDoc(handleRef);
+      if (!handleSnap.exists()) {
+        showMessage("login-message", "User ID not found.", "#f87171");
+        return;
+      }
+
+      const emailAlias = handleSnap.data().emailAlias;
+      await sendPasswordResetEmail(auth, emailAlias);
+      showMessage("login-message", "Password reset link sent to your registered email.", "#4ade80");
+    } catch (error) {
+      console.error("Forgot password error:", error);
+      showMessage("login-message", "Unable to send reset link right now. Try again.", "#f87171");
+    }
   }
 
   onAuthStateChanged(auth, async user => {
     if (!user) {
-      window._currentUser = null;
       window.forceCredentialSetup = false;
       return;
     }
@@ -239,8 +645,1231 @@
     }
   });
 
-  document.getElementById("logoutBtn").onclick = () => signOut(auth).then(() => {
-    window._currentUser = null;
-    location.reload();
-  });
+  document.getElementById("googleSignInBtn").onclick = () => signInWithGoogle("mentee");
+  document.getElementById("menteeBtn").onclick = () => signInWithGoogle("mentee");
+  document.getElementById("mentorBtn").onclick = () => signInWithGoogle("mentor");
+  document.getElementById("userIdLoginBtn").onclick = signInWithUserId;
+  document.getElementById("forgotPasswordBtn").onclick = forgotPasswordWithUserId;
+  document.getElementById("set-credentials-btn").onclick = saveUserCredentials;
+  document.getElementById("logoutBtn").onclick = () => signOut(auth).then(() => location.reload());
+
 </script>
+
+</body>
+</html>
+{
+      --bg:#0b0d11;--bg2:#12151c;--bg3:#1a1e2a;--card:#181c27;--card2:#1f2335;
+      --blue:#4f8ef7;--blue2:#3a76e8;--green:#22d3a0;--white:#ffffff;
+      --text:#e8eaf0;--muted:#6b7280;--muted2:#9ca3af;
+      --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--radius:14px;
+    }
+    body { font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);line-height:1.6; }
+    nav { background:var(--bg2);border-bottom:1px solid var(--border);padding:0 5%;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100; }
+    .logo { display:flex;align-items:center;gap:9px;text-decoration:none; }
+    .logo-mark { width:34px;height:34px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-weight:800;font-size:1rem;color:white;letter-spacing:-1px; }
+    .logo-text { font-family:'Outfit',sans-serif;font-weight:700;font-size:1.2rem;color:var(--white);letter-spacing:-0.3px; }
+    .logo-text span { color:var(--blue); }
+    .nav-links { display:flex;align-items:center;gap:28px;list-style:none; }
+    .nav-links a { color:var(--muted2);text-decoration:none;font-size:0.875rem;font-weight:500;transition:color .2s; }
+    .nav-links a:hover { color:var(--white); }
+    .nav-right { display:flex;align-items:center;gap:8px; }
+    .btn-signin { background:var(--blue);color:white;border:none;padding:8px 20px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:0.875rem;font-weight:600;cursor:pointer;transition:background .2s;display:flex;align-items:center;gap:8px; }
+    .btn-signin:hover { background:var(--blue2); }
+
+    /* ── MENTEE DASHBOARD LINK (shown after sign-in) ── */
+    .mentee-dash-btn {
+      display:none;align-items:center;gap:6px;
+      background:rgba(79,142,247,0.12);border:1px solid rgba(79,142,247,0.3);
+      color:var(--blue);padding:7px 13px;border-radius:8px;
+      font-size:0.78rem;font-weight:600;text-decoration:none;
+      transition:all .2s;white-space:nowrap;
+    }
+    .mentee-dash-btn:hover { background:rgba(79,142,247,0.22); }
+    .mentee-dash-btn.visible { display:flex; }
+
+    /* ── MENTOR DASHBOARD LINK (shown for approved mentors) ── */
+    .mentor-dash-btn {
+      display:none;align-items:center;gap:6px;
+      background:rgba(34,211,160,0.12);border:1px solid rgba(34,211,160,0.3);
+      color:var(--green);padding:7px 13px;border-radius:8px;
+      font-size:0.78rem;font-weight:600;text-decoration:none;
+      transition:all .2s;white-space:nowrap;
+    }
+    .mentor-dash-btn:hover { background:rgba(34,211,160,0.22); }
+    .mentor-dash-btn.visible { display:flex; }
+
+    .hero { padding:80px 5% 70px;text-align:center;position:relative; }
+    .hero::before { content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:700px;height:400px;background:radial-gradient(ellipse,rgba(79,142,247,0.1) 0%,transparent 70%);pointer-events:none; }
+    .hero-badge { display:inline-flex;align-items:center;gap:6px;background:rgba(79,142,247,0.1);border:1px solid rgba(79,142,247,0.25);color:var(--blue);font-size:0.78rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:22px; }
+    .hero h1 { font-family:'Outfit',sans-serif;font-size:clamp(2rem,5vw,3.6rem);font-weight:800;color:var(--white);line-height:1.15;max-width:760px;margin:0 auto 18px;letter-spacing:-1.5px; }
+    .hero h1 em { font-style:normal;color:var(--blue); }
+    .hero p { color:var(--muted2);font-size:1rem;max-width:480px;margin:0 auto 18px; }
+    .book-slot-cta { display:inline-flex;align-items:center;gap:10px;background:var(--blue);color:#fff;text-decoration:none;padding:12px 22px;border-radius:10px;font-size:.92rem;font-weight:700;border:1px solid rgba(79,142,247,.35);transition:all .2s;margin-bottom:28px; }
+    .book-slot-cta:hover { background:var(--blue2);transform:translateY(-1px); }
+    .search-bar { display:flex;max-width:540px;margin:0 auto 32px;background:var(--card2);border:1px solid var(--border2);border-radius:12px;overflow:hidden; }
+    .search-bar input { flex:1;border:none;outline:none;padding:15px 18px;font-family:'Space Grotesk',sans-serif;font-size:0.9rem;color:var(--text);background:transparent; }
+    .search-bar input::placeholder { color:var(--muted); }
+    .search-bar button { background:var(--blue);color:white;border:none;padding:0 24px;font-family:'Space Grotesk',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:background .2s; }
+    .search-bar button:hover { background:var(--blue2); }
+    .exam-logos-label { font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:14px; }
+    .exam-logos-grid { display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:700px;margin:0 auto; }
+    .exam-pill { display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--border2);border-radius:40px;padding:7px 14px 7px 10px;cursor:pointer;transition:all .2s;text-decoration:none; }
+    .exam-pill:hover { border-color:var(--blue);background:rgba(79,142,247,0.08); }
+    .exam-logo-circle { width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:800;letter-spacing:-0.3px;flex-shrink:0;border:1.5px solid rgba(255,255,255,0.15); }
+    .exam-pill-name { font-size:0.8rem;font-weight:600;color:var(--text);white-space:nowrap; }
+
+    .stats { display:flex;justify-content:center;gap:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2);flex-wrap:wrap; }
+    .stat-item { flex:1;min-width:140px;text-align:center;padding:22px 20px;border-right:1px solid var(--border); }
+    .stat-item:last-child { border-right:none; }
+    .stat-num { font-family:'Outfit',sans-serif;font-size:1.7rem;font-weight:800;color:var(--white); }
+    .stat-num span { color:var(--blue); }
+    .stat-label { font-size:0.78rem;color:var(--muted);margin-top:2px; }
+
+    section { padding:60px 5%; }
+    .section-header { display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:10px; }
+    .section-tag { font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);margin-bottom:6px; }
+    .section-title { font-family:'Outfit',sans-serif;font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:700;color:var(--white);letter-spacing:-0.5px; }
+    .view-all { color:var(--blue);font-size:0.85rem;font-weight:600;text-decoration:none;letter-spacing:0.02em;white-space:nowrap; }
+    .view-all:hover { text-decoration:underline; }
+
+    .cat-scroll-wrap { overflow-x:auto;padding-bottom:12px;margin:0 -5%;padding-left:5%;padding-right:5%;scrollbar-width:thin;scrollbar-color:var(--border2) transparent; }
+    .cat-grid { display:grid;grid-template-rows:1fr 1fr;grid-auto-flow:column;grid-auto-columns:200px;gap:12px;width:max-content; }
+    .cat-card { background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px 16px;cursor:pointer;transition:all .2s;text-decoration:none;color:var(--text);display:flex;flex-direction:column;justify-content:space-between;height:130px;position:relative;overflow:hidden; }
+    .cat-card:hover { border-color:var(--border2);background:var(--card2);transform:translateY(-2px); }
+    .cat-card.active-cat { background:var(--card2);border-color:rgba(79,142,247,0.35); }
+    .cat-name { font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;color:var(--white);line-height:1.2;max-width:110px; }
+    .cat-bottom { display:flex;align-items:flex-end;justify-content:space-between; }
+    .cat-badge { font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#4ade80;line-height:1; }
+    .cat-logo-circle { width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:800;letter-spacing:-0.3px;flex-shrink:0;border:1.5px solid rgba(255,255,255,0.15); }
+
+    .mentors-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px; }
+    .mentor-card { background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all .2s;cursor:pointer;position:relative; }
+    .mentor-card:hover { border-color:var(--border2);transform:translateY(-3px); }
+    .mentor-card-top { background:var(--card2);padding:20px 18px 16px;display:flex;align-items:flex-start;gap:12px; }
+    .mentor-avatar { width:48px;height:48px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:800;color:white;flex-shrink:0;border:2px solid var(--border2); }
+    .mentor-name { font-weight:700;font-size:0.92rem;color:var(--white);margin-bottom:3px; }
+    .mentor-title { font-size:0.75rem;color:var(--muted2);margin-bottom:7px; }
+    .mentor-tags { display:flex;gap:5px;flex-wrap:wrap; }
+    .tag { background:rgba(79,142,247,0.12);color:#93b4fa;font-size:0.67rem;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid rgba(79,142,247,0.2); }
+    .wishlist-btn { position:absolute;top:12px;right:12px;width:28px;height:28px;background:var(--bg3);border:1px solid var(--border2);border-radius:50%;color:var(--muted);font-size:0.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s; }
+    .wishlist-btn:hover { color:#f87171;border-color:rgba(248,113,113,0.4); }
+    .wishlist-btn.saved { color:#f87171;background:rgba(248,113,113,0.1);border-color:rgba(248,113,113,0.4); }
+    .mentor-card-body { padding:14px 18px; }
+    .mentor-rating { display:flex;align-items:center;gap:5px;font-size:0.78rem;color:var(--muted2);margin-bottom:12px; }
+    .stars { color:#fbbf24;font-size:0.78rem; }
+    .rating-num { font-weight:600;color:var(--white); }
+    .mentor-price-row { display:flex;align-items:center;justify-content:space-between; }
+    .mentor-price { font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;color:var(--white); }
+    .mentor-price span { font-family:'Space Grotesk',sans-serif;font-size:0.72rem;font-weight:400;color:var(--muted); }
+    .btn-book { background:var(--blue);color:white;border:none;padding:7px 14px;border-radius:7px;font-family:'Space Grotesk',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:background .2s; }
+    .btn-book:hover { background:var(--blue2); }
+
+    .how { background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border); }
+    .steps-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px; }
+    .step-card { background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px 22px; }
+    .step-num { font-family:'Outfit',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(79,142,247,0.15);line-height:1;margin-bottom:14px; }
+    .step-icon { font-size:1.5rem;margin-bottom:10px;display:block; }
+    .step-title { font-weight:700;font-size:0.95rem;color:var(--white);margin-bottom:7px; }
+    .step-desc { font-size:0.83rem;color:var(--muted2);line-height:1.6; }
+
+    .cta-banner { text-align:center;padding:70px 5%;border-top:1px solid var(--border); }
+    .cta-banner h2 { font-family:'Outfit',sans-serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;color:var(--white);letter-spacing:-0.5px;margin-bottom:10px; }
+    .cta-banner h2 em { font-style:normal;color:var(--blue); }
+    .cta-banner p { color:var(--muted2);font-size:0.92rem;margin-bottom:26px; }
+    .cta-btns { display:flex;gap:10px;justify-content:center;flex-wrap:wrap; }
+    .btn-primary { background:var(--blue);color:white;border:none;padding:12px 26px;border-radius:9px;font-family:'Space Grotesk',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:background .2s; }
+    .btn-primary:hover { background:var(--blue2); }
+    .btn-ghost { background:transparent;color:var(--muted2);border:1px solid var(--border2);padding:12px 26px;border-radius:9px;font-family:'Space Grotesk',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all .2s; }
+    .btn-ghost:hover { border-color:var(--white);color:var(--white); }
+
+    footer { background:var(--bg2);border-top:1px solid var(--border);padding:48px 5% 28px; }
+    .footer-top { display:flex;justify-content:space-between;flex-wrap:wrap;gap:32px;margin-bottom:40px; }
+    .footer-brand p { font-size:0.82rem;color:var(--muted);margin-top:12px;max-width:200px;line-height:1.6; }
+    .footer-col h4 { font-weight:600;font-size:0.82rem;color:var(--white);margin-bottom:14px; }
+    .footer-col a { display:block;color:var(--muted);text-decoration:none;font-size:0.82rem;margin-bottom:9px;transition:color .2s; }
+    .footer-col a:hover { color:var(--blue); }
+    .footer-bottom { border-top:1px solid var(--border);padding-top:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:0.76rem;color:var(--muted); }
+    .footer-bottom a { color:var(--muted);text-decoration:none; }
+    .footer-bottom a:hover { color:var(--blue); }
+
+    /* ── SIGN IN / PROFILE MODALS ── */
+    .modal-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;align-items:center;justify-content:center; }
+    .modal-overlay.open { display:flex; }
+    .modal { background:var(--card2);border:1px solid var(--border2);border-radius:20px;padding:36px 32px;max-width:380px;width:90%;text-align:center;position:relative; }
+    .modal-close { position:absolute;top:14px;right:16px;background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--muted); }
+    .modal-logo-wrap { display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px; }
+    .modal h3 { font-family:'Outfit',sans-serif;font-size:1.25rem;font-weight:700;color:var(--white);margin-bottom:6px; }
+    .modal p { font-size:0.85rem;color:var(--muted2);margin-bottom:24px; }
+    .google-btn { display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;border:1px solid var(--border2);border-radius:9px;background:var(--card);font-family:'Space Grotesk',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all .2s;color:var(--white);margin-bottom:16px; }
+    .google-btn:hover { background:var(--bg3); }
+    .google-btn svg { width:18px;height:18px; }
+    .modal-divider { font-size:0.75rem;color:var(--muted);margin:4px 0 14px;position:relative; }
+    .modal-divider::before,.modal-divider::after { content:'';position:absolute;top:50%;width:36%;height:1px;background:var(--border); }
+    .modal-divider::before { left:0; } .modal-divider::after { right:0; }
+    .role-row { display:grid;grid-template-columns:1fr 1fr;gap:10px; }
+    .role-btn { padding:14px 8px;border:1px solid var(--border2);border-radius:10px;background:var(--card);font-family:'Space Grotesk',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all .2s;color:var(--muted2); }
+    .role-btn:hover { border-color:var(--blue);color:var(--blue); }
+    .role-btn .role-icon { font-size:1.3rem;display:block;margin-bottom:5px; }
+    .modal-terms { font-size:0.7rem;color:var(--muted);margin-top:14px; }
+    .password-input { width:100%;padding:12px;border-radius:9px;border:1px solid var(--border2);background:var(--bg);color:var(--white);font-family:'Space Grotesk',sans-serif;font-size:0.9rem;margin-bottom:12px;outline:none; }
+    .password-input:focus { border-color:var(--blue); }
+    /* ── AUTH FORM ELEMENTS ── */
+    .auth-input { width:100%;padding:11px 14px;border-radius:9px;border:1px solid var(--border2);background:var(--bg);color:var(--white);font-family:'Space Grotesk',sans-serif;font-size:0.88rem;margin-bottom:10px;outline:none;transition:border-color .2s;display:block; }
+    .auth-input:focus { border-color:var(--blue); }
+    .auth-input::placeholder { color:var(--muted); }
+    .auth-label { display:block;font-size:0.72rem;font-weight:700;color:var(--muted2);text-align:left;margin-bottom:5px;letter-spacing:0.03em; }
+    .auth-pw-wrap { position:relative;margin-bottom:10px; }
+    .auth-pw-wrap .auth-input { margin-bottom:0;padding-right:42px; }
+    .auth-pw-toggle { position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:0.9rem;color:var(--muted);transition:color .2s; }
+    .auth-pw-toggle:hover { color:var(--white); }
+    .auth-msg { font-size:0.75rem;font-weight:600;min-height:16px;margin:2px 0 8px;text-align:center; }
+    .auth-msg-err { color:#f87171; }
+    .auth-msg-ok  { color:#4ade80; }
+    .auth-link-btn { background:none;border:none;color:var(--blue);font-family:'Space Grotesk',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;padding:0;transition:opacity .2s; }
+    .auth-link-btn:hover { opacity:0.8; }
+    .pw-strength-bar { height:4px;background:var(--border2);border-radius:4px;overflow:hidden; }
+    .pw-strength-fill { height:100%;border-radius:4px;transition:width .3s,background .3s;width:0%; }
+    .auth-tabs { display:flex;gap:0;border:1px solid var(--border2);border-radius:9px;overflow:hidden;margin-bottom:20px; }
+    .auth-tab { flex:1;padding:9px;background:transparent;border:none;font-family:'Space Grotesk',sans-serif;font-size:0.82rem;font-weight:600;color:var(--muted2);cursor:pointer;transition:all .2s; }
+    .auth-tab.active { background:var(--blue);color:white; }
+
+    
+    .ob-modal { background:var(--card2);border:1px solid var(--border2);border-radius:20px;padding:0;max-width:480px;width:92%;position:relative;overflow:hidden; }
+    .ob-progress-bar { height:3px;background:var(--border);position:relative; }
+    .ob-progress-fill { height:100%;background:var(--blue);border-radius:3px;transition:width .4s ease; }
+    .ob-body { padding:32px 28px 28px; }
+    .ob-step-label { font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);margin-bottom:6px; }
+    .ob-title { font-family:'Outfit',sans-serif;font-size:1.3rem;font-weight:700;color:var(--white);margin-bottom:4px;letter-spacing:-0.3px; }
+    .ob-subtitle { font-size:0.82rem;color:var(--muted);margin-bottom:22px; }
+    .ob-grid { display:grid;gap:9px; }
+    .ob-grid-2 { grid-template-columns:1fr 1fr; }
+    .ob-grid-3 { grid-template-columns:1fr 1fr 1fr; }
+    .ob-option { border:1px solid var(--border2);border-radius:10px;padding:12px 14px;cursor:pointer;transition:all .18s;text-align:left;background:var(--card);color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:0.83rem;font-weight:500;display:flex;align-items:center;gap:9px; }
+    .ob-option:hover { border-color:var(--blue);background:rgba(79,142,247,0.07); }
+    .ob-option.selected { border-color:var(--blue);background:rgba(79,142,247,0.12);color:var(--white); }
+    .ob-option .ob-icon { font-size:1.1rem;flex-shrink:0; }
+    .ob-option-label { font-weight:600; }
+    .ob-option-sub { font-size:0.72rem;color:var(--muted);margin-top:1px; }
+    .ob-chips { display:flex;flex-wrap:wrap;gap:8px; }
+    .ob-chip { border:1px solid var(--border2);border-radius:30px;padding:7px 14px;cursor:pointer;transition:all .18s;background:var(--card);color:var(--muted2);font-family:'Space Grotesk',sans-serif;font-size:0.78rem;font-weight:600; }
+    .ob-chip:hover { border-color:var(--blue);color:var(--white); }
+    .ob-chip.selected { border-color:var(--blue);background:rgba(79,142,247,0.15);color:var(--blue); }
+    .ob-guidance-grid { display:grid;grid-template-columns:1fr 1fr;gap:9px; }
+    .ob-guidance-card { border:1px solid var(--border2);border-radius:12px;padding:16px 13px;cursor:pointer;transition:all .18s;background:var(--card);text-align:left; }
+    .ob-guidance-card:hover { border-color:var(--blue);background:rgba(79,142,247,0.07); }
+    .ob-guidance-card.selected { border-color:var(--blue);background:rgba(79,142,247,0.12); }
+    .ob-guidance-card .gc-icon { font-size:1.4rem;margin-bottom:8px;display:block; }
+    .ob-guidance-card .gc-title { font-weight:700;font-size:0.83rem;color:var(--white); }
+    .ob-guidance-card .gc-desc { font-size:0.72rem;color:var(--muted);margin-top:3px;line-height:1.4; }
+    .ob-footer { display:flex;align-items:center;justify-content:space-between;margin-top:22px; }
+    .ob-back { background:transparent;border:1px solid var(--border2);color:var(--muted2);padding:10px 18px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:0.83rem;font-weight:600;cursor:pointer;transition:all .18s; }
+    .ob-back:hover { border-color:var(--white);color:var(--white); }
+    .ob-next { background:var(--blue);color:white;border:none;padding:10px 24px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:0.83rem;font-weight:600;cursor:pointer;transition:background .18s;display:flex;align-items:center;gap:7px; }
+    .ob-next:hover { background:var(--blue2); }
+    .ob-next:disabled { background:var(--bg3);color:var(--muted);cursor:not-allowed; }
+    .ob-spinner { width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .ob-step-pane { animation:obFadeIn .25s ease; }
+    @keyframes obFadeIn { from { opacity:0;transform:translateX(10px); } to { opacity:1;transform:translateX(0); } }
+
+    /* ══════════════════════════════
+       POST-SESSION REVIEW MODAL
+    ══════════════════════════════ */
+    .review-backdrop {
+      display:none;position:fixed;inset:0;
+      background:rgba(0,0,0,0.72);backdrop-filter:blur(4px);
+      z-index:1000;align-items:center;justify-content:center;padding:20px;
+      opacity:0;transition:opacity .25s;
+    }
+    .review-backdrop.open { display:flex;opacity:1; }
+    .review-modal {
+      background:var(--card2);border:1px solid var(--border2);border-radius:20px;
+      width:100%;max-width:460px;max-height:90vh;overflow-y:auto;position:relative;
+      transform:translateY(24px) scale(0.97);opacity:0;
+      transition:transform .3s cubic-bezier(.34,1.4,.64,1),opacity .25s;
+    }
+    .review-backdrop.open .review-modal { transform:translateY(0) scale(1);opacity:1; }
+    .rm-header { padding:22px 22px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px; }
+    .rm-close { background:var(--bg3);border:1px solid var(--border2);border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted2);font-size:0.95rem;flex-shrink:0;transition:all .2s; }
+    .rm-close:hover { color:var(--white); }
+    .rm-recap { display:flex;align-items:center;gap:11px; }
+    .rm-avatar { width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:0.95rem;font-weight:800;color:white;flex-shrink:0;border:2px solid var(--border2); }
+    .rm-name { font-family:'Outfit',sans-serif;font-weight:700;font-size:0.95rem;color:var(--white);margin-bottom:2px; }
+    .rm-detail { font-size:0.72rem;color:var(--muted2); }
+    .rm-chip { display:inline-flex;align-items:center;gap:4px;background:rgba(79,142,247,0.1);color:#93b4fa;font-size:0.63rem;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid rgba(79,142,247,0.2);margin-top:5px; }
+    .rm-divider { height:1px;background:var(--border);margin:18px 22px 0; }
+    .rm-body { padding:18px 22px 22px; }
+    .rm-section-label { font-size:0.63rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:9px; }
+    .rm-stars { display:flex;gap:6px;margin-bottom:5px; }
+    .rm-star { font-size:1.9rem;cursor:pointer;color:var(--border2);transition:color .12s,transform .12s;user-select:none;line-height:1; }
+    .rm-star:hover,.rm-star.active { color:#fbbf24; }
+    .rm-star:hover { transform:scale(1.15); }
+    .rm-star-label { font-family:'Outfit',sans-serif;font-size:0.82rem;font-weight:700;color:var(--white);min-height:18px;margin-bottom:18px;transition:opacity .2s; }
+    .rm-tags { display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px; }
+    .rm-tag { background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:5px 12px;font-size:0.73rem;font-weight:600;color:var(--muted2);cursor:pointer;transition:all .16s; }
+    .rm-tag:hover { color:var(--white);border-color:rgba(79,142,247,0.4); }
+    .rm-tag.sel { background:rgba(79,142,247,0.12);border-color:rgba(79,142,247,0.5);color:#93b4fa; }
+    .rm-textarea { width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:9px;padding:11px 13px;color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:0.83rem;line-height:1.6;outline:none;resize:vertical;min-height:80px;transition:border-color .2s;margin-bottom:4px; }
+    .rm-textarea:focus { border-color:var(--blue); }
+    .rm-textarea::placeholder { color:var(--muted); }
+    .rm-char { text-align:right;font-size:0.68rem;color:var(--muted);margin-bottom:16px; }
+    .rm-recommend { background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:13px 15px;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:10px; }
+    .rm-rec-label { font-size:0.83rem;font-weight:600;color:var(--white); }
+    .rm-rec-sub { font-size:0.7rem;color:var(--muted);margin-top:1px; }
+    .rm-toggle { width:42px;height:23px;background:var(--border2);border-radius:12px;position:relative;cursor:pointer;border:none;transition:background .2s;flex-shrink:0; }
+    .rm-toggle.on { background:var(--green); }
+    .rm-toggle::after { content:'';position:absolute;width:17px;height:17px;background:white;border-radius:50%;top:3px;left:3px;transition:transform .2s; }
+    .rm-toggle.on::after { transform:translateX(19px); }
+    .rm-toggle-lbl { font-size:0.75rem;font-weight:700;color:var(--muted2);min-width:22px;transition:color .2s; }
+    .rm-toggle.on ~ .rm-toggle-lbl { color:var(--green); }
+    .rm-submit { width:100%;background:var(--blue);color:white;border:none;padding:12px;border-radius:9px;font-family:'Space Grotesk',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:7px; }
+    .rm-submit:hover { background:var(--blue2); }
+    .rm-submit:disabled { background:var(--bg3);color:var(--muted);border:1px solid var(--border2);cursor:not-allowed; }
+    .rm-skip { width:100%;background:transparent;border:none;color:var(--muted);font-family:'Space Grotesk',sans-serif;font-size:0.78rem;cursor:pointer;padding:9px;margin-top:5px;transition:color .2s; }
+    .rm-skip:hover { color:var(--muted2); }
+    .rm-success { display:none;text-align:center;padding:36px 22px; }
+    .rm-success-icon { width:60px;height:60px;background:rgba(34,211,160,0.1);border:2px solid rgba(34,211,160,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.7rem;margin:0 auto 14px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1); }
+    @keyframes popIn { from{transform:scale(0.5);opacity:0} to{transform:scale(1);opacity:1} }
+    .rm-success-title { font-family:'Outfit',sans-serif;font-size:1.2rem;font-weight:800;color:var(--white);margin-bottom:5px; }
+    .rm-success-sub { font-size:0.81rem;color:var(--muted2);line-height:1.6;margin-bottom:20px; }
+    .rm-done { background:var(--green);color:#0b1a14;border:none;padding:11px 28px;border-radius:9px;font-family:'Space Grotesk',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;transition:opacity .2s; }
+    .rm-done:hover { opacity:0.9; }
+
+    ::-webkit-scrollbar { width:4px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:var(--border2);border-radius:10px; }
+
+    @media(max-width:640px) { .nav-links{display:none;} .ob-guidance-grid{grid-template-columns:1fr;} .ob-grid-3{grid-template-columns:1fr 1fr;} }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-mark">S</div>
+    <div class="logo-text">silli<span>fur</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#">Browse Mentors</a></li>
+    <li><a href="mentor-register.html">Become a Mentor</a></li>
+    <a href="How_it_works.html">How It Works</a>
+  </ul>
+  <div class="nav-right">
+    <!-- Shown after mentee signs in -->
+    <a href="mentee-dashboard.html" class="mentee-dash-btn" id="menteeDashBtn">📊 My Dashboard</a>
+    <!-- Shown for approved mentors -->
+    <a href="mentor-dashboard.html" class="mentor-dash-btn" id="mentorDashBtn">🏆 Mentor Dashboard</a>
+    <!-- Sign In / Avatar -->
+    <button class="btn-signin" id="navSignInBtn" onclick="openModal()">Sign In</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">&#9733; India's Exam Mentor Marketplace</div>
+  <h1>Crack your exam with mentors<br>who've <em>been there</em></h1>
+  <p>Connect with toppers & verified experts for UPSC, JEE, NEET, CAT & more. Book a 1:1 session today.</p>
+  <a href="bookyourslot.html" class="book-slot-cta">Book Your Slot</a>
+  <div class="exam-logos-label">Popular exams — click to explore mentors</div>
+  <div class="exam-logos-grid">
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#1a3a6c;color:#fff;">UPSC</div><span class="exam-pill-name">UPSC CSE</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#f97316;color:#fff;">JEE</div><span class="exam-pill-name">JEE Mains & Adv.</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#16a34a;color:#fff;">NEET</div><span class="exam-pill-name">NEET UG</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#7c3aed;color:#fff;">CAT</div><span class="exam-pill-name">CAT / MBA</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#0369a1;color:#fff;">GATE</div><span class="exam-pill-name">GATE</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#b91c1c;color:#fff;">CLAT</div><span class="exam-pill-name">CLAT / Law</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#0f766e;color:#fff;">IBPS</div><span class="exam-pill-name">IBPS / Bank PO</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#92400e;color:#fff;">SSC</div><span class="exam-pill-name">SSC CGL / CHSL</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#4f46e5;color:#fff;">CUET</div><span class="exam-pill-name">CUET UG/PG</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#0c4a6e;color:#fff;">NDA</div><span class="exam-pill-name">NDA / CDS</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#be185d;color:#fff;">NIFT</div><span class="exam-pill-name">NIFT / NID</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#065f46;color:#fff;">CA</div><span class="exam-pill-name">CA Foundation</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#713f12;color:#fff;">GRE</div><span class="exam-pill-name">GRE / GMAT</span></a>
+    <a href="#" class="exam-pill"><div class="exam-logo-circle" style="background:#1e3a5f;color:#fff;">JEST</div><span class="exam-pill-name">JEST / JAM</span></a>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stat-item"><div class="stat-num">500<span>+</span></div><div class="stat-label">Verified Mentors</div></div>
+  <div class="stat-item"><div class="stat-num">12K<span>+</span></div><div class="stat-label">Sessions Completed</div></div>
+  <div class="stat-item"><div class="stat-num">4.8<span>★</span></div><div class="stat-label">Average Rating</div></div>
+  <div class="stat-item"><div class="stat-num">20<span>+</span></div><div class="stat-label">Exams Covered</div></div>
+</div>
+
+<section>
+  <div class="section-header">
+    <div><div class="section-tag">Browse by Exam</div><h2 class="section-title">Find your exam category</h2></div>
+    <a href="#" class="view-all">VIEW ALL</a>
+  </div>
+  <div class="cat-scroll-wrap">
+    <div class="cat-grid">
+      <a href="#" class="cat-card active-cat"><div class="cat-name">UPSC Civil Services</div><div class="cat-bottom"><div class="cat-badge">94 MENTORS</div><div class="cat-logo-circle" style="background:#1a3a6c;color:#fff;font-size:0.62rem;">UPSC</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">JEE Mains &amp; Advanced</div><div class="cat-bottom"><div class="cat-badge">128 MENTORS</div><div class="cat-logo-circle" style="background:#f97316;color:#fff;">JEE</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">NEET UG / PG</div><div class="cat-bottom"><div class="cat-badge">112 MENTORS</div><div class="cat-logo-circle" style="background:#16a34a;color:#fff;font-size:0.6rem;">NEET</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">CAT / MBA Entrance</div><div class="cat-bottom"><div class="cat-badge" style="color:#f87171">TRENDING</div><div class="cat-logo-circle" style="background:#7c3aed;color:#fff;">CAT</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">GATE &amp; PSU</div><div class="cat-bottom"><div class="cat-badge">76 MENTORS</div><div class="cat-logo-circle" style="background:#0369a1;color:#fff;font-size:0.6rem;">GATE</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">SSC CGL / CHSL</div><div class="cat-bottom"><div class="cat-badge">65 MENTORS</div><div class="cat-logo-circle" style="background:#92400e;color:#fff;">SSC</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">Bank PO &amp; IBPS</div><div class="cat-bottom"><div class="cat-badge" style="color:#f87171">NEW MENTORS</div><div class="cat-logo-circle" style="background:#0f766e;color:#fff;font-size:0.6rem;">IBPS</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">CLAT / AILET</div><div class="cat-bottom"><div class="cat-badge">43 MENTORS</div><div class="cat-logo-circle" style="background:#b91c1c;color:#fff;font-size:0.6rem;">CLAT</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">CUET UG / PG</div><div class="cat-bottom"><div class="cat-badge">52 MENTORS</div><div class="cat-logo-circle" style="background:#4f46e5;color:#fff;font-size:0.6rem;">CUET</div></div></a>
+      <a href="#" class="cat-card"><div class="cat-name">NDA / CDS / AFCAT</div><div class="cat-bottom"><div class="cat-badge">38 MENTORS</div><div class="cat-logo-circle" style="background:#0c4a6e;color:#fff;">NDA</div></div></a>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="section-header">
+    <div><div class="section-tag">Top Mentors</div><h2 class="section-title">Most booked this week</h2></div>
+    <a href="#" class="view-all">VIEW ALL</a>
+  </div>
+  <div class="mentors-grid">
+    <div class="mentor-card">
+      <button class="wishlist-btn" onclick="toggleWishlist(this)">♡</button>
+      <div class="mentor-card-top"><div class="mentor-avatar" style="background:#1a3a6c">NM</div><div><div class="mentor-name">Neha Mehra</div><div class="mentor-title">IAS Officer · UPSC AIR 34</div><div class="mentor-tags"><span class="tag">UPSC</span><span class="tag">GS</span><span class="tag">Essay</span></div></div></div>
+      <div class="mentor-card-body"><div class="mentor-rating"><span class="stars">★★★★★</span><span class="rating-num">4.9</span><span>(211)</span></div><div class="mentor-price-row"><div class="mentor-price">₹799 <span>/ session</span></div><button class="btn-book" onclick="openModal()">Book</button></div></div>
+    </div>
+    <div class="mentor-card">
+      <button class="wishlist-btn" onclick="toggleWishlist(this)">♡</button>
+      <div class="mentor-card-top"><div class="mentor-avatar" style="background:#f97316">RK</div><div><div class="mentor-name">Rohit Kumar</div><div class="mentor-title">JEE Advanced AIR 42 · IIT Delhi</div><div class="mentor-tags"><span class="tag">Physics</span><span class="tag">Maths</span><span class="tag">JEE</span></div></div></div>
+      <div class="mentor-card-body"><div class="mentor-rating"><span class="stars">★★★★★</span><span class="rating-num">4.9</span><span>(184)</span></div><div class="mentor-price-row"><div class="mentor-price">₹999 <span>/ session</span></div><button class="btn-book" onclick="openModal()">Book</button></div></div>
+    </div>
+    <div class="mentor-card">
+      <button class="wishlist-btn" onclick="toggleWishlist(this)">♡</button>
+      <div class="mentor-card-top"><div class="mentor-avatar" style="background:#16a34a">AS</div><div><div class="mentor-name">Ananya Sharma</div><div class="mentor-title">NEET AIR 19 · MBBS AIIMS Delhi</div><div class="mentor-tags"><span class="tag">Biology</span><span class="tag">Chemistry</span><span class="tag">NEET</span></div></div></div>
+      <div class="mentor-card-body"><div class="mentor-rating"><span class="stars">★★★★★</span><span class="rating-num">5.0</span><span>(98)</span></div><div class="mentor-price-row"><div class="mentor-price">₹1,199 <span>/ session</span></div><button class="btn-book" onclick="openModal()">Book</button></div></div>
+    </div>
+    <div class="mentor-card">
+      <button class="wishlist-btn" onclick="toggleWishlist(this)">♡</button>
+      <div class="mentor-card-top"><div class="mentor-avatar" style="background:#7c3aed">VT</div><div><div class="mentor-name">Vikram Tiwari</div><div class="mentor-title">CAT 99.8%ile · IIM Ahmedabad</div><div class="mentor-tags"><span class="tag">VARC</span><span class="tag">DILR</span><span class="tag">Quant</span></div></div></div>
+      <div class="mentor-card-body"><div class="mentor-rating"><span class="stars">★★★★★</span><span class="rating-num">4.8</span><span>(132)</span></div><div class="mentor-price-row"><div class="mentor-price">₹1,499 <span>/ session</span></div><button class="btn-book" onclick="openModal()">Book</button></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="how">
+  <div class="section-header"><div><div class="section-tag">Simple Process</div><h2 class="section-title">How Sillifur works</h2></div></div>
+  <div class="steps-grid">
+    <div class="step-card"><div class="step-num">01</div><span class="step-icon">🔍</span><div class="step-title">Find your mentor</div><div class="step-desc">Browse by exam or describe your goal. Filter by price, rating, and availability.</div></div>
+    <div class="step-card"><div class="step-num">02</div><span class="step-icon">📅</span><div class="step-title">Pick a slot</div><div class="step-desc">Choose a 30 or 60 min session. Pick any date and time that works for you.</div></div>
+    <div class="step-card"><div class="step-num">03</div><span class="step-icon">💳</span><div class="step-title">Pay & confirm</div><div class="step-desc">Pay securely via UPI, card, or netbanking. Get a Google Meet link instantly.</div></div>
+    <div class="step-card"><div class="step-num">04</div><span class="step-icon">🚀</span><div class="step-title">Meet & grow</div><div class="step-desc">Join your session, get real guidance, and leave a review to help the community.</div></div>
+  </div>
+</section>
+
+<section class="cta-banner">
+  <h2>Are you a topper? <em>Become a mentor.</em></h2>
+  <p>Share your exam strategy, set your own price, and earn on your schedule.</p>
+  <div class="cta-btns">
+    <button class="btn-primary" onclick="window.location.href='mentor-register.html'">Apply as Mentor</button>
+    <button class="btn-ghost">Learn More</button>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="index.html" class="logo"><div class="logo-mark">S</div><div class="logo-text">silli<span>fur</span></div></a>
+      <p>India's exam mentor marketplace. Learn from toppers who've done it.</p>
+    </div>
+    <div class="footer-col"><h4>Platform</h4><a href="#">Browse Mentors</a><a href="mentor-register.html">Become a Mentor</a><a href="How_it_works.html">How it Works</a></div>
+    <div class="footer-col"><h4>Exams</h4><a href="#">UPSC CSE</a><a href="#">JEE / NEET</a><a href="#">CAT / GATE</a><a href="#">SSC / Bank PO</a></div>
+    <div class="footer-col"><h4>Company</h4><a href="#">About Us</a><a href="#">Blog</a><a href="#">Contact</a></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Sillifur. All rights reserved.</span>
+    <div style="display:flex;gap:16px"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════
+     MAIN AUTH MODAL
+     3 views: signin | register | forgot
+═══════════════════════════════════════ -->
+<div class="modal-overlay" id="modal" onclick="closeOnOverlay(event)">
+  <div class="modal" style="max-width:410px;padding:32px 28px">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+
+    <!-- ── VIEW: Sign In ── -->
+    <div id="authViewSignin">
+      <div class="modal-logo-wrap"><div class="logo-mark">S</div><div class="logo-text">silli<span>fur</span></div></div>
+      <h3 style="margin-bottom:4px">Welcome back</h3>
+      <p style="margin-bottom:20px">Sign in to book sessions and track your growth.</p>
+
+      <!-- Google -->
+      <button class="google-btn" id="googleSignInBtn">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Continue with Google
+      </button>
+
+      <div class="modal-divider">or continue with email</div>
+
+      <input type="email"    id="siEmail" class="auth-input" placeholder="Email address"/>
+      <div class="auth-pw-wrap">
+        <input type="password" id="siPassword" class="auth-input" placeholder="Password" style="margin-bottom:0"/>
+        <button class="auth-pw-toggle" type="button" onclick="togglePw('siPassword',this)">👁</button>
+      </div>
+      <p id="siError" class="auth-msg auth-msg-err"></p>
+      <button class="btn-primary" id="emailSignInBtn" style="width:100%;margin-top:4px">Sign In</button>
+
+      <p style="text-align:center;margin-top:10px;font-size:0.82rem;color:var(--muted2)">
+        No account? <button class="auth-link-btn" onclick="switchAuthView('register')">Create one</button>
+        &nbsp;·&nbsp;
+        <button class="auth-link-btn" onclick="switchAuthView('forgot')">Forgot password?</button>
+      </p>
+
+      <div class="modal-divider" style="margin-top:16px">I am a</div>
+      <div class="role-row">
+        <button class="role-btn" id="menteeBtn"><span class="role-icon">🎓</span>Mentee</button>
+        <button class="role-btn" id="mentorBtn"><span class="role-icon">🏆</span>Mentor</button>
+      </div>
+      <p class="modal-terms">By signing in you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+    </div>
+
+    <!-- ── VIEW: Register ── -->
+    <div id="authViewRegister" style="display:none">
+      <div class="modal-logo-wrap"><div class="logo-mark">S</div><div class="logo-text">silli<span>fur</span></div></div>
+      <h3 style="margin-bottom:4px">Create your account</h3>
+      <p style="margin-bottom:20px">Join Sillifur and start your exam journey.</p>
+
+      <button class="google-btn" id="googleRegisterBtn">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Sign up with Google
+      </button>
+
+      <div class="modal-divider">or register with email</div>
+
+      <input type="text"     id="regName"     class="auth-input" placeholder="Full name"/>
+      <input type="email"    id="regEmail"    class="auth-input" placeholder="Email address"/>
+      <div class="auth-pw-wrap">
+        <input type="password" id="regPassword" class="auth-input" placeholder="Password (min 6 chars)" style="margin-bottom:0" oninput="updatePwStrength(this.value)"/>
+        <button class="auth-pw-toggle" type="button" onclick="togglePw('regPassword',this)">👁</button>
+      </div>
+      <div class="pw-strength-bar" style="margin-bottom:4px"><div class="pw-strength-fill" id="pwFill"></div></div>
+      <p id="pwStrengthLbl" style="font-size:0.7rem;color:var(--muted);text-align:left;margin-bottom:8px;min-height:14px"></p>
+      <p id="regError" class="auth-msg auth-msg-err"></p>
+      <button class="btn-primary" id="emailRegisterBtn" style="width:100%;margin-top:4px">Create Account</button>
+
+      <p style="text-align:center;margin-top:10px;font-size:0.82rem;color:var(--muted2)">
+        Already have an account? <button class="auth-link-btn" onclick="switchAuthView('signin')">Sign in</button>
+      </p>
+      <p class="modal-terms">By registering you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+    </div>
+
+    <!-- ── VIEW: Forgot Password ── -->
+    <div id="authViewForgot" style="display:none">
+      <div class="modal-logo-wrap"><div class="logo-mark">S</div><div class="logo-text">silli<span>fur</span></div></div>
+      <h3 style="margin-bottom:4px">Reset password</h3>
+      <p style="margin-bottom:20px">Enter your email and we'll send you a reset link.</p>
+      <input type="email" id="forgotEmail" class="auth-input" placeholder="Email address"/>
+      <p id="forgotMsg" class="auth-msg"></p>
+      <button class="btn-primary" id="forgotBtn" style="width:100%;margin-top:4px">Send Reset Link</button>
+      <p style="text-align:center;margin-top:12px">
+        <button class="auth-link-btn" onclick="switchAuthView('signin')">← Back to Sign In</button>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SET PASSWORD MODAL
+     Shown once after first Google sign-in
+═══════════════════════════════════════ -->
+<div class="modal-overlay" id="setupModal">
+  <div class="modal" style="max-width:400px;padding:32px 28px">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:2rem;margin-bottom:8px">🔐</div>
+      <div style="font-family:'Outfit',sans-serif;font-size:1.15rem;font-weight:700;color:var(--white);margin-bottom:4px">One last step!</div>
+      <div style="font-size:0.82rem;color:var(--muted2)">Set a password so you can also sign in with email next time — no Google needed.</div>
+    </div>
+    <label class="auth-label">Password</label>
+    <div class="auth-pw-wrap">
+      <input type="password" id="setupPw" class="auth-input" placeholder="Min 6 characters" style="margin-bottom:0" oninput="updatePwStrength(this.value,'setupFill','setupStrengthLbl')"/>
+      <button class="auth-pw-toggle" type="button" onclick="togglePw('setupPw',this)">👁</button>
+    </div>
+    <div class="pw-strength-bar" style="margin:8px 0 4px"><div class="pw-strength-fill" id="setupFill"></div></div>
+    <p id="setupStrengthLbl" style="font-size:0.7rem;color:var(--muted);text-align:left;margin-bottom:8px;min-height:14px"></p>
+    <label class="auth-label">Confirm Password</label>
+    <div class="auth-pw-wrap">
+      <input type="password" id="setupPwConfirm" class="auth-input" placeholder="Repeat password" style="margin-bottom:0"/>
+      <button class="auth-pw-toggle" type="button" onclick="togglePw('setupPwConfirm',this)">👁</button>
+    </div>
+    <p id="setupMsg" class="auth-msg" style="margin-top:8px"></p>
+    <button class="btn-primary" id="setupSaveBtn" style="width:100%;margin-top:8px">Save Password</button>
+    <button class="btn-ghost"   id="setupSkipBtn" style="width:100%;margin-top:8px">Skip for now</button>
+    <p style="font-size:0.7rem;color:var(--muted);text-align:center;margin-top:10px">You can always set this later from your profile.</p>
+  </div>
+</div>
+
+<!-- ═══════════ PROFILE MODAL ═══════════ -->
+<div class="modal-overlay" id="profileModal" onclick="closeProfileOverlay(event)">
+  <div class="modal" style="max-width:400px;padding:32px 28px">
+    <button class="modal-close" onclick="closeProfileModal()">✕</button>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px;text-align:left">
+      <img id="profileAvatar" src="" style="width:46px;height:46px;border-radius:50%;border:2px solid var(--border2);flex-shrink:0"/>
+      <div>
+        <div id="profileName"     style="font-weight:700;color:var(--white);font-size:0.95rem"></div>
+        <div id="profileEmail"    style="font-size:0.78rem;color:var(--muted2)"></div>
+        <div id="profileUsername" style="font-size:0.72rem;color:var(--blue);margin-top:2px"></div>
+      </div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border2);padding:18px;border-radius:12px;margin-bottom:14px;text-align:left">
+      <div style="font-weight:700;color:var(--white);font-size:0.88rem;margin-bottom:4px">Change Password</div>
+      <div style="font-size:0.73rem;color:var(--muted);margin-bottom:12px">Update your sign-in password.</div>
+      <div class="auth-pw-wrap">
+        <input type="password" id="newPwInput" class="auth-input" placeholder="New password (min 6 chars)" style="margin-bottom:0"/>
+        <button class="auth-pw-toggle" type="button" onclick="togglePw('newPwInput',this)">👁</button>
+      </div>
+      <button id="savePwBtn" class="btn-primary" style="width:100%;margin-top:8px;padding:10px">Update Password</button>
+      <p id="pwChangeMsg" style="font-size:0.73rem;margin-top:8px;min-height:16px;font-weight:600;text-align:center"></p>
+    </div>
+    <button id="logoutBtn" class="btn-ghost" style="width:100%">Log Out</button>
+  </div>
+</div>
+
+<!-- ═══════════ ONBOARDING MODAL ═══════════ -->
+<div class="modal-overlay" id="onboardingModal">
+  <div class="ob-modal">
+    <div class="ob-progress-bar"><div class="ob-progress-fill" id="obProgressFill" style="width:25%"></div></div>
+    <div class="ob-body">
+
+      <div class="ob-step-pane" id="obStep1">
+        <div class="ob-step-label">Step 1 of 4</div>
+        <div class="ob-title">What's your current level? 📚</div>
+        <div class="ob-subtitle">We'll personalise mentor recommendations for you.</div>
+        <div class="ob-grid ob-grid-2" id="classOptions">
+          <button class="ob-option" data-val="class8-10" onclick="selectOpt(this,'classOptions')"><span class="ob-icon">🏫</span><div><div class="ob-option-label">Class 8 – 10</div><div class="ob-option-sub">Secondary school</div></div></button>
+          <button class="ob-option" data-val="class11" onclick="selectOpt(this,'classOptions')"><span class="ob-icon">📗</span><div><div class="ob-option-label">Class 11</div><div class="ob-option-sub">Higher secondary – Yr 1</div></div></button>
+          <button class="ob-option" data-val="class12" onclick="selectOpt(this,'classOptions')"><span class="ob-icon">📘</span><div><div class="ob-option-label">Class 12</div><div class="ob-option-sub">Board + entrance prep</div></div></button>
+          <button class="ob-option" data-val="dropper" onclick="selectOpt(this,'classOptions')"><span class="ob-icon">🔁</span><div><div class="ob-option-label">Dropper / Repeater</div><div class="ob-option-sub">Taking a gap year</div></div></button>
+          <button class="ob-option" data-val="ug" onclick="selectOpt(this,'classOptions')"><span class="ob-icon">🎓</span><div><div class="ob-option-label">Undergraduate</div><div class="ob-option-sub">B.Tech / MBBS / BA…</div></div></button>
+          <button class="ob-option" data-val="working" onclick="selectOpt(this,'classOptions')"><span class="ob-icon">💼</span><div><div class="ob-option-label">Working Professional</div><div class="ob-option-sub">Prepping alongside job</div></div></button>
+        </div>
+        <div class="ob-footer"><span></span><button class="ob-next" id="step1Next" onclick="goToStep(2)" disabled>Next →</button></div>
+      </div>
+
+      <div class="ob-step-pane" id="obStep2" style="display:none">
+        <div class="ob-step-label">Step 2 of 4</div>
+        <div class="ob-title">Which stream / field? 🧪</div>
+        <div class="ob-subtitle">Helps us match you with the right subject experts.</div>
+        <div class="ob-grid ob-grid-3" id="streamOptions">
+          <button class="ob-option" data-val="science-pcm" onclick="selectOpt(this,'streamOptions')"><span class="ob-icon">⚗️</span><div><div class="ob-option-label">Science – PCM</div></div></button>
+          <button class="ob-option" data-val="science-pcb" onclick="selectOpt(this,'streamOptions')"><span class="ob-icon">🧬</span><div><div class="ob-option-label">Science – PCB</div></div></button>
+          <button class="ob-option" data-val="commerce" onclick="selectOpt(this,'streamOptions')"><span class="ob-icon">📊</span><div><div class="ob-option-label">Commerce</div></div></button>
+          <button class="ob-option" data-val="arts-hum" onclick="selectOpt(this,'streamOptions')"><span class="ob-icon">🏛️</span><div><div class="ob-option-label">Arts / Humanities</div></div></button>
+          <button class="ob-option" data-val="engineering" onclick="selectOpt(this,'streamOptions')"><span class="ob-icon">⚙️</span><div><div class="ob-option-label">Engineering / CS</div></div></button>
+          <button class="ob-option" data-val="medical" onclick="selectOpt(this,'streamOptions')"><span class="ob-icon">🩺</span><div><div class="ob-option-label">Medical / Allied</div></div></button>
+          <button class="ob-option" data-val="law" onclick="selectOpt(this,'streamOptions')"><span class="ob-icon">⚖️</span><div><div class="ob-option-label">Law</div></div></button>
+          <button class="ob-option" data-val="management" onclick="selectOpt(this,'streamOptions')"><span class="ob-icon">📈</span><div><div class="ob-option-label">Management / MBA</div></div></button>
+          <button class="ob-option" data-val="civil-services" onclick="selectOpt(this,'streamOptions')"><span class="ob-icon">🏛</span><div><div class="ob-option-label">Civil Services</div></div></button>
+        </div>
+        <div class="ob-footer"><button class="ob-back" onclick="goToStep(1)">← Back</button><button class="ob-next" id="step2Next" onclick="goToStep(3)" disabled>Next →</button></div>
+      </div>
+
+      <div class="ob-step-pane" id="obStep3" style="display:none">
+        <div class="ob-step-label">Step 3 of 4</div>
+        <div class="ob-title">Which exams are you targeting? 🎯</div>
+        <div class="ob-subtitle">Select all that apply — you can change this later.</div>
+        <div class="ob-chips" id="examChips">
+          <button class="ob-chip" data-val="UPSC CSE" onclick="toggleChip(this)">UPSC CSE</button>
+          <button class="ob-chip" data-val="JEE Mains" onclick="toggleChip(this)">JEE Mains</button>
+          <button class="ob-chip" data-val="JEE Advanced" onclick="toggleChip(this)">JEE Advanced</button>
+          <button class="ob-chip" data-val="NEET UG" onclick="toggleChip(this)">NEET UG</button>
+          <button class="ob-chip" data-val="CAT" onclick="toggleChip(this)">CAT</button>
+          <button class="ob-chip" data-val="GATE" onclick="toggleChip(this)">GATE</button>
+          <button class="ob-chip" data-val="CLAT" onclick="toggleChip(this)">CLAT / AILET</button>
+          <button class="ob-chip" data-val="IBPS" onclick="toggleChip(this)">IBPS / Bank PO</button>
+          <button class="ob-chip" data-val="SSC CGL" onclick="toggleChip(this)">SSC CGL</button>
+          <button class="ob-chip" data-val="SSC CHSL" onclick="toggleChip(this)">SSC CHSL</button>
+          <button class="ob-chip" data-val="CUET UG" onclick="toggleChip(this)">CUET UG</button>
+          <button class="ob-chip" data-val="CUET PG" onclick="toggleChip(this)">CUET PG</button>
+          <button class="ob-chip" data-val="NDA" onclick="toggleChip(this)">NDA / CDS</button>
+          <button class="ob-chip" data-val="NIFT" onclick="toggleChip(this)">NIFT / NID</button>
+          <button class="ob-chip" data-val="CA Foundation" onclick="toggleChip(this)">CA Foundation</button>
+          <button class="ob-chip" data-val="GRE" onclick="toggleChip(this)">GRE</button>
+          <button class="ob-chip" data-val="GMAT" onclick="toggleChip(this)">GMAT</button>
+          <button class="ob-chip" data-val="JEST JAM" onclick="toggleChip(this)">JEST / JAM</button>
+        </div>
+        <div class="ob-footer"><button class="ob-back" onclick="goToStep(2)">← Back</button><button class="ob-next" id="step3Next" onclick="goToStep(4)" disabled>Next →</button></div>
+      </div>
+
+      <div class="ob-step-pane" id="obStep4" style="display:none">
+        <div class="ob-step-label">Step 4 of 4</div>
+        <div class="ob-title">What kind of help do you need? 🤝</div>
+        <div class="ob-subtitle">Pick everything that resonates — no wrong answers.</div>
+        <div class="ob-guidance-grid" id="guidanceCards">
+          <button class="ob-guidance-card" data-val="strategy" onclick="toggleGuidance(this)"><span class="gc-icon">🗺️</span><div class="gc-title">Exam Strategy</div><div class="gc-desc">Roadmap, timeline & topper approach</div></button>
+          <button class="ob-guidance-card" data-val="subject" onclick="toggleGuidance(this)"><span class="gc-icon">📖</span><div class="gc-title">Subject Clarity</div><div class="gc-desc">Concepts, doubts & topic deep-dives</div></button>
+          <button class="ob-guidance-card" data-val="mocks" onclick="toggleGuidance(this)"><span class="gc-icon">📝</span><div class="gc-title">Mock & Answer Review</div><div class="gc-desc">Test evaluation & score improvement</div></button>
+          <button class="ob-guidance-card" data-val="studyplan" onclick="toggleGuidance(this)"><span class="gc-icon">📅</span><div class="gc-title">Study Plan</div><div class="gc-desc">Daily/weekly schedule & resources</div></button>
+          <button class="ob-guidance-card" data-val="motivation" onclick="toggleGuidance(this)"><span class="gc-icon">💬</span><div class="gc-title">Motivation & Mindset</div><div class="gc-desc">Beat burnout, stay consistent</div></button>
+          <button class="ob-guidance-card" data-val="interview" onclick="toggleGuidance(this)"><span class="gc-icon">🎤</span><div class="gc-title">Interview / Personality</div><div class="gc-desc">PI, GD & personality test prep</div></button>
+        </div>
+        <div class="ob-footer"><button class="ob-back" onclick="goToStep(3)">← Back</button><button class="ob-next" id="step4Submit" onclick="submitOnboarding()" disabled>Finish Setup 🎉</button></div>
+      </div>
+
+      <div class="ob-step-pane" id="obSaving" style="display:none;text-align:center;padding:20px 0 8px;">
+        <div style="font-size:2.5rem;margin-bottom:14px">🚀</div>
+        <div class="ob-title" style="text-align:center">Setting up your profile…</div>
+        <div class="ob-subtitle" style="text-align:center">Just a moment!</div>
+        <div style="display:flex;justify-content:center;margin-top:16px"><div class="ob-spinner" style="width:24px;height:24px"></div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ POST-SESSION REVIEW MODAL ═══════════ -->
+<div class="review-backdrop" id="reviewBackdrop">
+  <div class="review-modal" id="reviewModal">
+
+    <!-- FORM VIEW -->
+    <div id="rmFormView">
+      <div class="rm-header">
+        <div class="rm-recap">
+          <div class="rm-avatar" id="rmAvatar" style="background:#1a3a6c">NM</div>
+          <div>
+            <div class="rm-name" id="rmMentorName">Neha Mehra</div>
+            <div class="rm-detail" id="rmDetail">IAS AIR 34 · 60 min</div>
+            <div class="rm-chip" id="rmTopic">📝 Essay Strategy</div>
+          </div>
+        </div>
+        <button class="rm-close" onclick="dismissReview()">✕</button>
+      </div>
+      <div class="rm-divider"></div>
+      <div class="rm-body">
+        <div class="rm-section-label">How was the session?</div>
+        <div class="rm-stars" id="rmStars">
+          <span class="rm-star" data-v="1" onclick="rmSetRating(1)" onmouseenter="rmHover(1)" onmouseleave="rmReset()">★</span>
+          <span class="rm-star" data-v="2" onclick="rmSetRating(2)" onmouseenter="rmHover(2)" onmouseleave="rmReset()">★</span>
+          <span class="rm-star" data-v="3" onclick="rmSetRating(3)" onmouseenter="rmHover(3)" onmouseleave="rmReset()">★</span>
+          <span class="rm-star" data-v="4" onclick="rmSetRating(4)" onmouseenter="rmHover(4)" onmouseleave="rmReset()">★</span>
+          <span class="rm-star" data-v="5" onclick="rmSetRating(5)" onmouseenter="rmHover(5)" onmouseleave="rmReset()">★</span>
+        </div>
+        <div class="rm-star-label" id="rmStarLabel">Tap to rate</div>
+
+        <div id="rmExtras" style="display:none">
+          <div class="rm-section-label">What stood out?</div>
+          <div class="rm-tags">
+            <button class="rm-tag" onclick="this.classList.toggle('sel')">💡 Very insightful</button>
+            <button class="rm-tag" onclick="this.classList.toggle('sel')">🎯 Focused on my gaps</button>
+            <button class="rm-tag" onclick="this.classList.toggle('sel')">📚 Deep knowledge</button>
+            <button class="rm-tag" onclick="this.classList.toggle('sel')">⚡ Engaging</button>
+            <button class="rm-tag" onclick="this.classList.toggle('sel')">🕐 Punctual</button>
+            <button class="rm-tag" onclick="this.classList.toggle('sel')">🔄 Would rebook</button>
+          </div>
+          <div class="rm-section-label">Add a note <span style="color:var(--muted);font-size:0.6rem;text-transform:none;letter-spacing:0">(optional)</span></div>
+          <textarea class="rm-textarea" id="rmText" placeholder="What did you learn? What could improve?" maxlength="400" oninput="document.getElementById('rmChar').textContent=this.value.length"></textarea>
+          <div class="rm-char"><span id="rmChar">0</span> / 400</div>
+          <div class="rm-recommend">
+            <div><div class="rm-rec-label">Would you recommend this mentor?</div><div class="rm-rec-sub">Helps other students discover great mentors</div></div>
+            <div style="display:flex;align-items:center;gap:7px">
+              <button class="rm-toggle on" id="rmToggle" onclick="this.classList.toggle('on');document.getElementById('rmToggleLbl').textContent=this.classList.contains('on')?'Yes':'No'"></button>
+              <span class="rm-toggle-lbl" id="rmToggleLbl">Yes</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="rm-submit" id="rmSubmitBtn" onclick="rmSubmit()" disabled>★ Submit Review</button>
+        <button class="rm-skip" onclick="dismissReview()">Skip for now</button>
+      </div>
+    </div>
+
+    <!-- SUCCESS VIEW -->
+    <div id="rmSuccess" class="rm-success">
+      <div class="rm-success-icon">🎉</div>
+      <div class="rm-success-title">Review submitted!</div>
+      <div class="rm-success-sub">Thanks — your feedback helps <strong id="rmSuccessName" style="color:var(--white)">your mentor</strong> improve and helps other students find the right guide.</div>
+      <button class="rm-done" onclick="dismissReview()">Back to Dashboard</button>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════ PLAIN SCRIPT ═══════════ -->
+<script>
+  /* ── Modal helpers ── */
+  function openModal(view='signin'){
+    switchAuthView(view);
+    document.getElementById('modal').classList.add('open');
+  }
+  function closeModal(){ document.getElementById('modal').classList.remove('open'); }
+  function closeOnOverlay(e){ if(e.target.id==='modal') closeModal(); }
+  function toggleWishlist(btn){ const s=btn.classList.toggle('saved'); btn.textContent=s?'♥':'♡'; }
+  function openProfileModal(){ document.getElementById('profileModal').classList.add('open'); }
+  function closeProfileModal(){ document.getElementById('profileModal').classList.remove('open'); document.getElementById('pwChangeMsg').innerText=''; }
+  function closeProfileOverlay(e){ if(e.target.id==='profileModal') closeProfileModal(); }
+
+  function switchAuthView(view){
+    ['signin','register','forgot'].forEach(v=>{
+      document.getElementById('authView'+v.charAt(0).toUpperCase()+v.slice(1)).style.display = v===view?'':'none';
+    });
+    // clear errors
+    ['siError','regError','forgotMsg'].forEach(id=>{ const el=document.getElementById(id); if(el){el.textContent='';el.className='auth-msg';} });
+  }
+
+  function togglePw(inputId, btn){
+    const inp = document.getElementById(inputId);
+    if(!inp) return;
+    const show = inp.type==='password';
+    inp.type = show ? 'text' : 'password';
+    btn.textContent = show ? '🙈' : '👁';
+  }
+
+  function updatePwStrength(val, fillId='pwFill', lblId='pwStrengthLbl'){
+    const fill = document.getElementById(fillId);
+    const lbl  = document.getElementById(lblId);
+    if(!fill||!lbl) return;
+    let score=0;
+    if(val.length>=6) score++;
+    if(val.length>=10) score++;
+    if(/[A-Z]/.test(val)) score++;
+    if(/[0-9]/.test(val)) score++;
+    if(/[^A-Za-z0-9]/.test(val)) score++;
+    const map = [
+      {w:'0%',   bg:'transparent', t:''},
+      {w:'25%',  bg:'#f87171',     t:'Weak'},
+      {w:'50%',  bg:'#fb923c',     t:'Fair'},
+      {w:'75%',  bg:'#fbbf24',     t:'Good'},
+      {w:'90%',  bg:'#4ade80',     t:'Strong'},
+      {w:'100%', bg:'#22d3a0',     t:'Very strong ✓'},
+    ];
+    const m = map[Math.min(score, 5)];
+    fill.style.width=m.w; fill.style.background=m.bg; lbl.textContent=m.t;
+  }
+
+  /* ── Onboarding state ── */
+  const OB = window.OB = { classLevel:null, stream:null, exams:[], guidance:[] };
+  const OB_PROGRESS = {1:25,2:50,3:75,4:100};
+
+  window.openOnboarding = function(){
+    document.getElementById('onboardingModal').classList.add('open');
+    goToStep(1,true);
+  };
+
+  function goToStep(n,silent){
+    [1,2,3,4].forEach(s=>{ const el=document.getElementById('obStep'+s); if(el) el.style.display='none'; });
+    document.getElementById('obSaving').style.display='none';
+    const pane=document.getElementById('obStep'+n);
+    if(!pane) return;
+    pane.style.display='';
+    if(!silent){ pane.classList.remove('ob-step-pane'); void pane.offsetWidth; pane.classList.add('ob-step-pane'); }
+    document.getElementById('obProgressFill').style.width=OB_PROGRESS[n]+'%';
+    if(n===1) syncStep1(); if(n===2) syncStep2(); if(n===3) syncStep3(); if(n===4) syncStep4();
+  }
+  function selectOpt(btn,groupId){
+    document.querySelectorAll('#'+groupId+' .ob-option').forEach(b=>b.classList.remove('selected'));
+    btn.classList.add('selected');
+    if(groupId==='classOptions'){OB.classLevel=btn.dataset.val;syncStep1();}
+    if(groupId==='streamOptions'){OB.stream=btn.dataset.val;syncStep2();}
+  }
+  function toggleChip(btn){ btn.classList.toggle('selected'); OB.exams=[...document.querySelectorAll('#examChips .ob-chip.selected')].map(b=>b.dataset.val); syncStep3(); }
+  function toggleGuidance(btn){ btn.classList.toggle('selected'); OB.guidance=[...document.querySelectorAll('#guidanceCards .ob-guidance-card.selected')].map(b=>b.dataset.val); syncStep4(); }
+  function syncStep1(){ document.getElementById('step1Next').disabled=!OB.classLevel; }
+  function syncStep2(){ document.getElementById('step2Next').disabled=!OB.stream; }
+  function syncStep3(){ document.getElementById('step3Next').disabled=OB.exams.length===0; }
+  function syncStep4(){ document.getElementById('step4Submit').disabled=OB.guidance.length===0; }
+
+  /* ── Review modal ── */
+  const RM_LABELS=['','Not helpful','Below average','Good session','Really helpful','Exceptional! 🌟'];
+  let rmRating=0;
+
+  window.openReviewModal=function(data){
+    document.getElementById('rmAvatar').textContent=data.initials||'??';
+    document.getElementById('rmAvatar').style.background=data.avatarBg||'var(--blue)';
+    document.getElementById('rmMentorName').textContent=data.mentor||'Your Mentor';
+    document.getElementById('rmDetail').textContent=(data.credential||'')+' · '+(data.duration||'60 min');
+    document.getElementById('rmTopic').textContent='📝 '+(data.topic||'Session');
+    document.getElementById('rmSuccessName').textContent=(data.mentor||'your mentor').split(' ')[0];
+    rmRating=0;
+    document.querySelectorAll('.rm-star').forEach(s=>s.classList.remove('active'));
+    document.getElementById('rmStarLabel').textContent='Tap to rate';
+    document.getElementById('rmSubmitBtn').disabled=true;
+    document.getElementById('rmExtras').style.display='none';
+    document.getElementById('rmText').value='';
+    document.getElementById('rmChar').textContent='0';
+    document.getElementById('rmFormView').style.display='block';
+    document.getElementById('rmSuccess').style.display='none';
+    document.getElementById('rmToggle').classList.add('on');
+    document.getElementById('rmToggleLbl').textContent='Yes';
+    const bd=document.getElementById('reviewBackdrop');
+    bd.style.display='flex'; requestAnimationFrame(()=>bd.classList.add('open'));
+    document.body.style.overflow='hidden';
+  };
+  window.dismissReview=function(){
+    const bd=document.getElementById('reviewBackdrop');
+    bd.classList.remove('open');
+    setTimeout(()=>{ bd.style.display='none'; document.body.style.overflow=''; },280);
+    try{ sessionStorage.removeItem('silli_pending_review'); }catch(e){}
+  };
+  function rmHover(v){ document.querySelectorAll('.rm-star').forEach(s=>{ s.style.color=parseInt(s.dataset.v)<=v?'#fbbf24':''; }); }
+  function rmReset(){ document.querySelectorAll('.rm-star').forEach(s=>{ s.style.color=''; s.classList.toggle('active',parseInt(s.dataset.v)<=rmRating); }); }
+  function rmSetRating(v){
+    rmRating=v;
+    document.querySelectorAll('.rm-star').forEach(s=>s.classList.toggle('active',parseInt(s.dataset.v)<=v));
+    document.getElementById('rmStarLabel').textContent=RM_LABELS[v];
+    document.getElementById('rmSubmitBtn').disabled=false;
+    const ext=document.getElementById('rmExtras');
+    if(ext.style.display==='none'){ ext.style.display='block'; ext.style.opacity='0'; ext.style.transform='translateY(8px)'; requestAnimationFrame(()=>{ ext.style.transition='opacity .25s,transform .25s'; ext.style.opacity='1'; ext.style.transform='translateY(0)'; }); }
+  }
+  function rmSubmit(){
+    document.getElementById('rmFormView').style.display='none';
+    document.getElementById('rmSuccess').style.display='block';
+    try{ sessionStorage.removeItem('silli_pending_review'); }catch(e){}
+  }
+</script>
+
+<!-- ═══════════ FIREBASE MODULE ═══════════ -->
+<script type="module">
+  import { initializeApp }       from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut,
+    createUserWithEmailAndPassword, signInWithEmailAndPassword,
+    sendPasswordResetEmail, updatePassword, EmailAuthProvider, linkWithCredential,
+    updateProfile
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, query, where, getDocs, collection }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey:"AIzaSyDEWvEXCo_W5i7OZ1wT4QuPED3ur2q5N7c",
+    authDomain:"sillifur-341e9.firebaseapp.com",
+    projectId:"sillifur-341e9",
+    storageBucket:"sillifur-341e9.appspot.com",
+    messagingSenderId:"848515376957",
+    appId:"1:848515376957:web:ac13cbb93fdcc9ba834754"
+  };
+
+  const app      = initializeApp(firebaseConfig);
+  const auth     = getAuth(app);
+  const db       = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+
+  /* ─────────────────────────────────────
+     GOOGLE SIGN-IN  (sign-in & register)
+  ───────────────────────────────────── */
+  async function signInWithGoogle(role='mentee') {
+    try {
+      const result   = await signInWithPopup(auth, provider);
+      const user     = result.user;
+      const userRef  = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+      let isNewUser  = false;
+
+      if (!userSnap.exists()) {
+        isNewUser = true;
+        await setDoc(userRef, {
+          uid:user.uid, name:user.displayName, email:user.email,
+          photo:user.photoURL, role, onboardingDone:false,
+          createdAt:new Date().toISOString()
+        });
+      }
+
+      closeModal();
+      await updateNavbar(user);
+
+      const data = userSnap.exists() ? userSnap.data() : { onboardingDone:false, passwordSet:false };
+
+      // Show set-password modal for new Google users who haven't set one
+      if (isNewUser || !data.passwordSet) {
+        setTimeout(() => showSetupModal(user), 400);
+      } else if (role==='mentee' && !data.onboardingDone) {
+        setTimeout(() => openOnboarding(), 400);
+      }
+
+    } catch(err) { console.error("Google sign-in error:", err.message); }
+  }
+
+  /* ─────────────────────────────────────
+     EMAIL / PASSWORD  REGISTER
+  ───────────────────────────────────── */
+  async function emailRegister() {
+    const name  = document.getElementById('regName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const pw    = document.getElementById('regPassword').value;
+    const errEl = document.getElementById('regError');
+    errEl.textContent = '';
+
+    if (!name)       { showErr(errEl,'Please enter your name.'); return; }
+    if (!email)      { showErr(errEl,'Please enter your email.'); return; }
+    if (pw.length<6) { showErr(errEl,'Password must be at least 6 characters.'); return; }
+
+    const btn = document.getElementById('emailRegisterBtn');
+    btn.textContent='Creating account…'; btn.disabled=true;
+
+    try {
+      const result = await createUserWithEmailAndPassword(auth, email, pw);
+      const user   = result.user;
+      await updateProfile(user, { displayName: name });
+      await setDoc(doc(db,"users",user.uid), {
+        uid:user.uid, name, email, photo:null, role:'mentee',
+        onboardingDone:false, passwordSet:true,
+        createdAt:new Date().toISOString()
+      });
+      closeModal();
+      await updateNavbar(user);
+      setTimeout(() => openOnboarding(), 400);
+    } catch(err) {
+      showErr(errEl, firebaseErrMsg(err.code));
+    } finally {
+      btn.textContent='Create Account'; btn.disabled=false;
+    }
+  }
+
+  /* ─────────────────────────────────────
+     EMAIL / PASSWORD  SIGN IN
+  ───────────────────────────────────── */
+  async function emailSignIn() {
+    const email = document.getElementById('siEmail').value.trim();
+    const pw    = document.getElementById('siPassword').value;
+    const errEl = document.getElementById('siError');
+    errEl.textContent = '';
+
+    if (!email || !pw) { showErr(errEl,'Please enter your email and password.'); return; }
+
+    const btn = document.getElementById('emailSignInBtn');
+    btn.textContent='Signing in…'; btn.disabled=true;
+
+    try {
+      const result = await signInWithEmailAndPassword(auth, email, pw);
+      closeModal();
+      await updateNavbar(result.user);
+      checkPendingReview();
+    } catch(err) {
+      showErr(errEl, firebaseErrMsg(err.code));
+    } finally {
+      btn.textContent='Sign In'; btn.disabled=false;
+    }
+  }
+
+  /* ─────────────────────────────────────
+     FORGOT PASSWORD
+  ───────────────────────────────────── */
+  async function sendForgotEmail() {
+    const email = document.getElementById('forgotEmail').value.trim();
+    const msgEl = document.getElementById('forgotMsg');
+    msgEl.textContent='';
+    if (!email) { showErr(msgEl,'Please enter your email address.'); return; }
+
+    const btn = document.getElementById('forgotBtn');
+    btn.textContent='Sending…'; btn.disabled=true;
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      msgEl.className='auth-msg auth-msg-ok';
+      msgEl.textContent='✓ Reset link sent! Check your inbox.';
+    } catch(err) {
+      showErr(msgEl, firebaseErrMsg(err.code));
+    } finally {
+      btn.textContent='Send Reset Link'; btn.disabled=false;
+    }
+  }
+
+  /* ─────────────────────────────────────
+     SET-PASSWORD MODAL  (post-Google)
+  ───────────────────────────────────── */
+  function showSetupModal(user) {
+    document.getElementById('setupModal').classList.add('open');
+    document.getElementById('setupMsg').textContent='';
+    document.getElementById('setupPw').value='';
+    document.getElementById('setupPwConfirm').value='';
+    document.getElementById('setupFill').style.width='0%';
+    document.getElementById('setupStrengthLbl').textContent='';
+
+    document.getElementById('setupSaveBtn').onclick = async () => {
+      const pw   = document.getElementById('setupPw').value;
+      const conf = document.getElementById('setupPwConfirm').value;
+      const msg  = document.getElementById('setupMsg');
+      msg.textContent='';
+
+      if (pw.length < 6)  { showErr(msg,'Password must be at least 6 characters.'); return; }
+      if (pw !== conf)    { showErr(msg,'Passwords do not match.'); return; }
+
+      const btn = document.getElementById('setupSaveBtn');
+      btn.textContent='Saving…'; btn.disabled=true;
+
+      try {
+        // Link email credential to Google account
+        const cred = EmailAuthProvider.credential(user.email, pw);
+        await linkWithCredential(user, cred);
+        // Mark in Firestore
+        await updateDoc(doc(db,"users",user.uid), { passwordSet:true });
+        document.getElementById('setupModal').classList.remove('open');
+        showToast('Password saved! You can now sign in with email too. ✓','#22d3a0');
+
+        // Continue to onboarding if needed
+        const snap = await getDoc(doc(db,"users",user.uid));
+        if (snap.exists() && !snap.data().onboardingDone) setTimeout(()=>openOnboarding(),400);
+
+      } catch(err) {
+        const m = err.code==='auth/credential-already-in-use'
+          ? 'An account with this email/password already exists.'
+          : err.code==='auth/requires-recent-login'
+          ? 'Please sign out and back in first.'
+          : firebaseErrMsg(err.code);
+        showErr(msg, m);
+      } finally {
+        btn.textContent='Save Password'; btn.disabled=false;
+      }
+    };
+
+    document.getElementById('setupSkipBtn').onclick = async () => {
+      document.getElementById('setupModal').classList.remove('open');
+      const snap = await getDoc(doc(db,"users",user.uid));
+      if (snap.exists() && !snap.data().onboardingDone) setTimeout(()=>openOnboarding(),300);
+    };
+  }
+
+  /* ─────────────────────────────────────
+     CHANGE PASSWORD  (from profile modal)
+  ───────────────────────────────────── */
+  async function changePassword() {
+    const pw  = document.getElementById('newPwInput').value;
+    const msg = document.getElementById('pwChangeMsg');
+    msg.textContent='';
+    if (pw.length<6) { showErr(msg,'Password must be at least 6 characters.'); return; }
+
+    const btn = document.getElementById('savePwBtn');
+    btn.textContent='Saving…'; btn.disabled=true;
+
+    try {
+      const user = auth.currentUser;
+      // Try link first (in case no password set yet), then update
+      try {
+        const cred = EmailAuthProvider.credential(user.email, pw);
+        await linkWithCredential(user, cred);
+      } catch(e) {
+        if (e.code==='auth/provider-already-linked' || e.code==='auth/email-already-in-use') {
+          await updatePassword(user, pw);
+        } else throw e;
+      }
+      await updateDoc(doc(db,"users",user.uid), { passwordSet:true });
+      msg.className='auth-msg auth-msg-ok'; msg.textContent='✓ Password updated!';
+      document.getElementById('newPwInput').value='';
+    } catch(err) {
+      showErr(msg, err.code==='auth/requires-recent-login'
+        ? 'Please sign out and back in before changing your password.'
+        : firebaseErrMsg(err.code));
+    } finally {
+      btn.textContent='Update Password'; btn.disabled=false;
+    }
+  }
+
+  /* ─────────────────────────────────────
+     NAVBAR UPDATE
+  ───────────────────────────────────── */
+  async function updateNavbar(user) {
+    const btn = document.getElementById('navSignInBtn');
+    const avatar = user.photoURL
+      ? `<img src="${user.photoURL}" style="width:26px;height:26px;border-radius:50%;">`
+      : `<span style="width:26px;height:26px;border-radius:50%;background:var(--blue);display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:0.75rem">${(user.displayName||user.email||'?')[0].toUpperCase()}</span>`;
+    btn.innerHTML = `${avatar} ${(user.displayName||user.email||'').split(' ')[0]}`;
+    btn.onclick = async () => {
+      const snap = await getDoc(doc(db,"users",user.uid));
+      const data = snap.exists() ? snap.data() : {};
+      document.getElementById('profileAvatar').src  = user.photoURL||'';
+      document.getElementById('profileAvatar').style.display = user.photoURL ? '' : 'none';
+      document.getElementById('profileName').textContent     = user.displayName||'';
+      document.getElementById('profileEmail').textContent    = user.email||'';
+      document.getElementById('profileUsername').textContent = data.username ? '@'+data.username : '';
+      openProfileModal();
+    };
+
+    // Show correct dashboard button
+    const snap = await getDoc(doc(db,"users",user.uid));
+    const role = snap.exists() ? snap.data().role : null;
+    if (role==='mentee') document.getElementById('menteeDashBtn').classList.add('visible');
+
+    const q = await getDocs(query(collection(db,"mentorApplications"),where("email","==",user.email),where("status","==","approved")));
+    if (!q.empty) document.getElementById('mentorDashBtn').classList.add('visible');
+  }
+
+  /* ─────────────────────────────────────
+     ONBOARDING SUBMIT
+  ───────────────────────────────────── */
+  window.submitOnboarding = async function() {
+    const user = auth.currentUser;
+    if (!user) return;
+    document.getElementById('obStep4').style.display='none';
+    document.getElementById('obSaving').style.display='';
+    try {
+      await updateDoc(doc(db,"users",user.uid), {
+        onboardingDone:true,
+        profile:{ classLevel:window.OB.classLevel, stream:window.OB.stream, exams:window.OB.exams, guidance:window.OB.guidance, updatedAt:new Date().toISOString() }
+      });
+      setTimeout(()=>{
+        document.getElementById('onboardingModal').classList.remove('open');
+        showToast(`You're all set, ${user.displayName.split(' ')[0]}! 🎉 Find your mentor below.`,'#22d3a0');
+      },900);
+    } catch(err) {
+      console.error(err);
+      document.getElementById('obSaving').style.display='none';
+      document.getElementById('obStep4').style.display='';
+    }
+  };
+
+  /* ─────────────────────────────────────
+     PENDING REVIEW CHECK
+  ───────────────────────────────────── */
+  function checkPendingReview() {
+    try {
+      const p = sessionStorage.getItem('silli_pending_review');
+      if (p) setTimeout(()=>window.openReviewModal(JSON.parse(p)), 800);
+    } catch(e){}
+  }
+
+  /* ─────────────────────────────────────
+     HELPERS
+  ───────────────────────────────────── */
+  function showErr(el, msg){ el.className='auth-msg auth-msg-err'; el.textContent=msg; }
+
+  function firebaseErrMsg(code) {
+    const map = {
+      'auth/user-not-found':       'No account found with this email.',
+      'auth/wrong-password':       'Incorrect password. Try again.',
+      'auth/invalid-credential':   'Incorrect email or password.',
+      'auth/email-already-in-use': 'An account with this email already exists.',
+      'auth/weak-password':        'Password must be at least 6 characters.',
+      'auth/invalid-email':        'Please enter a valid email address.',
+      'auth/too-many-requests':    'Too many attempts. Please try again later.',
+      'auth/network-request-failed':'Network error. Check your connection.',
+    };
+    return map[code] || 'Something went wrong. Please try again.';
+  }
+
+  function showToast(msg, color='#22d3a0') {
+    const t=document.createElement('div');
+    t.style.cssText=`position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(60px);background:${color};color:#0b0d11;padding:12px 24px;border-radius:10px;font-family:'Space Grotesk',sans-serif;font-size:0.9rem;font-weight:700;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,0.3);transition:transform .4s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;`;
+    t.textContent=msg;
+    document.body.appendChild(t);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{ t.style.transform='translateX(-50%) translateY(0)'; }));
+    setTimeout(()=>{ t.style.transform='translateX(-50%) translateY(60px)'; setTimeout(()=>t.remove(),500); },3500);
+  }
+
+  /* ─────────────────────────────────────
+     WIRE UP BUTTONS
+  ───────────────────────────────────── */
+  onAuthStateChanged(auth, user => { if(user){ updateNavbar(user); checkPendingReview(); } });
+
+  document.getElementById('googleSignInBtn').onclick  = () => signInWithGoogle('mentee');
+  document.getElementById('googleRegisterBtn').onclick = () => signInWithGoogle('mentee');
+  document.getElementById('menteeBtn').onclick         = () => signInWithGoogle('mentee');
+  document.getElementById('mentorBtn').onclick         = () => signInWithGoogle('mentor');
+  document.getElementById('emailSignInBtn').onclick    = emailSignIn;
+  document.getElementById('emailRegisterBtn').onclick  = emailRegister;
+  document.getElementById('forgotBtn').onclick         = sendForgotEmail;
+  document.getElementById('savePwBtn').onclick         = changePassword;
+  document.getElementById('logoutBtn').onclick         = () => signOut(auth).then(()=>location.reload());
+
+  // Allow Enter key in sign-in fields
+  ['siEmail','siPassword'].forEach(id=>{
+    document.getElementById(id)?.addEventListener('keydown', e=>{ if(e.key==='Enter') emailSignIn(); });
+  });
+  ['regName','regEmail','regPassword'].forEach(id=>{
+    document.getElementById(id)?.addEventListener('keydown', e=>{ if(e.key==='Enter') emailRegister(); });
+  });
+  document.getElementById('forgotEmail')?.addEventListener('keydown', e=>{ if(e.key==='Enter') sendForgotEmail(); });
+</script>
+
+</body>
+</html>
